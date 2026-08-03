@@ -25,6 +25,10 @@ async function readJson(file) {
 
 test("ships native manifests and a Codex marketplace", async () => {
   const packageJson = await readJson("package.json");
+  assert.equal(
+    packageJson.bin["shopify-app-builder"],
+    "scripts/install-agent-skills.mjs",
+  );
 
   for (const file of VERSIONED_MANIFESTS) {
     const manifest = await readJson(file);

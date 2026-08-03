@@ -1,11 +1,11 @@
 {
   "name": "shopify-app-builder",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "32 open-source Shopify app development skills with native plugin manifests and agent-specific guidance.",
   "type": "module",
   "main": ".opencode/plugins/shopify-app-builder.js",
   "bin": {
-    "shopify-app-builder": "./scripts/install-agent-skills.mjs"
+    "shopify-app-builder": "scripts/install-agent-skills.mjs"
   },
   "files": [
     ".agents",

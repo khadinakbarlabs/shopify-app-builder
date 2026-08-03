@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.1 - 2026-08-03
+
+- Normalized the npm executable path so published metadata matches the source manifest without registry correction warnings.
+
 ## 1.4.0 - 2026-08-03
 
 - Standardized the repository as a native multi-harness plugin with Claude Code, Codex, Cursor, and Gemini CLI manifests.

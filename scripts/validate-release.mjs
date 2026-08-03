@@ -89,6 +89,7 @@ export async function validateRelease(root) {
     "docs/agents/opencode.md",
     "docs/agents/other-agents.md",
     "docs/release-notes-v1.4.0.md",
+    "docs/release-notes-v1.4.1.md",
     "GEMINI.md",
     "gemini-extension.json",
     "LICENSE",
@@ -144,6 +145,9 @@ export async function validateRelease(root) {
   }
   if (packageJson.main !== ".opencode/plugins/shopify-app-builder.js") {
     errors.push("package.json main must expose the OpenCode adapter");
+  }
+  if (packageJson.bin?.["shopify-app-builder"] !== "scripts/install-agent-skills.mjs") {
+    errors.push("package.json bin must use npm's canonical relative path");
   }
   for (const lifecycle of ["install", "postinstall", "prepare"]) {
     if (packageJson.scripts?.[lifecycle]) {

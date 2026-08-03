@@ -1,6 +1,6 @@
 {
   "name": "shopify-app-builder",
   "description": "Production-focused Shopify app engineering guidance for Gemini CLI.",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "contextFileName": "GEMINI.md"
 }

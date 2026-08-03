@@ -12,6 +12,7 @@ const PROJECT_DIRECTORIES = Object.freeze({
   opencode: [".opencode", "skills"],
   cursor: [".agents", "skills"],
   "command-code": [".commandcode", "skills"],
+  "gemini-cli": [".gemini", "skills"],
   universal: [".agents", "skills"],
 });
 
@@ -21,6 +22,7 @@ const GLOBAL_DIRECTORIES = Object.freeze({
   opencode: [".config", "opencode", "skills"],
   cursor: [".cursor", "skills"],
   "command-code": [".commandcode", "skills"],
+  "gemini-cli": [".gemini", "skills"],
   universal: [".agents", "skills"],
 });
 

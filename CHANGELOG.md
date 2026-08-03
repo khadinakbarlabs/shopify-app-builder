@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.4.0 - 2026-08-03
+
+- Standardized the repository as a native multi-harness plugin with Claude Code, Codex, Cursor, and Gemini CLI manifests.
+- Added a repository-local Codex marketplace and direct Codex installation path.
+- Added `using-shopify-app-builder`, a routing and safety skill that selects focused Shopify skills before work begins.
+- Added separate use-case, operating-guideline, example, and verification guides for Claude Code, Codex, Cursor, OpenCode, Command Code, Gemini CLI, and other Agent Skills-compatible harnesses.
+- Added a dependency-free OpenCode package adapter and Gemini CLI support to the copy-only npm installer.
+- Expanded the release gate to verify every package surface and detect additional provider credential formats.
+
 ## 1.3.1 - 2026-08-03
 
 - Fixed npm and `npx` execution through the package-manager-created binary symlink.

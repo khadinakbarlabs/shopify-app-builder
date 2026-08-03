@@ -20,3 +20,13 @@ test("release scanner permits explicit credential placeholders", () => {
     [],
   );
 });
+
+test("release scanner rejects additional common provider credentials", () => {
+  const anthropicKey = `sk-ant-${"a".repeat(24)}`;
+  const googleKey = `AIza${"a".repeat(32)}`;
+  const awsKey = `AKIA${"A".repeat(16)}`;
+
+  assert.deepEqual(findForbiddenText(anthropicKey), ["Anthropic key"]);
+  assert.deepEqual(findForbiddenText(googleKey), ["Google API key"]);
+  assert.deepEqual(findForbiddenText(awsKey), ["AWS access key"]);
+});

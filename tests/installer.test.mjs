@@ -37,6 +37,10 @@ test("resolves documented global directories for supported agents", () => {
     resolveTargetDirectory("command-code", { global: true, home }),
     path.join(home, ".commandcode", "skills"),
   );
+  assert.equal(
+    resolveTargetDirectory("gemini-cli", { global: true, home }),
+    path.join(home, ".gemini", "skills"),
+  );
 });
 
 test("npm-style symlink executes the installer CLI", async () => {

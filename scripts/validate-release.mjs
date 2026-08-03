@@ -29,7 +29,11 @@ const FORBIDDEN_PATTERNS = Object.freeze([
   ["GitHub token", /(?:gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,})/],
   ["npm token", /npm_[A-Za-z0-9]{20,}/],
   ["Shopify token", /(?:shpat|shpca|shpss|shpua)_[A-Za-z0-9]{20,}/],
-  ["OpenAI key", /sk-(?:proj-)?[A-Za-z0-9_-]{20,}/],
+  ["OpenAI key", /sk-(?!ant-)(?:proj-)?[A-Za-z0-9_-]{20,}/],
+  ["Anthropic key", /sk-ant-[A-Za-z0-9_-]{20,}/],
+  ["Google API key", /AIza[A-Za-z0-9_-]{30,}/],
+  ["AWS access key", /(?:AKIA|ASIA)[A-Z0-9]{16}/],
+  ["Stripe live key", /(?:sk|rk)_live_[A-Za-z0-9]{16,}/],
   ["Slack token", /xox[baprs]-[A-Za-z0-9-]{10,}/],
 ]);
 
@@ -66,17 +70,34 @@ function parseFrontmatterName(text) {
 export async function validateRelease(root) {
   const errors = [];
   const requiredFiles = [
+    ".agents/plugins/marketplace.json",
     ".claude-plugin/plugin.json",
     ".claude-plugin/marketplace.json",
+    ".codex/INSTALL.md",
     ".codex-plugin/plugin.json",
+    ".cursor-plugin/plugin.json",
+    ".opencode/INSTALL.md",
+    ".opencode/plugins/shopify-app-builder.js",
     "assets/icon.png",
     "assets/logo.png",
+    "docs/agents/README.md",
+    "docs/agents/claude-code.md",
+    "docs/agents/codex.md",
+    "docs/agents/command-code.md",
+    "docs/agents/cursor.md",
+    "docs/agents/gemini-cli.md",
+    "docs/agents/opencode.md",
+    "docs/agents/other-agents.md",
+    "docs/release-notes-v1.4.0.md",
+    "GEMINI.md",
+    "gemini-extension.json",
     "LICENSE",
     "PRIVACY.md",
     "README.md",
     "SECURITY.md",
     "TERMS.md",
     "package.json",
+    "skills/using-shopify-app-builder/SKILL.md",
   ];
 
   const files = await walkFiles(root);
@@ -92,11 +113,37 @@ export async function validateRelease(root) {
   const claudeManifest = JSON.parse(
     await readFile(path.join(root, ".claude-plugin", "plugin.json"), "utf8"),
   );
-  if (packageJson.version !== codexManifest.version || packageJson.version !== claudeManifest.version) {
-    errors.push("package.json and plugin manifest versions must match");
+  const cursorManifest = JSON.parse(
+    await readFile(path.join(root, ".cursor-plugin", "plugin.json"), "utf8"),
+  );
+  const geminiManifest = JSON.parse(
+    await readFile(path.join(root, "gemini-extension.json"), "utf8"),
+  );
+  const claudeMarketplace = JSON.parse(
+    await readFile(path.join(root, ".claude-plugin", "marketplace.json"), "utf8"),
+  );
+  const codexMarketplace = JSON.parse(
+    await readFile(path.join(root, ".agents", "plugins", "marketplace.json"), "utf8"),
+  );
+  const versionedSurfaces = [
+    codexManifest.version,
+    claudeManifest.version,
+    cursorManifest.version,
+    geminiManifest.version,
+    claudeMarketplace.plugins?.[0]?.version,
+    codexMarketplace.plugins?.[0]?.version,
+  ];
+  if (versionedSurfaces.some((version) => version !== packageJson.version)) {
+    errors.push("package.json and all plugin surface versions must match");
+  }
+  if (codexMarketplace.plugins?.[0]?.source?.path !== "../..") {
+    errors.push("Codex marketplace source must resolve to the repository root");
   }
   if (packageJson.dependencies || packageJson.optionalDependencies) {
     errors.push("The public installer must remain dependency-free");
+  }
+  if (packageJson.main !== ".opencode/plugins/shopify-app-builder.js") {
+    errors.push("package.json main must expose the OpenCode adapter");
   }
   for (const lifecycle of ["install", "postinstall", "prepare"]) {
     if (packageJson.scripts?.[lifecycle]) {

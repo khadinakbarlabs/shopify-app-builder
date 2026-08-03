@@ -1,46 +1,62 @@
-# Shopify App Builder: 31 Agent Skills for Claude Code, Codex, Cursor, and OpenCode
+# Shopify App Builder: Shopify App Development Plugin for AI Coding Agents
 
 [![npm](https://img.shields.io/npm/v/shopify-app-builder)](https://www.npmjs.com/package/shopify-app-builder)
 [![license](https://img.shields.io/badge/license-MIT-0b6e4f)](LICENSE)
 [![Shopify](https://img.shields.io/badge/Shopify-app%20development-004c3f)](https://shopify.dev/docs/apps)
 
-Shopify App Builder is a comprehensive open-source toolkit for AI coding agents that build, debug, audit, launch, and grow Shopify apps. It packages 31 focused Agent Skills, 9 Claude Code commands, 5 Claude Code specialist agents, and deterministic validation scripts.
+Shopify App Builder is a production-focused, open-source Shopify app development plugin for AI coding agents. It helps agents build, debug, audit, launch, and grow Shopify apps with 32 focused Agent Skills, 9 workflow commands, 5 specialist agents, native plugin manifests, and deterministic release validation.
 
-It works with Claude Code, OpenAI Codex, Cursor, OpenCode, Command Code, and other tools that support the portable `SKILL.md` Agent Skills format.
+It has native package surfaces for Claude Code, OpenAI Codex, Cursor, and Gemini CLI, plus portable installation for OpenCode, Command Code, Windsurf, Cline, Roo Code, Kilo Code, Continue, and other tools that support the `SKILL.md` Agent Skills format.
 
 > This community project is not affiliated with, endorsed by, or sponsored by Shopify. Shopify and related marks belong to Shopify Inc.
 
 ## Install
 
-### Any supported coding agent
-
-The open Agent Skills installer supports Claude Code, Codex, Cursor, OpenCode, Command Code, and many other harnesses:
-
-```bash
-npx skills add khadinakbarlabs/shopify-app-builder --list
-npx skills add khadinakbarlabs/shopify-app-builder --skill '*' --agent codex --copy --yes
-```
-
-Replace `codex` with `claude-code`, `cursor`, `opencode`, or `command-code`. Use `--agent '*'` only when you intentionally want every detected agent configured.
-
-### npm
-
-```bash
-npx shopify-app-builder install --agent codex --global
-npx shopify-app-builder install --agent cursor --global
-npx shopify-app-builder install --all --dry-run
-```
-
-The npm installer copies only bundled skill directories. It has no runtime dependencies, no network calls, no telemetry, and no install or postinstall hook. Existing skills are skipped unless `--force` is explicitly supplied.
-
-### Claude Code plugin marketplace
+### Claude Code
 
 ```text
 /plugin marketplace add khadinakbarlabs/shopify-app-builder
 /plugin install shopify-app-builder@shopify-app-builder
 ```
 
-Claude Code automatically discovers the plugin's skills, commands, and specialist agents.
+Claude Code discovers the plugin's skills, commands, and specialist agents.
+
+### Codex
+
+```bash
+codex plugin marketplace add khadinakbarlabs/shopify-app-builder
+codex plugin add shopify-app-builder@shopify-app-builder
+```
+
+If the installed Codex build does not support plugin marketplaces, use the portable Agent Skills command below with `--agent codex`.
+
+### Cursor, OpenCode, Command Code, and other coding agents
+
+The open Agent Skills installer supports a broad and evolving set of harness profiles:
+
+```bash
+npx skills add khadinakbarlabs/shopify-app-builder --list
+npx skills add khadinakbarlabs/shopify-app-builder --skill '*' --agent codex --copy --yes
+```
+
+Replace `codex` with `claude-code`, `cursor`, `opencode`, `command-code`, or another profile supported by your installed `skills` CLI. Use `--agent '*'` only when you intentionally want every detected agent configured.
+
+### Gemini CLI
+
+```bash
+gemini extensions install https://github.com/khadinakbarlabs/shopify-app-builder
+```
+
+### npm
+
+```bash
+npx shopify-app-builder install --agent codex --global
+npx shopify-app-builder install --agent cursor --global
+npx shopify-app-builder install --agent gemini-cli --global
+npx shopify-app-builder install --all --dry-run
+```
+
+The npm installer copies only bundled skill directories. It has no runtime dependencies, no network calls, no telemetry, and no install or postinstall hook. Existing skills are skipped unless `--force` is explicitly supplied.
 
 ### Clone or download
 
@@ -77,6 +93,8 @@ npm run validate
 
 Browse the complete catalog in [`skills/`](skills/).
 
+The `using-shopify-app-builder` routing skill selects the smallest relevant skill set for each request and applies credential, verification, deployment, publication, and paid-spend boundaries.
+
 ## Example prompts
 
 - “Build a Shopify app that lets merchants A/B test product titles.”
@@ -99,7 +117,19 @@ See [SECURITY.md](SECURITY.md), [PRIVACY.md](PRIVACY.md), and [the release audit
 
 The portable skills use standard YAML frontmatter with a lowercase hyphenated `name` matching the skill directory. Harness-specific commands and specialist agents remain under `commands/` and `agents/` for Claude Code, while every supported harness can load the `skills/` collection.
 
-See [the compatibility matrix](docs/compatibility.md) for exact installation locations and limitations.
+See [the compatibility matrix](docs/compatibility.md) for exact installation surfaces and limitations.
+
+## Agent-specific use cases and guidelines
+
+Each guide explains the best use cases, invocation style, operating boundaries, examples, and verification procedure for that harness:
+
+- [Claude Code](docs/agents/claude-code.md)
+- [Codex](docs/agents/codex.md)
+- [Cursor](docs/agents/cursor.md)
+- [OpenCode](docs/agents/opencode.md)
+- [Command Code](docs/agents/command-code.md)
+- [Gemini CLI](docs/agents/gemini-cli.md)
+- [Other Agent Skills-compatible coding agents](docs/agents/other-agents.md)
 
 ## Accuracy and versioned APIs
 

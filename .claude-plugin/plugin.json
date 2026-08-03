@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "shopify-app-builder",
+  "displayName": "Shopify App Builder",
+  "version": "1.3.0",
+  "description": "Open-source Shopify app development skills, commands, and specialist agents for building production-grade apps.",
+  "author": {
+    "name": "Shopify App Builder Contributors",
+    "url": "https://github.com/khadinakbarlabs/shopify-app-builder"
+  },
+  "homepage": "https://github.com/khadinakbarlabs/shopify-app-builder#readme",
+  "repository": "https://github.com/khadinakbarlabs/shopify-app-builder",
+  "license": "MIT",
+  "keywords": [
+    "shopify",
+    "shopify-app-development",
+    "agent-skills",
+    "claude-code",
+    "graphql",
+    "app-bridge",
+    "polaris"
+  ],
+  "skills": "./skills/"
+}

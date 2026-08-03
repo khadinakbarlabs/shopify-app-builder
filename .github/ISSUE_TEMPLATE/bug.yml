@@ -1,0 +1,32 @@
+name: Bug report
+description: Report an incorrect skill, broken installer, or validation problem.
+title: "bug: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: Do not include credentials, private store data, or merchant data. Use SECURITY.md for sensitive reports.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: input
+    id: skill
+    attributes:
+      label: Affected skill or file
+  - type: input
+    id: harness
+    attributes:
+      label: Agent or harness
+      placeholder: Claude Code, Codex, Cursor, OpenCode, Command Code, or other
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Safe reproduction
+      description: Provide redacted steps and command output.
+    validations:
+      required: true

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "shopify-app-builder",
+  "description": "Open-source Shopify development tools for AI coding agents.",
+  "owner": {
+    "name": "Shopify App Builder Contributors",
+    "url": "https://github.com/khadinakbarlabs/shopify-app-builder"
+  },
+  "plugins": [
+    {
+      "name": "shopify-app-builder",
+      "source": "./",
+      "description": "Build, audit, launch, and grow production-grade Shopify apps.",
+      "category": "Development",
+      "tags": [
+        "shopify",
+        "app-development",
+        "graphql",
+        "polaris",
+        "app-bridge"
+      ],
+      "strict": true
+    }
+  ]
+}

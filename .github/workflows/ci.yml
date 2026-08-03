@@ -1,0 +1,30 @@
+name: Release checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20, 22, 24]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node-version }}
+          package-manager-cache: false
+      - run: npm test
+      - run: npm run validate
+      - if: matrix.node-version == 24
+        run: npx --yes @secretlint/quick-start@11.1.0 "**/*"
+      - if: matrix.node-version == 24
+        run: npm pack --dry-run --ignore-scripts

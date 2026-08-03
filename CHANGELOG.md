@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.1 - 2026-08-03
+
+- Fixed npm and `npx` execution through the package-manager-created binary symlink.
+- Added a regression test that executes the installer through an npm-style symlink.
+
 ## 1.3.0 - 2026-08-03
 
 - Removed personal publisher identity and local filesystem paths from public artifacts.

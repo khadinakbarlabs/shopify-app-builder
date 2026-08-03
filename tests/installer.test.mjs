@@ -1,14 +1,18 @@
 import assert from "node:assert/strict";
+import { execFile } from "node:child_process";
 import { mkdtemp, mkdir, readFile, symlink, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
+import { promisify } from "node:util";
 
 import {
   installSkills,
   resolveTargetDirectory,
 } from "../scripts/install-agent-skills.mjs";
 import { backupCaches } from "../scripts/reset-shopify-cache.mjs";
+
+const execFileAsync = promisify(execFile);
 
 test("resolves documented global directories for supported agents", () => {
   const home = "/tmp/example-home";
@@ -33,6 +37,18 @@ test("resolves documented global directories for supported agents", () => {
     resolveTargetDirectory("command-code", { global: true, home }),
     path.join(home, ".commandcode", "skills"),
   );
+});
+
+test("npm-style symlink executes the installer CLI", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "shopify-cli-link-test-"));
+  const binPath = path.join(root, "shopify-app-builder");
+  const cliPath = path.resolve("scripts/install-agent-skills.mjs");
+  await symlink(cliPath, binPath);
+
+  const { stdout } = await execFileAsync(binPath, ["--help"]);
+
+  assert.match(stdout, /Shopify App Builder agent-skill installer/);
+  assert.match(stdout, /shopify-app-builder install --agent/);
 });
 
 test("dry-run reports installs without writing target files", async () => {

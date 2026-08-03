@@ -1,6 +1,7 @@
 # Shopify App Builder: Shopify App Development Plugin for AI Coding Agents
 
 [![npm](https://img.shields.io/npm/v/shopify-app-builder)](https://www.npmjs.com/package/shopify-app-builder)
+[![skills.sh](https://img.shields.io/badge/skills.sh-32%20Shopify%20skills-111111)](https://skills.sh/khadinakbarlabs/shopify-app-builder/using-shopify-app-builder)
 [![license](https://img.shields.io/badge/license-MIT-0b6e4f)](LICENSE)
 [![Shopify](https://img.shields.io/badge/Shopify-app%20development-004c3f)](https://shopify.dev/docs/apps)
 
@@ -30,7 +31,19 @@ codex plugin add shopify-app-builder@shopify-app-builder
 
 If the installed Codex build does not support plugin marketplaces, use the portable Agent Skills command below with `--agent codex`.
 
-### Cursor, OpenCode, Command Code, and other coding agents
+### OpenCode
+
+Install the published npm plugin in `opencode.json`:
+
+```json
+{
+  "plugin": ["shopify-app-builder"]
+}
+```
+
+The plugin registers its bundled `skills/` directory through OpenCode's native plugin configuration hook.
+
+### Cursor, Command Code, and other coding agents
 
 The open Agent Skills installer supports a broad and evolving set of harness profiles:
 
@@ -40,6 +53,8 @@ npx skills add khadinakbarlabs/shopify-app-builder --skill '*' --agent codex --c
 ```
 
 Replace `codex` with `claude-code`, `cursor`, `opencode`, `command-code`, or another profile supported by your installed `skills` CLI. Use `--agent '*'` only when you intentionally want every detected agent configured.
+
+Browse the public catalog entry on [skills.sh](https://skills.sh/khadinakbarlabs/shopify-app-builder/using-shopify-app-builder).
 
 ### Gemini CLI
 

@@ -1,9 +1,8 @@
 {
-  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "shopify-app-builder",
-  "displayName": "Shopify App Builder",
   "version": "1.4.2",
-  "description": "Open-source Shopify app development skills, commands, and specialist agents for building production-grade apps.",
+  "description": "Portable Shopify app engineering skills for building, auditing, launching, and growing production-ready apps.",
   "author": {
     "name": "Shopify App Builder Contributors",
     "url": "https://github.com/khadinakbarlabs/shopify-app-builder"
@@ -14,12 +13,11 @@
   "keywords": [
     "shopify",
     "shopify-app-development",
+    "agent-plugins",
     "agent-skills",
-    "claude-code",
+    "ai-coding-agent",
     "graphql",
     "app-bridge",
     "polaris"
-  ],
-  "skills": "./skills/",
-  "commands": "./commands/"
+  ]
 }

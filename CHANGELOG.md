@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.2 - 2026-08-07
+
+- Added the canonical Agent Plugins 1.0 portable `plugin.json` manifest at the package root.
+- Kept the shared `skills/` tree as the portable component surface while preserving native Claude Code, Codex, Cursor, Gemini CLI, and OpenCode adapters.
+- Added release validation and regression coverage for the closed Agent Plugins manifest schema and npm package inclusion.
+
 ## 1.4.1 - 2026-08-03
 
 - Normalized the npm executable path so published metadata matches the source manifest without registry correction warnings.

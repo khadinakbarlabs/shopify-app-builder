@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "shopify-app-builder",
-      "version": "1.4.1",
+      "version": "1.4.2",
       "source": "./",
       "description": "Build, audit, launch, and grow production-grade Shopify apps.",
       "category": "Development",

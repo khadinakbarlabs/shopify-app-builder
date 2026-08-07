@@ -2,12 +2,13 @@
 
 [![npm](https://img.shields.io/npm/v/shopify-app-builder)](https://www.npmjs.com/package/shopify-app-builder)
 [![skills.sh](https://img.shields.io/badge/skills.sh-32%20Shopify%20skills-111111)](https://skills.sh/khadinakbarlabs/shopify-app-builder/using-shopify-app-builder)
+[![Agent Plugins](https://img.shields.io/badge/Agent%20Plugins-1.0%20portable-5b21b6)](https://agent-plugins.org/)
 [![license](https://img.shields.io/badge/license-MIT-0b6e4f)](LICENSE)
 [![Shopify](https://img.shields.io/badge/Shopify-app%20development-004c3f)](https://shopify.dev/docs/apps)
 
 Shopify App Builder is a production-focused, open-source Shopify app development plugin for AI coding agents. It helps agents build, debug, audit, launch, and grow Shopify apps with 32 focused Agent Skills, 9 workflow commands, 5 specialist agents, native plugin manifests, and deterministic release validation.
 
-It has native package surfaces for Claude Code, OpenAI Codex, Cursor, and Gemini CLI, plus portable installation for OpenCode, Command Code, Windsurf, Cline, Roo Code, Kilo Code, Continue, and other tools that support the `SKILL.md` Agent Skills format.
+It is an [Agent Plugins 1.0](https://agent-plugins.org/) portable package: the root [`plugin.json`](plugin.json) uses the canonical standard schema and the shared [`skills/`](skills/) directory follows the fixed Agent Skills discovery layout. Native package surfaces remain available for Claude Code, OpenAI Codex, Cursor, and Gemini CLI, with portable installation for OpenCode, Command Code, Windsurf, Cline, Roo Code, Kilo Code, Continue, and other tools that support the `SKILL.md` Agent Skills format.
 
 > This community project is not affiliated with, endorsed by, or sponsored by Shopify. Shopify and related marks belong to Shopify Inc.
 
@@ -35,6 +36,7 @@ Shopify app work is rarely a single API call. A production-quality app needs the
 - **Build for the whole lifecycle.** The catalog covers idea validation, implementation, quality, App Store readiness, and growth—not only code generation.
 - **Keep consequential actions explicit.** Skills distinguish research and implementation from deployment, publication, access changes, and paid spend, which always need an active-session instruction.
 - **Stay portable.** The same canonical `skills/` tree works across Agent Skills-compatible harnesses, with native adapters where a harness supports them.
+- **Use an open package contract.** The root manifest declares only standard Agent Plugins metadata; commands, specialist agents, and native installation adapters remain clearly outside the portable core.
 
 ### Start with a real task
 
@@ -110,6 +112,12 @@ npx shopify-app-builder install --all --dry-run
 ```
 
 The npm installer copies only bundled skill directories. It has no runtime dependencies, no network calls, no telemetry, and no install or postinstall hook. Existing skills are skipped unless `--force` is explicitly supplied.
+
+### Agent Plugins-compatible clients
+
+The repository root is directly installable as a portable Agent Plugins package by clients that support the 1.0 format. Point the client at this checkout or a downloaded release directory; it discovers [`plugin.json`](plugin.json) first and then the immediate skill directories under [`skills/`](skills/). Installation UX is intentionally client-owned by the standard, so use the client’s documented directory/plugin installation command.
+
+The portable core contains no MCP server configuration, no credential references, and no client-specific command, hook, or agent contract. That keeps the common surface useful to any Agent Plugins client while the native adapters retain each harness’s richer features.
 
 ### Clone or download
 
@@ -196,6 +204,7 @@ You can always begin with `using-shopify-app-builder`; the table is useful when 
 ## Repository layout
 
 ```text
+plugin.json                Agent Plugins 1.0 portable manifest (standard core)
 skills/                    Canonical, portable Agent Skills source of truth
 commands/                  Claude Code workflow commands
 agents/                    Claude Code specialist agents
@@ -209,13 +218,13 @@ docs/agents/               Harness-specific setup, use cases, and checks
 assets/                    Public icons and brand assets
 ```
 
-The project deliberately keeps domain knowledge in `skills/` and harness-specific packaging at the edges. Contributors should update the canonical skill first, then update an adapter only when the target harness needs one.
+The project deliberately keeps domain knowledge in `skills/` and harness-specific packaging at the edges. The portable manifest uses a closed Agent Plugins field set; native adapters are distribution metadata, not portable manifest fields. Contributors should update the canonical skill first, then update an adapter only when the target harness needs one.
 
 ## Safety and credential handling
 
 - The package contains no credentials and does not request Shopify credentials during installation.
 - Credential examples use placeholders and environment variables.
-- The release check rejects private keys, common live-token formats, personal filesystem paths, and mismatched skill identifiers.
+- The release check rejects private keys, common live-token formats, personal filesystem paths, mismatched skill identifiers, and invalid Agent Plugins root manifests.
 - Cache troubleshooting uses a recoverable backup script instead of `rm -rf`.
 - Deployment, paid advertising, publication, and other consequential actions still require the user's explicit instruction in the active agent session.
 
@@ -227,7 +236,9 @@ Installing this plugin does not grant an agent authority to publish an app, depl
 
 ## Compatibility
 
-The portable skills use standard YAML frontmatter with a lowercase hyphenated `name` matching the skill directory. Harness-specific commands and specialist agents remain under `commands/` and `agents/` for Claude Code, while every supported harness can load the `skills/` collection.
+The portable core follows the Agent Plugins 1.0 contract: one root `plugin.json` with the canonical schema, a lowercase package identifier, and immediate `skills/<skill>/SKILL.md` children. The standard currently lists Cursor, VS Code, GitHub Copilot, ChatGPT & Codex, and Kiro among clients that support Agent Skills; each client remains responsible for its own installation and enablement flow.
+
+Harness-specific commands and specialist agents remain under `commands/` and `agents/` for Claude Code, while every supported harness can load the `skills/` collection. No native-only field is added to the portable root manifest.
 
 See [the compatibility matrix](docs/compatibility.md) for exact installation surfaces and limitations.
 

@@ -1,6 +1,6 @@
 {
   "name": "shopify-app-builder",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "32 open-source Shopify app development skills with native plugin manifests and agent-specific guidance.",
   "type": "module",
   "main": ".opencode/plugins/shopify-app-builder.js",
@@ -26,6 +26,7 @@
     "GEMINI.md",
     "LICENSE",
     "PRIVACY.md",
+    "plugin.json",
     "README.md",
     "SECURITY.md",
     "TERMS.md",

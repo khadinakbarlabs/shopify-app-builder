@@ -2,7 +2,13 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
+import {
+  AGENT_PLUGINS_SCHEMA,
+  validateAgentPluginManifest,
+} from "../scripts/validate-release.mjs";
+
 const VERSIONED_MANIFESTS = [
+  "plugin.json",
   ".claude-plugin/plugin.json",
   ".codex-plugin/plugin.json",
   ".cursor-plugin/plugin.json",
@@ -29,6 +35,7 @@ test("ships native manifests and a Codex marketplace", async () => {
     packageJson.bin["shopify-app-builder"],
     "scripts/install-agent-skills.mjs",
   );
+  assert.ok(packageJson.files.includes("plugin.json"));
 
   for (const file of VERSIONED_MANIFESTS) {
     const manifest = await readJson(file);
@@ -40,6 +47,17 @@ test("ships native manifests and a Codex marketplace", async () => {
   assert.equal(marketplace.plugins[0].name, "shopify-app-builder");
   assert.equal(marketplace.plugins[0].source.source, "local");
   assert.equal(marketplace.plugins[0].source.path, "../..");
+});
+
+test("ships a valid portable Agent Plugins 1.0 manifest", async () => {
+  const packageJson = await readJson("package.json");
+  const manifest = await readJson("plugin.json");
+
+  assert.deepEqual(validateAgentPluginManifest(manifest), []);
+  assert.equal(manifest.$schema, AGENT_PLUGINS_SCHEMA);
+  assert.equal(manifest.name, packageJson.name);
+  assert.equal(manifest.version, packageJson.version);
+  assert.match(manifest.description, /Shopify app engineering/i);
 });
 
 test("ships an agent-specific guide for every supported harness tier", async () => {

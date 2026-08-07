@@ -22,6 +22,85 @@ const EXCLUDED_DIRECTORIES = new Set([
   ".shopify-app-builder-backups",
 ]);
 
+export const AGENT_PLUGINS_SCHEMA =
+  "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json";
+
+const AGENT_PLUGIN_FIELDS = new Set([
+  "$schema",
+  "name",
+  "version",
+  "description",
+  "author",
+  "homepage",
+  "repository",
+  "license",
+  "keywords",
+  "extensions",
+]);
+
+const AGENT_PLUGIN_NAME = /^(?!.*(?:--|\.\.))[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/;
+
+function isObject(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+export function validateAgentPluginManifest(manifest) {
+  if (!isObject(manifest)) return ["must be a JSON object"];
+
+  const errors = [];
+  for (const field of Object.keys(manifest)) {
+    if (!AGENT_PLUGIN_FIELDS.has(field)) errors.push(`unknown top-level field: ${field}`);
+  }
+
+  if (manifest.$schema !== AGENT_PLUGINS_SCHEMA) {
+    errors.push("must declare the canonical Agent Plugins 1.0 schema");
+  }
+  if (
+    typeof manifest.name !== "string" ||
+    manifest.name.length < 1 ||
+    manifest.name.length > 64 ||
+    !AGENT_PLUGIN_NAME.test(manifest.name)
+  ) {
+    errors.push("name must satisfy the Agent Plugins naming rules");
+  }
+
+  for (const field of ["version", "description", "homepage", "repository", "license"]) {
+    if (field in manifest && typeof manifest[field] !== "string") {
+      errors.push(`${field} must be a string`);
+    }
+  }
+
+  if ("keywords" in manifest) {
+    if (!Array.isArray(manifest.keywords) || manifest.keywords.some((item) => typeof item !== "string")) {
+      errors.push("keywords must be an array of strings");
+    }
+  }
+
+  if ("author" in manifest) {
+    if (!isObject(manifest.author)) {
+      errors.push("author must be an object");
+    } else {
+      for (const [field, value] of Object.entries(manifest.author)) {
+        if (!new Set(["name", "email", "url"]).has(field)) {
+          errors.push(`author has unknown field: ${field}`);
+        } else if (typeof value !== "string") {
+          errors.push(`author.${field} must be a string`);
+        }
+      }
+    }
+  }
+
+  if ("extensions" in manifest) {
+    if (!isObject(manifest.extensions)) {
+      errors.push("extensions must be an object");
+    } else if (Object.values(manifest.extensions).some((value) => !isObject(value))) {
+      errors.push("each extension namespace must contain an object");
+    }
+  }
+
+  return errors;
+}
+
 const FORBIDDEN_PATTERNS = Object.freeze([
   ["personal filesystem path", /(?:\/Users\/[A-Za-z0-9._-]+\/|\/home\/[A-Za-z0-9._-]+\/|[A-Za-z]:\\Users\\[^\\]+\\)/],
   ["personal publisher identity", /Khadin\s+Akbar/i],
@@ -90,6 +169,7 @@ export async function validateRelease(root) {
     "docs/agents/other-agents.md",
     "docs/release-notes-v1.4.0.md",
     "docs/release-notes-v1.4.1.md",
+    "docs/release-notes-v1.4.2.md",
     "GEMINI.md",
     "gemini-extension.json",
     "LICENSE",
@@ -98,6 +178,7 @@ export async function validateRelease(root) {
     "SECURITY.md",
     "TERMS.md",
     "package.json",
+    "plugin.json",
     "skills/using-shopify-app-builder/SKILL.md",
   ];
 
@@ -108,6 +189,9 @@ export async function validateRelease(root) {
   }
 
   const packageJson = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
+  const agentPluginManifest = JSON.parse(
+    await readFile(path.join(root, "plugin.json"), "utf8"),
+  );
   const codexManifest = JSON.parse(
     await readFile(path.join(root, ".codex-plugin", "plugin.json"), "utf8"),
   );
@@ -127,6 +211,7 @@ export async function validateRelease(root) {
     await readFile(path.join(root, ".agents", "plugins", "marketplace.json"), "utf8"),
   );
   const versionedSurfaces = [
+    agentPluginManifest.version,
     codexManifest.version,
     claudeManifest.version,
     cursorManifest.version,
@@ -136,6 +221,15 @@ export async function validateRelease(root) {
   ];
   if (versionedSurfaces.some((version) => version !== packageJson.version)) {
     errors.push("package.json and all plugin surface versions must match");
+  }
+  for (const error of validateAgentPluginManifest(agentPluginManifest)) {
+    errors.push(`Agent Plugins manifest ${error}`);
+  }
+  if (agentPluginManifest.name !== packageJson.name) {
+    errors.push("Agent Plugins manifest name must match package.json name");
+  }
+  if (!packageJson.files?.includes("plugin.json")) {
+    errors.push("npm package files must include the Agent Plugins root manifest");
   }
   if (codexMarketplace.plugins?.[0]?.source?.path !== "../..") {
     errors.push("Codex marketplace source must resolve to the repository root");

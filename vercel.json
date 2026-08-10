@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "installCommand": "npm --prefix mcp-server ci",
+  "installCommand": "npm ci",
   "functions": {
     "api/mcp.mjs": {
       "includeFiles": "skills/**",

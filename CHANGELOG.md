@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.1 - 2026-08-10
+
+- Fixed the Vercel production bundle so the deployed MCP server resolves its isolated runtime dependencies while the public installer package remains dependency-free.
+
 ## 1.5.0 - 2026-08-10
 
 - Added a real read-only Streamable HTTP MCP server for MCP-capable coding agents and the ChatGPT directory's **With MCP** submission path.

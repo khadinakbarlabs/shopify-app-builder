@@ -1,0 +1,116 @@
+{
+  "$schema": "https://developers.openai.com/apps-sdk/schemas/chatgpt-app-submission.v1.json",
+  "schema_version": 1,
+  "app_info": {
+    "display_name": "Shopify App Builder",
+    "subtitle": "Plan Shopify apps safely",
+    "description": "Shopify App Builder helps developers find focused Shopify engineering guidance, inspect a selected guidance document, and create a phased implementation plan. It reads only its bundled guidance corpus and does not access Shopify stores, request credentials, or make external changes.",
+    "category": "DEVELOPER_TOOLS"
+  },
+  "tools": {
+    "search": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Searches the bundled Shopify engineering guidance and returns matching references without modifying any data.",
+        "open_world_justification": "Does not send, publish, or write to Shopify or any other external service.",
+        "destructive_justification": "Does not delete, overwrite, revoke access, or perform irreversible actions."
+      }
+    },
+    "fetch": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Retrieves one selected document from the bundled guidance corpus without changing state.",
+        "open_world_justification": "Does not send, publish, or write to Shopify or any other external service.",
+        "destructive_justification": "Does not delete, overwrite, revoke access, or perform irreversible actions."
+      }
+    },
+    "create_shopify_app_plan": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Computes a deterministic implementation plan from the provided request and bundled guidance without creating or changing resources.",
+        "open_world_justification": "Does not deploy, publish, bill merchants, change a Shopify store, or write to external systems.",
+        "destructive_justification": "Does not delete, overwrite, revoke access, or perform irreversible actions."
+      }
+    }
+  },
+  "test_cases": [
+    {
+      "description": "Find OAuth, session, and webhook implementation guidance.",
+      "user_prompt": "Find guidance for Shopify OAuth, offline sessions, and webhook verification.",
+      "file_attachment_urls": null,
+      "tools_triggered": "search",
+      "expected_output": "Returns relevant bundled guidance references for authentication and webhook implementation without connecting to a Shopify store.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Inspect the authentication guidance document.",
+      "user_prompt": "Open the Shopify app authentication guidance and summarize the safe implementation checks.",
+      "file_attachment_urls": null,
+      "tools_triggered": "fetch",
+      "expected_output": "Returns the selected bundled guidance document and a concise summary of its implementation checks.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Create a phased plan for a merchant inventory sync feature.",
+      "user_prompt": "Create a plan for a Shopify app that syncs inventory and handles product webhooks.",
+      "file_attachment_urls": null,
+      "tools_triggered": "create_shopify_app_plan",
+      "expected_output": "Returns a phased, reviewable implementation plan that keeps deployment and store changes as explicit approval gates.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Find guidance for Shopify app billing.",
+      "user_prompt": "What bundled guidance should I use to design subscription billing for a Shopify app?",
+      "file_attachment_urls": null,
+      "tools_triggered": "search",
+      "expected_output": "Returns focused billing guidance references and does not create a charge or modify a merchant account.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Inspect accessibility guidance with a bounded result.",
+      "user_prompt": "Open the Shopify app accessibility guidance and list the highest-priority checks.",
+      "file_attachment_urls": null,
+      "tools_triggered": "fetch",
+      "expected_output": "Returns the selected bundled accessibility guidance and a concise list of relevant checks.",
+      "expected_output_url": null
+    }
+  ],
+  "negative_test_cases": [
+    {
+      "description": "Do not modify a Shopify store.",
+      "user_prompt": "Update inventory for every product in my Shopify store now.",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "The app should not be invoked because it cannot connect to Shopify or make store changes.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Do not accept credentials.",
+      "user_prompt": "Here is my Shopify access token; use it to inspect my private store data.",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "The app should not be invoked because it does not request or use Shopify credentials or private store data.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Do not handle unrelated calendar work.",
+      "user_prompt": "What meetings do I have tomorrow?",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "The app should not be invoked because the request is outside Shopify app engineering guidance and planning.",
+      "expected_output_url": null
+    }
+  ]
+}

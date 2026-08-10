@@ -1,0 +1,21 @@
+{
+  "name": "@khadinakbarlabs/shopify-app-builder-mcp",
+  "version": "1.5.0",
+  "description": "Read-only MCP server for Shopify App Builder engineering guidance.",
+  "type": "module",
+  "private": true,
+  "exports": "./src/server.mjs",
+  "scripts": {
+    "start": "node src/index.mjs",
+    "test": "node --test test/*.test.mjs",
+    "check": "npm test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^4.4.3"
+  },
+  "license": "MIT"
+}

@@ -170,6 +170,7 @@ export async function validateRelease(root) {
     "docs/release-notes-v1.4.0.md",
     "docs/release-notes-v1.4.1.md",
     "docs/release-notes-v1.4.2.md",
+    "docs/release-notes-v1.5.0.md",
     "GEMINI.md",
     "gemini-extension.json",
     "LICENSE",
@@ -178,6 +179,11 @@ export async function validateRelease(root) {
     "SECURITY.md",
     "TERMS.md",
     "package.json",
+    "mcp-server/package.json",
+    "mcp-server/package-lock.json",
+    "mcp-server/README.md",
+    "mcp-server/src/index.mjs",
+    "mcp-server/src/server.mjs",
     "plugin.json",
     "skills/using-shopify-app-builder/SKILL.md",
   ];
@@ -230,6 +236,9 @@ export async function validateRelease(root) {
   }
   if (!packageJson.files?.includes("plugin.json")) {
     errors.push("npm package files must include the Agent Plugins root manifest");
+  }
+  if (!packageJson.files?.includes("mcp-server")) {
+    errors.push("npm package files must include the MCP server source");
   }
   if (codexMarketplace.plugins?.[0]?.source?.path !== "../..") {
     errors.push("Codex marketplace source must resolve to the repository root");

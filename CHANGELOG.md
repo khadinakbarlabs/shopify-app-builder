@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.0 - 2026-08-10
+
+- Added a real read-only Streamable HTTP MCP server for MCP-capable coding agents and the ChatGPT directory's **With MCP** submission path.
+- Added bounded Shopify guidance search, retrieval, and deterministic build planning tools with explicit safety metadata.
+- Added deployment and domain-verification guidance without embedding credentials or a public endpoint.
+
 ## 1.4.2 - 2026-08-07
 
 - Added the canonical Agent Plugins 1.0 portable `plugin.json` manifest at the package root.

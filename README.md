@@ -6,7 +6,7 @@
 [![license](https://img.shields.io/badge/license-MIT-0b6e4f)](LICENSE)
 [![Shopify](https://img.shields.io/badge/Shopify-app%20development-004c3f)](https://shopify.dev/docs/apps)
 
-Shopify App Builder is a production-focused, open-source Shopify app development plugin for AI coding agents. It helps agents build, debug, audit, launch, and grow Shopify apps with 32 focused Agent Skills, 9 workflow commands, 5 specialist agents, native plugin manifests, and deterministic release validation.
+Shopify App Builder is a production-focused, open-source Shopify app development plugin for AI coding agents. It now includes a real, read-only MCP server for ChatGPT, Codex, Claude, Cursor, and other MCP-capable harnesses, alongside the existing portable skills package for harnesses that only support local skills.
 
 It is an [Agent Plugins 1.0](https://agent-plugins.org/) portable package: the root [`plugin.json`](plugin.json) uses the canonical standard schema and the shared [`skills/`](skills/) directory follows the fixed Agent Skills discovery layout. Native package surfaces remain available for Claude Code, OpenAI Codex, Cursor, and Gemini CLI, with portable installation for OpenCode, Command Code, Windsurf, Cline, Roo Code, Kilo Code, Continue, and other tools that support the `SKILL.md` Agent Skills format.
 
@@ -15,7 +15,8 @@ It is an [Agent Plugins 1.0](https://agent-plugins.org/) portable package: the r
 ## Contents
 
 - [Why Shopify App Builder?](#why-shopify-app-builder)
-- [Install](#install)
+- [MCP server for ChatGPT and coding agents](#mcp-server-for-chatgpt-and-coding-agents)
+- [Install the local skills package](#install-the-local-skills-package)
 - [What is included](#what-is-included)
 - [Find the right skill quickly](#find-the-right-skill-quickly)
 - [Guided delivery playbooks](#guided-delivery-playbooks)
@@ -51,7 +52,41 @@ Use Shopify App Builder to design a usage-based billing plan, then show the merc
 
 If your harness does not trigger the router automatically, invoke `using-shopify-app-builder` explicitly before the task.
 
-## Install
+## MCP server for ChatGPT and coding agents
+
+The public ChatGPT directory accepts this product through its MCP submission path, not as a skills ZIP. The included server exposes three safe, read-only tools:
+
+- `search` locates focused Shopify engineering guidance.
+- `fetch` retrieves one selected guidance document.
+- `create_shopify_app_plan` creates a deterministic implementation plan and clearly preserves deployment, publication, billing, and store-change approval gates.
+
+It does not connect to Shopify, access a merchant account, collect credentials, write to external systems, or contain a custom UI. The result is a transparent knowledge-and-planning MCP service rather than a disguised skills archive.
+
+### Run locally
+
+```bash
+cd mcp-server
+npm install
+npm start
+```
+
+Connect any Streamable HTTP MCP client to `http://localhost:3000/mcp`. For Codex, add that URL in MCP settings (or `config.toml` under `[mcp_servers.shopify-app-builder]`). For Claude Code, Cursor, OpenCode, and other coding agents, create a remote Streamable HTTP MCP entry with the same URL.
+
+Use the MCP Inspector before connecting a client:
+
+```bash
+npx @modelcontextprotocol/inspector
+```
+
+Choose **Streamable HTTP** and enter `http://localhost:3000/mcp`. The health endpoint is `http://localhost:3000/health`.
+
+### Publish to the ChatGPT directory
+
+Deploy the included server to a stable HTTPS URL, for example `https://mcp.example.com/mcp`, then create a **With MCP** submission in the OpenAI plugin portal. Do not upload a skills archive to that flow. The portal must scan the production endpoint and verify its domain before review.
+
+The server includes the required `/.well-known/openai-apps-challenge` route. Configure the exact portal-provided challenge value as `OPENAI_APPS_CHALLENGE_TOKEN` in the deployment host’s secret manager; never commit that value. See [the MCP deployment guide](mcp-server/README.md) and [the submission checklist](docs/chatgpt-app-submission.md).
+
+## Install the local skills package
 
 ### Claude Code
 
@@ -891,7 +926,7 @@ Yes. The portable skills and package adapters are source artifacts. Follow your 
 
 ### Does it include an MCP server?
 
-No general-purpose MCP server is bundled as a runtime service. The `shopify-mcp` skill provides guidance for evaluating and configuring appropriate Shopify MCP workflows where they belong.
+Yes. The `mcp-server/` directory provides a read-only Streamable HTTP MCP service with `search`, `fetch`, and `create_shopify_app_plan`. It reads the checked-in guidance corpus only; it does not connect to Shopify, request credentials, or change external systems. The optional `shopify-mcp` skill remains guidance for evaluating merchant-facing Shopify MCP designs.
 
 ### Does it make an app Built for Shopify?
 

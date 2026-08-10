@@ -1,7 +1,7 @@
 {
   "name": "shopify-app-builder",
-  "version": "1.4.2",
-  "description": "32 open-source Shopify app development skills with native plugin manifests and agent-specific guidance.",
+  "version": "1.5.0",
+  "description": "Open-source Shopify app development guidance for AI coding agents, with a read-only MCP server and native agent plugins.",
   "type": "module",
   "main": ".opencode/plugins/shopify-app-builder.js",
   "bin": {
@@ -14,10 +14,12 @@
     ".codex-plugin",
     ".cursor-plugin",
     ".opencode",
+    "api",
     "agents",
     "assets",
     "commands",
     "docs",
+    "mcp-server",
     "scripts",
     "skills",
     "CHANGELOG.md",
@@ -30,12 +32,15 @@
     "README.md",
     "SECURITY.md",
     "TERMS.md",
+    "vercel.json",
     "gemini-extension.json"
   ],
   "scripts": {
+    "mcp:start": "npm --prefix mcp-server run start",
+    "mcp:test": "npm --prefix mcp-server test",
     "test": "node --test tests/*.test.mjs",
     "validate": "node scripts/validate-release.mjs",
-    "release:check": "npm test && npm run validate",
+    "release:check": "npm test && npm run mcp:test && npm run validate",
     "prepack": "npm run release:check"
   },
   "engines": {

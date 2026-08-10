@@ -4,3 +4,4 @@ coverage/
 .DS_Store
 .shopify-app-builder-backups/
 .release/reports/
+.vercel

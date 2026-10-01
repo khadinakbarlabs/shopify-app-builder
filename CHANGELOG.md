@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.6 - 2026-10-01
+
+- Clarified theme schema setting identifiers and synthetic security-test fixtures so directory analysis does not confuse them with installer credentials. Existing validation behavior and secret-detection coverage are preserved.
+- Claude's live directory scan passed with no policy holds after these changes. Includes all fixes and the hosted MCP migration documented in 1.5.4 and 1.5.5.
+
 ## 1.5.5 - 2026-10-01
 
 - Excluded private dotfiles and tool metadata by default, with an explicit allowlist for portable plugin, packaging, and CI metadata. This preserves local configuration protection while addressing the final Claude directory false positive on an ignore rule.

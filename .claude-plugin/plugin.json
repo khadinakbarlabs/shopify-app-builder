@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "shopify-app-builder",
   "displayName": "Shopify App Builder",
-  "version": "1.5.5",
+  "version": "1.5.6",
   "description": "Open-source Shopify app development skills, commands, and specialist agents for building production-grade apps.",
   "author": {
     "name": "Shopify App Builder Contributors",

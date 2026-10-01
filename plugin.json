@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "shopify-app-builder",
-  "version": "1.5.5",
+  "version": "1.5.6",
   "description": "Portable Shopify app engineering skills for building, auditing, launching, and growing production-ready apps.",
   "author": {
     "name": "Shopify App Builder Contributors",

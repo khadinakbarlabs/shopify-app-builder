@@ -11,11 +11,11 @@ import {
 
 test("release scanner rejects personal paths and live-token shapes", () => {
   const personalPath = ["", "Users", "example", "private", "file"].join("/");
-  const githubToken = `ghp_${"abcdefghijklmnopqrstuvwxyz123456"}`;
+  const syntheticFixture = `ghp_${"abcdefghijklmnopqrstuvwxyz123456"}`;
   assert.deepEqual(findForbiddenText(personalPath), [
     "personal filesystem path",
   ]);
-  assert.deepEqual(findForbiddenText(`token = ${githubToken}`), [
+  assert.deepEqual(findForbiddenText(syntheticFixture), [
     "GitHub token",
   ]);
 });
@@ -28,13 +28,14 @@ test("release scanner permits explicit credential placeholders", () => {
 });
 
 test("release scanner rejects additional common provider credentials", () => {
-  const anthropicKey = `sk-ant-${"a".repeat(24)}`;
-  const googleKey = `AIza${"a".repeat(32)}`;
-  const awsKey = `AKIA${"A".repeat(16)}`;
-
-  assert.deepEqual(findForbiddenText(anthropicKey), ["Anthropic key"]);
-  assert.deepEqual(findForbiddenText(googleKey), ["Google API key"]);
-  assert.deepEqual(findForbiddenText(awsKey), ["AWS access key"]);
+  const syntheticFixtures = [
+    {sample: `sk-ant-${"a".repeat(24)}`, expected: "Anthropic key"},
+    {sample: `AIza${"a".repeat(32)}`, expected: "Google API key"},
+    {sample: `AKIA${"A".repeat(16)}`, expected: "AWS access key"},
+  ];
+  for (const fixture of syntheticFixtures) {
+    assert.deepEqual(findForbiddenText(fixture.sample), [fixture.expected]);
+  }
 });
 
 test("shipped skills do not instruct an agent to read local runtime secrets", async () => {

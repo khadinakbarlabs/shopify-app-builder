@@ -11,7 +11,6 @@ const skillsDirectory = path.join(projectRoot, "skills");
 const catalog = loadGuidanceCatalog({ skillsDirectory });
 const handleMcpRequest = createMcpRequestHandler({
   createMcpServer: () => createShopifyAppBuilderServer(catalog),
-  challengeToken: process.env.OPENAI_APPS_CHALLENGE_TOKEN ?? "",
 });
 
 export default async function handler(request, response) {

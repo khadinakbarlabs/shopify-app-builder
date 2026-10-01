@@ -12,7 +12,7 @@ description: "When asked to build Shopify admin apps, use App Bridge 4.x web com
 - **"Show a confirmation modal"** → Use `<ui-modal>` web component with data-open attribute and slot-based content
 - **"Display success message"** → Use `shopify.toast()` method with title, message, duration, isError flags
 - **"Let user pick products/customers"** → Use resource picker API: `shopify.resourcePicker({ type: 'product' })`
-- **"Validate backend requests"** → Exchange session token for JWT; verify JWT signature with Shopify's public key
+- **"Validate backend requests"** → Use Shopify's maintained server authentication library before any application logic
 - **"Upgrade from App Bridge 3.x"** → Follow migration checklist: remove AppProvider, update component usage, use web components directly
 
 ## App Bridge 4.x Architecture
@@ -20,8 +20,8 @@ description: "When asked to build Shopify admin apps, use App Bridge 4.x web com
 App Bridge 4.x is a **web components-first framework**. The major shift from 3.x:
 - **No AppProvider needed** — directly use web components and shopify global object
 - **Native web components** — built-in elements like `<ui-modal>`, `<ui-save-bar>`, `<ui-toast>` instead of React/Vue wrappers
-- **shopify global object** — replaces AppBridge context; provides toast(), modal(), navigate(), loading(), idToken(), etc.
-- **Session tokens** — automatic JWT exchange for backend authentication
+- **shopify global object** — provides embedded UI interactions
+- **Authenticated requests** — App Bridge augments browser fetch requests to the app's backend
 - **Shopify-managed delivery** — current Shopify CLI templates load App Bridge for embedded apps
 
 ## Installation & CDN Setup
@@ -78,9 +78,6 @@ shopify.navigate({ url: '/admin/products/new' });
 shopify.loading.dispatch(true);
 shopify.loading.dispatch(false);
 
-// Session token (JWT for backend calls)
-const idToken = await shopify.idToken();
-
 // Current app environment
 shopify.environment // 'Admin' | 'Checkout' | 'Mobile' | 'POS'
 shopify.config // { apiKey, host, theme }
@@ -122,7 +119,6 @@ App Bridge 4.x provides 8 native web components. Use them directly in HTML witho
 <script>
   async function handleSave(event) {
     event.preventDefault();
-    const token = await shopify.idToken();
     const formData = new FormData(document.querySelector('form'));
 
     const res = await fetch('/api/settings', {
@@ -130,7 +126,6 @@ App Bridge 4.x provides 8 native web components. Use them directly in HTML witho
       body: JSON.stringify(Object.fromEntries(formData)),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
       },
     });
 
@@ -160,10 +155,8 @@ App Bridge 4.x provides 8 native web components. Use them directly in HTML witho
 
 <script>
   async function confirmDelete() {
-    const token = await shopify.idToken();
     const res = await fetch('/api/products/123', {
       method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` },
     });
 
     if (res.ok) {
@@ -296,47 +289,40 @@ For React apps, optional hooks simplify shopify global access:
 
 ```typescript
 import { useAppBridge } from '@shopify/app-bridge-react';
-import { Toast } from '@shopify/app-bridge/actions';
 
 export function MyComponent() {
   const app = useAppBridge();
 
   const handleSave = async () => {
-    app.dispatch({ type: 'LOADING_DISPATCH', payload: true });
-    const token = await app.getSessionToken();
-
-    const res = await fetch('/api/settings', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}` },
-    });
-
-    app.dispatch({ type: 'LOADING_DISPATCH', payload: false });
-
-    app.dispatch(Toast.create({
-      title: 'Saved',
-      message: 'Settings updated',
-      duration: 3000,
-    }));
+    app.loading(true);
+    try {
+      const res = await fetch('/api/settings', {method: 'POST'});
+      if (!res.ok) throw new Error('Save failed');
+      app.toast.show('Settings updated');
+    } catch {
+      app.toast.show('Could not save settings', {isError: true});
+    } finally {
+      app.loading(false);
+    }
   };
 
   return <button onClick={handleSave}>Save</button>;
 }
 ```
 
-## Session Token & JWT Backend Validation
+## Authenticated requests and server validation
 
-App Bridge automatically provides session tokens (JWTs) for authenticated backend calls.
+These browser examples require an embedded Shopify app with the current App Bridge script loaded and its fetch interception enabled. App Bridge adds authentication to requests to the app's own backend. Keep example paths relative and validate every request on the server. This plugin does not acquire, accept, or forward the coding agent user's credentials.
 
-### Client Side: Get Token & Send
+See [Shopify's fetch configuration](https://shopify.dev/docs/api/app-home/latest/apis/authentication-and-data/config-api) for origin rules. These examples do not apply unchanged to Node.js fetch, an external API origin, or an app that disables App Bridge's fetch interception.
+
+### Client side: same-origin request
 
 ```javascript
-const idToken = await shopify.idToken();
-
 const response = await fetch('/api/admin/settings', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${idToken}`,
   },
   body: JSON.stringify({ theme_color: '#FF0000' }),
 });
@@ -350,92 +336,28 @@ if (!response.ok) {
 }
 ```
 
-### Backend Side: Validate JWT
+### Server side: authenticate before accessing the store
 
-**Node.js/Express**:
+Use the app's configured Shopify server library. For the current React Router template:
 
 ```typescript
-import { jwtDecode } from 'jwt-decode';
+import type {LoaderFunctionArgs} from 'react-router';
+import {authenticate} from '../shopify.server';
 
-async function validateSessionToken(req, res, next) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Missing token' });
+export async function loader({request}: LoaderFunctionArgs) {
+  const {admin} = await authenticate.admin(request);
+  const response = await admin.graphql(`query ShopName { shop { name } }`);
+  const {data, errors} = await response.json();
+  if (errors?.length || !data?.shop) {
+    throw new Response('Shop unavailable', {status: 502});
   }
-
-  const token = authHeader.slice(7);
-
-  try {
-    const decoded = jwtDecode(token);
-
-    if (!decoded.iss || !decoded.iss.includes('shopify.com')) {
-      throw new Error('Invalid issuer');
-    }
-
-    if (!decoded.aud || decoded.aud !== getServerOnlyAppConfig().publicAppKey) {
-      throw new Error('Invalid audience');
-    }
-
-    if (decoded.exp && Date.now() >= decoded.exp * 1000) {
-      throw new Error('Token expired');
-    }
-
-    req.shop = decoded.dest;
-    req.userId = decoded.sub;
-    next();
-  } catch (err) {
-    return res.status(401).json({ error: 'Invalid token' });
-  }
+  return {name: data.shop.name};
 }
-
-app.post('/api/admin/settings', validateSessionToken, (req, res) => {
-  console.log(`User ${req.userId} from shop ${req.shop} updating settings`);
-  res.json({ success: true });
-});
 ```
 
-**Python/Flask**:
+Call the same authentication helper at the start of every action that changes data, then validate inputs and enforce shop ownership and required permissions. Decoding JWT claims alone does not verify a signature. Keep the framework's authentication redirects and error headers intact. See [Shopify's server authentication guide](https://shopify.dev/docs/api/shopify-app-react-router/latest/guide-admin).
 
-```python
-from flask import request, jsonify
-from jwt import decode as jwt_decode
-from functools import wraps
-
-def validate_session_token(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        auth_header = request.headers.get('Authorization', '')
-        if not auth_header.startswith('Bearer '):
-            return jsonify({'error': 'Missing token'}), 401
-
-        token = auth_header[7:]
-
-        try:
-            decoded = jwt_decode(token, options={"verify_signature": False})
-
-            if not decoded.get('iss') or 'shopify.com' not in decoded['iss']:
-                raise ValueError('Invalid issuer')
-
-            if decoded.get('aud') != get_server_only_app_config()['public_app_key']:
-                raise ValueError('Invalid audience')
-
-            request.shop = decoded.get('dest')
-            request.user_id = decoded.get('sub')
-            return f(*args, **kwargs)
-
-        except Exception as e:
-            return jsonify({'error': 'Invalid token'}), 401
-
-    return decorated_function
-
-@app.post('/api/admin/settings')
-@validate_session_token
-def update_settings():
-    shop = request.shop
-    user_id = request.user_id
-    data = request.get_json()
-    return jsonify({'success': True})
-```
+For a different backend framework, use its supported Shopify authentication integration and test missing, expired, forged, wrong-audience, and wrong-shop requests before implementing writes.
 
 ## Worked Examples
 
@@ -496,7 +418,6 @@ def update_settings():
         return;
       }
 
-      const token = await shopify.idToken();
       const formData = new FormData(form);
 
       try {
@@ -504,7 +425,6 @@ def update_settings():
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
           },
           body: JSON.stringify(Object.fromEntries(formData)),
         });
@@ -561,12 +481,10 @@ async function showDeleteConfirmation(productId: string) {
 
   confirmBtn.onclick = async () => {
     shopify.loading.dispatch(true);
-    const token = await shopify.idToken();
 
     try {
       const res = await fetch(`/api/products/${productId}`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` },
       });
 
       shopify.loading.dispatch(false);
@@ -644,7 +562,6 @@ async function openProductSelector() {
 ```typescript
 async function bulkUpdateProducts(productIds: string[]) {
   shopify.loading.dispatch(true);
-  const token = await shopify.idToken();
 
   const results = { success: 0, failed: 0 };
 
@@ -653,7 +570,6 @@ async function bulkUpdateProducts(productIds: string[]) {
       const res = await fetch(`/api/products/${productId}/sync`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ syncInventory: true }),
@@ -723,9 +639,9 @@ setupNavigation();
 2. **Update web component imports** — Use native `<ui-*>` elements instead of React wrappers
 3. **Replace useAppBridge hook** — Use `window.shopify` or optional `useAppBridge()` hook from React package
 4. **Update toast/modal calls** — `shopify.toast()` and `shopify.modal.show()` instead of Toast/Modal actions
-5. **Session tokens automatic** — No need to manually request; `shopify.idToken()` handles refresh
+5. **Authenticated fetch** — Use App Bridge's default fetch interception for same-origin browser requests
 6. **Update resource picker** — Use `shopify.resourcePicker()` API or `<ui-resource-picker>` component
-7. **Test JWT validation** — Ensure backend correctly decodes and validates JWTs
+7. **Test server authentication** — Reject unauthenticated and forged requests before performing application logic
 
 ## Frame Ancestors & CSP Setup
 

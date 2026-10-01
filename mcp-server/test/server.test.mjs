@@ -24,6 +24,26 @@ test("HTTP server bounds slow-client connection time", () => {
   assert.equal(httpServer.keepAliveTimeout, 5_000);
 });
 
+test("HTTP server does not publish a supplied verification value", async () => {
+  const verificationValue = "public-domain-verification-fixture";
+  const httpServer = createMcpHttpServer({
+    createMcpServer: () => createShopifyAppBuilderServer(catalog),
+    challengeToken: verificationValue,
+  });
+  httpServer.listen(0, "127.0.0.1");
+  await once(httpServer, "listening");
+  const address = httpServer.address();
+  try {
+    const response = await fetch(`http://127.0.0.1:${address.port}/.well-known/openai-apps-challenge`);
+    assert.equal(response.status, 404);
+    const body = await response.text();
+    assert.doesNotMatch(body, new RegExp(verificationValue));
+    assert.equal(JSON.parse(body).error, "not_found");
+  } finally {
+    await new Promise((resolve, reject) => httpServer.close((error) => error ? reject(error) : resolve()));
+  }
+});
+
 test("Streamable HTTP server exposes only the documented read-only tools", async () => {
   const httpServer = createMcpHttpServer({
     createMcpServer: () => createShopifyAppBuilderServer(catalog),

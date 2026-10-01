@@ -35,11 +35,15 @@ docker build -f mcp-server/Dockerfile -t shopify-app-builder-mcp .
 docker run --rm -p 3000:3000 shopify-app-builder-mcp
 ```
 
-This repository also includes a Vercel adapter. From the repository root, use `vercel --prod`; it installs the nested server dependencies and exposes `/mcp`, `/health`, and `/.well-known/openai-apps-challenge`. Set `OPENAI_APPS_CHALLENGE_TOKEN` in Vercel only after the OpenAI portal supplies the exact verification value.
+This repository also includes a Vercel adapter. From the repository root, use `vercel --prod`; it installs the nested server dependencies and exposes `/mcp` and `/health`. The public plugin runtime does not read or serve credentials or domain-verification values.
 
 Deploy that image to a stable HTTPS origin and submit the resulting `https://your-domain.example/mcp` endpoint with **With MCP** in the OpenAI plugin portal. A localhost server or temporary tunnel is suitable for development only, not directory review.
 
-When the portal provides a domain-verification token, configure it as `OPENAI_APPS_CHALLENGE_TOKEN` in the host's secret manager. The server will return exactly that value from `/.well-known/openai-apps-challenge`; do not commit the token.
+If the portal asks for a response at `/.well-known/openai-apps-challenge`, configure that exact response as a separate static asset or reverse-proxy route on the deployment's HTTPS origin. The operator supplies the portal value directly to their hosting platform; do not put it in the public plugin repository or an agent's local configuration.
+
+### Migration from 1.5.3 and earlier
+
+The environment-backed verification helper has been removed. Existing deployments that used it must configure the separate verification response before upgrading if their directory still needs that endpoint. The MCP tool protocol and tool names are unchanged. `HOST`, `PORT`, and `SHOPIFY_APP_BUILDER_SKILLS_DIR` remain available for server binding and guidance configuration.
 
 ## Client connection
 

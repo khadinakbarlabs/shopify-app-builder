@@ -60,6 +60,26 @@ test("authentication guidance does not interpolate credentials into queries or t
   assert.doesNotMatch(hydrogen, /hydrogen deploy --set PRIVATE_STOREFRONT_API_TOKEN/);
 });
 
+test("App Bridge guidance does not retrieve credentials or accept unverified JWTs", async () => {
+  const skill = await readFile("skills/app-bridge/SKILL.md", "utf8");
+  assert.doesNotMatch(skill, /\.idToken\s*\(|\.getSessionToken\s*\(|Bearer\s+\$\{/);
+  assert.doesNotMatch(skill, /jwtDecode\s*\(|verify_signature["']?\s*:\s*False/);
+  assert.match(skill, /await authenticate\.admin\(request\)/);
+});
+
+test("MCP runtime environment access is limited to server binding and guidance location", async () => {
+  const allowed = new Set(["PORT", "HOST", "SHOPIFY_APP_BUILDER_SKILLS_DIR"]);
+  for (const directory of ["api", "mcp-server/src"]) {
+    for (const name of await readdir(directory)) {
+      if (!name.endsWith(".mjs")) continue;
+      const source = await readFile(path.join(directory, name), "utf8");
+      for (const match of source.matchAll(/process\.env(?:\.([A-Z_]+))?/g)) {
+        assert.ok(allowed.has(match[1]), `${directory}/${name}: unexpected runtime environment access`);
+      }
+    }
+  }
+});
+
 test("Agent Plugins manifest validator rejects nonportable schema fields", () => {
   assert.deepEqual(
     validateAgentPluginManifest({

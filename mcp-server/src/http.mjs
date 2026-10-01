@@ -16,7 +16,7 @@ function sendJson(response, status, payload) {
   response.end(JSON.stringify(payload));
 }
 
-export function createMcpRequestHandler({ createMcpServer, challengeToken = "" }) {
+export function createMcpRequestHandler({ createMcpServer }) {
   return async (request, response) => {
     const requestUrl = new URL(request.url ?? "/", "http://localhost");
     const contentLength = Number(request.headers["content-length"] ?? 0);
@@ -28,20 +28,6 @@ export function createMcpRequestHandler({ createMcpServer, challengeToken = "" }
 
     if (requestUrl.pathname === "/health" && request.method === "GET") {
       sendJson(response, 200, { status: "ok", service: "shopify-app-builder-mcp" });
-      return;
-    }
-
-    if (requestUrl.pathname === "/.well-known/openai-apps-challenge" && request.method === "GET") {
-      if (!challengeToken) {
-        sendJson(response, 404, { error: "challenge_not_configured" });
-        return;
-      }
-      response.writeHead(200, {
-        "cache-control": "no-store",
-        "content-type": "text/plain; charset=utf-8",
-        "x-content-type-options": "nosniff",
-      });
-      response.end(challengeToken);
       return;
     }
 

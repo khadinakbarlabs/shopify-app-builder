@@ -18,7 +18,6 @@ if (!Number.isInteger(port) || port < 1 || port > 65_535) {
 const catalog = loadGuidanceCatalog({ skillsDirectory });
 const httpServer = createMcpHttpServer({
   createMcpServer: () => createShopifyAppBuilderServer(catalog),
-  challengeToken: process.env.OPENAI_APPS_CHALLENGE_TOKEN ?? "",
 });
 
 httpServer.listen(port, host, () => {

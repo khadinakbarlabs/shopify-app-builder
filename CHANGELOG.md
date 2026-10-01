@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.4 - 2026-10-01
+
+- Replaced manual App Bridge credential retrieval and forwarding examples with same-origin browser requests authenticated by App Bridge.
+- Removed insecure Node and Python examples that accepted JWT claims without verifying their signatures; guidance now uses Shopify's maintained server authentication helper.
+- Removed the environment-backed domain-verification endpoint from the optional MCP runtime and Vercel adapter. Deployment operators must serve any required verification response separately; see the MCP migration guide.
+- Removed optional binary icon references from the Codex manifest and release script. Artwork remains available for manual directory uploads and is excluded from npm installation.
+- Added regression checks for App Bridge credential handling, unverified JWTs, runtime environment reads, and accidental verification-value publication.
+
 ## 1.5.3 - 2026-10-01
 
 - Removed unsafe hand-written OAuth example that accepted shop domains by substring and sent an app secret to a constructed URL.

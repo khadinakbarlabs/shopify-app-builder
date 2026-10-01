@@ -84,7 +84,7 @@ Choose **Streamable HTTP** and enter `http://localhost:3000/mcp`. The health end
 
 Deploy the included server to a stable HTTPS URL, for example `https://mcp.example.com/mcp`, then create a **With MCP** submission in the OpenAI plugin portal. Do not upload a skills archive to that flow. The portal must scan the production endpoint and verify its domain before review.
 
-The server includes the required `/.well-known/openai-apps-challenge` route. Configure the exact portal-provided challenge value as `OPENAI_APPS_CHALLENGE_TOKEN` in the deployment host’s secret manager; never commit that value. See [the MCP deployment guide](mcp-server/README.md) and [the submission checklist](docs/chatgpt-app-submission.md).
+The MCP runtime serves guidance and does not read verification credentials. If the submission portal requires domain verification, host its verification response separately through your hosting platform or reverse proxy. See [the MCP deployment guide](mcp-server/README.md) and [the submission checklist](docs/chatgpt-app-submission.md).
 
 ## Install the local skills package
 
@@ -250,7 +250,7 @@ agents/                    Claude Code specialist agents
 gemini-extension.json      Gemini CLI extension metadata
 scripts/                   Dependency-free installer and release validation
 docs/agents/               Harness-specific setup, use cases, and checks
-assets/                    Public icons and brand assets
+assets/                    Artwork for manual directory uploads (not installed)
 ```
 
 The project deliberately keeps domain knowledge in `skills/` and harness-specific packaging at the edges. The portable manifest uses a closed Agent Plugins field set; native adapters are distribution metadata, not portable manifest fields. Contributors should update the canonical skill first, then update an adapter only when the target harness needs one.

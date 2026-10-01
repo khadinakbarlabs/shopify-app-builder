@@ -13,7 +13,7 @@ This repository is ready to produce a **draft** MCP-backed submission only after
 
 - Deploy `mcp-server` and the checked-in `skills/` corpus to a stable HTTPS endpoint ending in `/mcp`.
 - Confirm `GET /health` and Streamable HTTP MCP initialization on that exact production endpoint.
-- Add the portal’s exact domain-verification token to the deployment host as `OPENAI_APPS_CHALLENGE_TOKEN`, then verify that `/.well-known/openai-apps-challenge` returns only that token.
+- If requested by the portal, configure a separate static hosting or reverse-proxy response at `/.well-known/openai-apps-challenge` on the MCP origin. Verify that it returns exactly the portal-provided value. The plugin runtime does not read or serve that value; keep deployment-specific verification material out of the public repository.
 - Use **With MCP** in the portal, enter the production MCP URL, run **Scan Tools**, and confirm the server discovers exactly `search`, `fetch`, and `create_shopify_app_plan`.
 - Complete the verified developer identity, policy attestations, five positive cases, three negative cases, release notes, and required listing URLs.
 

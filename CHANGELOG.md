@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.8 - 2026-10-01
+
+- Fix GitHub Actions YAML parsing for the bundled MCP smoke check. This carries forward the MCP-backed OpenAI plugin package from 1.5.7.
+
 ## 1.5.7 - 2026-10-01
 
 - Fixed the hosted MCP function bundle so production requests can initialize and use all three guidance tools. The npm skill installer remains dependency-free.

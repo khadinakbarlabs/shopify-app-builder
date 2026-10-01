@@ -31,4 +31,5 @@ jobs:
       - if: matrix.node-version == 24
         run: npm run mcp:bundle
       - if: matrix.node-version == 24
-        run: node --input-type=module -e "const {default: handler} = await import('./api/mcp.mjs'); if (typeof handler !== 'function') process.exit(1)"
+        run: |
+          node --input-type=module -e "const {default: handler} = await import('./api/mcp.mjs'); if (typeof handler !== 'function') process.exit(1)"

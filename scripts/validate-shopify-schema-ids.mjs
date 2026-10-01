@@ -91,11 +91,11 @@ function validateSectionSchema(schema, file, scope) {
     const settingIds = new Set(getSettingIds(schema.settings));
     for (const preset of schema.presets) {
       if (!preset || typeof preset !== 'object' || !preset.settings) continue;
-      for (const key of Object.keys(preset.settings)) {
-        if (!settingIds.has(key)) {
+      for (const settingId of Object.keys(preset.settings)) {
+        if (!settingIds.has(settingId)) {
           issues.push({
             file,
-            message: `${scope} preset "${preset.name ?? 'unnamed'}" references missing setting "${key}"`,
+            message: `${scope} preset "${preset.name ?? 'unnamed'}" references missing setting "${settingId}"`,
           });
         }
       }

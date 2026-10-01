@@ -25,7 +25,7 @@ Use **Storefront API** for customer-facing applications:
 **Use for:** Frontend applications, public data access
 
 ```javascript
-const publicToken = 'Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'; // Public token
+const publicToken = getBrowserAppConfig().publicStorefrontCredential;
 const shopDomain = 'mystore.myshopify.com';
 const endpoint = `https://${shopDomain}/api/2026-01/graphql.json`;
 
@@ -48,7 +48,8 @@ const headers = {
 **Use for:** Backend/server-side access with elevated permissions
 
 ```javascript
-const privateToken = process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN;
+const storefrontConfig = getStorefrontServerConfig();
+const privateToken = storefrontConfig.privateStorefrontCredential;
 
 const headers = {
   'Content-Type': 'application/json',

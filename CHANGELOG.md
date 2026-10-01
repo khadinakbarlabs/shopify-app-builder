@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.2 - 2026-10-01
+
+- Replaced shipped credential-like examples and host environment reads in the shared skills corpus with explicit, server-only application configuration boundaries.
+- Removed local-agent configuration and download-and-run guidance from the Shopify MCP skill; operators now complete third-party setup through the provider's current documentation.
+- Added a regression test preventing shipped skills from reading local runtime secret sources.
+- Synchronized the Claude Code, Codex, Cursor, Gemini CLI, Agent Plugins, npm, and MCP package versions for this release.
+
 ## 1.5.1 - 2026-08-10
 
 - Fixed the Vercel production bundle so the deployed MCP server resolves its isolated runtime dependencies while the public installer package remains dependency-free.

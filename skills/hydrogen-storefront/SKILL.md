@@ -10,7 +10,7 @@ Hydrogen is Shopify's Remix-based framework for building fast, custom storefront
 ## When Asked
 
 **When asked to scaffold a new Hydrogen storefront:**
-Provide the npm create @shopify/hydrogen command, explain project structure, and show how to configure .env with Storefront API credentials.
+Provide the npm create @shopify/hydrogen command, explain project structure, and show how to pass a server-only Storefront API configuration object. Never ask an agent to discover credentials on the user's machine.
 
 **When asked to fetch and display products:**
 Use the Storefront API via the storefront client (GraphQL query), show how to load product details, variants, and media; explain caching strategies.
@@ -63,23 +63,21 @@ my-store/
 │   ├── lib/               # Utility functions, API clients
 │   └── root.tsx           # Root layout
 ├── public/
-├── .env                   # Storefront API token, store domain
+├── app/lib/config.server.ts # Server-only runtime configuration boundary
 ├── hydrogen.config.ts     # Hydrogen config
 ├── remix.config.js        # Remix config (SSR, build)
 ├── package.json
 └── tsconfig.json
 ```
 
-### Environment Setup
+### Server-side configuration boundary
 
-```bash
-# .env
-PRIVATE_STOREFRONT_API_TOKEN=your_token_here
-PUBLIC_STORE_DOMAIN=your-store.myshopify.com
-SESSION_SECRET=random_string_min_32_chars
-PRIVATE_CUSTOMER_ACCOUNT_API_TOKEN=customer_token
-PUBLIC_CUSTOMER_ACCOUNT_API_URL=https://shopifyid.com/oauth/authorize
-```
+Before writing a real integration, ask the operator to configure the target
+application's server-side secret store. Do not inspect shell variables, dotfiles,
+keychains, browser storage, or another local credential source. Pass only the
+minimal configuration that the server needs through a typed boundary such as
+`getStorefrontServerConfig()`. The exact secret-store mechanism belongs to the
+application owner and hosting platform.
 
 ---
 
@@ -90,11 +88,14 @@ PUBLIC_CUSTOMER_ACCOUNT_API_URL=https://shopifyid.com/oauth/authorize
 ```typescript
 // app/lib/shopify.server.ts
 import { createStorefrontClient } from '@shopify/hydrogen';
+import { getStorefrontServerConfig } from '~/lib/config.server';
+
+const storefrontConfig = getStorefrontServerConfig();
 
 export const storefront = createStorefrontClient({
-  apiUrl: `https://${process.env.PUBLIC_STORE_DOMAIN}/api/2024-01/graphql.json`,
+  apiUrl: `https://${storefrontConfig.storeDomain}/api/2024-01/graphql.json`,
   apiVersion: '2024-01',
-  privateStorefrontToken: process.env.PRIVATE_STOREFRONT_API_TOKEN!,
+  privateStorefrontToken: storefrontConfig.privateStorefrontCredential,
 });
 ```
 
@@ -439,11 +440,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
 ### Enable & Setup
 
-```typescript
-// .env
-PUBLIC_CUSTOMER_ACCOUNT_API_URL=https://shopifyid.com/oauth/authorize
-PRIVATE_CUSTOMER_ACCOUNT_API_TOKEN=your_token
-```
+Keep the Customer Account endpoint and private client credential in the same
+server-only configuration boundary. Request the values from the application
+operator only when implementing the integration; never retrieve them from the
+agent host.
 
 ### Customer Login & Auth
 

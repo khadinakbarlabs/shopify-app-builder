@@ -33,11 +33,14 @@ import { shopifyApp } from '@shopify/shopify-app-remix/server';
 import { restResources } from '@shopify/shopify-api/rest/admin/2026-07';
 import { PrismaSessionStorage } from '@shopify/shopify-app-session-storage-prisma';
 import { prisma } from '~/db.server';
+import { getServerOnlyAppConfig } from '~/lib/config.server';
+
+const appConfig = getServerOnlyAppConfig();
 
 const shopify = shopifyApp({
-  apiKey: process.env.SHOPIFY_API_KEY || '',
-  apiSecret: process.env.SHOPIFY_API_SECRET || '',
-  scopes: process.env.SCOPES?.split(',') || [
+  apiKey: appConfig.publicAppKey,
+  apiSecret: appConfig.privateAppSecret,
+  scopes: appConfig.scopes ?? [
     'write_products',
     'read_products',
     'write_orders',
@@ -51,7 +54,7 @@ const shopify = shopifyApp({
     'write_inventory',
     'read_inventory',
   ],
-  appUrl: process.env.SHOPIFY_APP_URL || 'http://localhost:3000',
+  appUrl: appConfig.appUrl,
   auth: {
     path: '/auth',
     callbackPath: '/auth/callback',
@@ -67,13 +70,14 @@ const shopify = shopifyApp({
 export default shopify;
 ```
 
-**Environment Variables (.env):**
-```bash
-SHOPIFY_API_KEY=your-public-api-key-from-partner-dashboard
-SHOPIFY_API_SECRET=your-private-api-secret
-SHOPIFY_APP_URL=https://your-domain.ngrok.io  # or prod URL
-SCOPES=write_products,read_products,write_orders,read_orders
-```
+**Configuration contract:**
+
+`getServerOnlyAppConfig()` is application code, not a plugin feature. Have the
+application operator supply a public app key, private app secret, application
+URL, and minimum required scopes through the target app's server-side secret
+store. Do not inspect the user's environment, dotfiles, keychain, browser data,
+or another credential source. Never put supplied values in generated source,
+chat, logs, fixtures, or version control.
 
 **Auth Routes (routes/auth.$.tsx - Catch-all route):**
 ```typescript
@@ -164,23 +168,21 @@ In Shopify Partner Dashboard:
 1. App Settings > API Credentials
 2. Select "Managed installation" under Admin API access scopes
 3. Merchant grants permission once
-4. Copy access token to your environment
-
-```bash
-# .env
-SHOPIFY_ADMIN_ACCESS_TOKEN=<SHOPIFY_ADMIN_ACCESS_TOKEN>
-SHOPIFY_SHOP_URL=example-shop.myshopify.com
-```
+4. Have the application operator place the store domain and long-lived
+   credential in the target application's server-only secret store.
 
 **Using Managed Installation Token:**
 ```typescript
 import { GraphQLClient } from 'graphql-request';
+import { getManagedInstallationConfig } from '~/lib/config.server';
+
+const managedConfig = getManagedInstallationConfig();
 
 const client = new GraphQLClient(
-  `https://${process.env.SHOPIFY_SHOP_URL}/admin/api/2026-07/graphql.json`,
+  `https://${managedConfig.storeDomain}/admin/api/2026-07/graphql.json`,
   {
     headers: {
-      'X-Shopify-Access-Token': process.env.SHOPIFY_ADMIN_ACCESS_TOKEN || '',
+      'X-Shopify-Access-Token': managedConfig.adminCredential,
     },
   }
 );
@@ -215,10 +217,11 @@ import axios from 'axios';
 import crypto from 'crypto';
 
 const app = express();
+const oauthConfig = getServerOnlyOAuthConfig();
 
-const API_KEY = process.env.SHOPIFY_API_KEY || '';
-const API_SECRET = process.env.SHOPIFY_API_SECRET || '';
-const REDIRECT_URI = process.env.REDIRECT_URI || 'https://your-app.com/auth/callback';
+const API_KEY = oauthConfig.publicAppKey;
+const API_SECRET = oauthConfig.privateAppSecret;
+const REDIRECT_URI = oauthConfig.redirectUri;
 const SCOPES = 'write_products,read_products';
 
 // Step 1: Redirect merchant to Shopify OAuth
@@ -490,7 +493,7 @@ export const loader = async ({ request }) => {
 
   const message = params.toString();
   const hash = crypto
-    .createHmac('sha256', process.env.SHOPIFY_API_SECRET || '')
+    .createHmac('sha256', getServerOnlyAppConfig().privateAppSecret)
     .update(message, 'utf8')
     .digest('base64');
 
@@ -608,14 +611,15 @@ export const webhooks = {
 **Get Customer Access Token (in Hydrogen/Storefront):**
 ```typescript
 // This is typically handled by Shopify's customer auth flow
-const customerAccessToken = 'shpuc_XXXXX'; // Provided by auth
+const customerAccessToken = await getAuthenticatedCustomerCredential(request);
+const storefrontConfig = getStorefrontServerConfig();
 
 const response = await fetch(
   `https://example-shop.myshopify.com/api/2026-07/graphql.json`,
   {
     method: 'POST',
     headers: {
-      'X-Shopify-Storefront-Access-Token': 'public-storefront-token',
+      'X-Shopify-Storefront-Access-Token': storefrontConfig.publicStorefrontCredential,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -691,7 +695,7 @@ allowedDomains = ["company-partner.myshopify.com"]
 | **Scope creep (requesting too many scopes)** | App rejected by Shopify; merchant distrust | Request only scopes needed; remove unused scopes from SCOPES array |
 | **Token stored in environment variable for multi-tenant** | Security breach; one merchant's token accessed by another | Use database storage (Prisma/Redis); one token per shop; index by shop domain |
 | **Webhook signature verified but not in constant-time** | Timing attacks; signature can be guessed | Use `crypto.timingSafeEqual()` for comparison; avoid simple `===` |
-| **Customer access token hardcoded** | Exposed in source code; customer data accessed | Never hardcode tokens; pass via environment variables or customer auth flow |
+| **Customer access token hardcoded** | Exposed in source code; customer data accessed | Never hardcode tokens; use a server-only configuration boundary or customer auth flow |
 
 ## Full Working Examples
 
@@ -710,7 +714,7 @@ my-app/
 ├── prisma/
 │   ├── schema.prisma
 │   └── migrations/
-├── .env (API keys)
+├── app/lib/config.server.ts (server-only configuration boundary)
 └── shopify.app.toml
 ```
 
@@ -724,12 +728,15 @@ scopes = "write_products,read_products,write_orders,read_orders"
 import { shopifyApp } from '@shopify/shopify-app-remix/server';
 import { PrismaSessionStorage } from '@shopify/shopify-app-session-storage-prisma';
 import { prisma } from '~/db.server';
+import { getServerOnlyAppConfig } from '~/lib/config.server';
+
+const appConfig = getServerOnlyAppConfig();
 
 export const shopify = shopifyApp({
-  apiKey: process.env.SHOPIFY_API_KEY,
-  apiSecret: process.env.SHOPIFY_API_SECRET,
-  scopes: process.env.SCOPES?.split(',') || [],
-  appUrl: process.env.SHOPIFY_APP_URL,
+  apiKey: appConfig.publicAppKey,
+  apiSecret: appConfig.privateAppSecret,
+  scopes: appConfig.scopes,
+  appUrl: appConfig.appUrl,
   auth: {
     path: '/auth',
     callbackPath: '/auth/callback',
@@ -902,7 +909,7 @@ export const loader = async ({ request }) => {
 
   const message = params.toString();
   const hash = crypto
-    .createHmac('sha256', process.env.SHOPIFY_API_SECRET || '')
+    .createHmac('sha256', getServerOnlyAppConfig().privateAppSecret)
     .update(message, 'utf8')
     .digest('base64');
 

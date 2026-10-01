@@ -60,6 +60,49 @@ shopify app --help
 | `shopify auth logout` | | Clear stored authentication |
 | `shopify auth login` | `--shop example.myshopify.com` | Authenticate with specific store |
 
+## Release target selection when more than one Shopify app exists
+
+Never assume that the default `shopify.app.toml`, a file named
+`shopify.app.production.toml`, or the currently open Developer Dashboard is the
+intended release target. A workspace can be linked to a standalone development
+app and a separate Partner-organization app at the same time.
+
+Before any deploy or release:
+
+1. Enumerate every `shopify.app*.toml` file in the repository.
+2. Run `shopify app info --config <file>` for each candidate and record its app
+   name, client ID, organization, development store, application URL, and
+   extensions.
+3. Read the active version with `shopify app versions list --config <file>`.
+4. Ask the user to resolve any remaining ambiguity. Do not choose a target from
+   a filename alone.
+5. Use an explicit `--config <file>` for every deploy and version-list command.
+
+For an embedded app, web hosting and the Shopify app version are one release
+unit. Before releasing a Shopify version, verify that the selected web domain
+serves the matching build and that `/auth/login?shop=<development-store>` sends
+the user to Shopify with the same client ID reported by `shopify app info`.
+After release, read back the active version and the live domain deployment.
+
+Example:
+
+```bash
+rg --files -g 'shopify.app*.toml'
+shopify app info --config shopify.app.toml
+shopify app info --config shopify.app.partner.toml
+shopify app versions list --config shopify.app.partner.toml
+shopify app deploy --config shopify.app.partner.toml \
+  --version release-2026-09-07 \
+  --allow-updates
+shopify app versions list --config shopify.app.partner.toml
+```
+
+If the intended target is a Partner-organization app, treat it as a live
+release boundary even if it is being tested on a development store: verify the
+web deployment, migrations, billing/auth behavior, and rollback reference
+before changing it. Never redirect a public application URL to a development
+runtime with different Shopify credentials.
+
 ## shopify app init Workflow (6-Step Process)
 
 ### Step 1: Launch Init Command
@@ -116,7 +159,7 @@ my-shopify-app/
 ├── shopify.app.toml              # App configuration (CRITICAL)
 ├── remix.config.js               # Remix build config
 ├── package.json                  # Dependencies
-├── .env.example                  # Environment template
+├── app/lib/config.server.ts      # Server-only configuration boundary
 ├── prisma/
 │   ├── schema.prisma            # Database schema
 │   └── migrations/              # Database migrations
@@ -152,12 +195,15 @@ import { shopifyApp } from "@shopify/shopify-app-remix/server";
 import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
 import { restResources } from "@shopify/shopify-api/rest/admin/2026-07";
 import { prisma } from "./db.server";
+import { getServerOnlyAppConfig } from "./config.server";
+
+const appConfig = getServerOnlyAppConfig();
 
 const shopify = shopifyApp({
-  apiKey: process.env.SHOPIFY_API_KEY!,
-  apiSecret: process.env.SHOPIFY_API_SECRET!,
-  scopes: (process.env.SCOPES || "").split(","),
-  host: process.env.HOST!,
+  apiKey: appConfig.publicAppKey,
+  apiSecret: appConfig.privateAppSecret,
+  scopes: appConfig.scopes,
+  host: appConfig.appUrl,
   isEmbeddedApp: false,
   sessionStorage: new PrismaSessionStorage(prisma),
   distribution: {
@@ -191,7 +237,7 @@ declare global {
   var __db: PrismaClient | undefined;
 }
 
-if (process.env.NODE_ENV === "production") {
+if (isProductionRuntime()) {
   prisma = new PrismaClient();
 } else {
   if (!global.__db) {
@@ -250,17 +296,13 @@ model Order {
 }
 ```
 
-### Environment Variables (.env)
+### Server-only configuration
 
-```env
-SHOPIFY_API_KEY=YOUR_API_KEY
-SHOPIFY_API_SECRET=YOUR_API_SECRET
-SHOPIFY_APP_ID=YOUR_APP_ID
-SCOPES=write_products,read_orders,write_inventory
-HOST=https://RANDOMHASH.lhr.life
-DATABASE_URL=file:./dev.db
-NODE_ENV=development
-```
+Create a typed server-only configuration boundary in the target application.
+Ask the application operator to provision the public app key, private app
+secret, database connection, app URL, and minimum required scopes in that
+application's approved deployment secret store. Do not search the agent host
+for values or place supplied values in project files, commands, logs, or chat.
 
 ### package.json (Key Dependencies)
 
@@ -525,7 +567,8 @@ Fix: Check spelling in scopes = "..." line (e.g., read_products)
 ```
 Error: HMAC verification failed
 ```
-Fix: Ensure webhook secret in handler matches SHOPIFY_API_SECRET in .env
+Fix: Ensure the webhook signing secret in the handler matches the server-only
+app configuration supplied by the application operator.
 
 ## Deployment Workflow
 
@@ -567,16 +610,16 @@ shopify app deploy --version 1.0.0
 shopify app release --version 1.0.0
 ```
 
-### Environment Management
+### Deployment configuration management
 
-Set environment variables in Partner dashboard:
-1. Go to App Settings → Environment Variables
-2. Add: WEBHOOK_QUEUE_URL, ANALYTICS_API_KEY, etc.
-3. Redeploy to apply
+1. Ask the application operator to configure the target deployment's approved
+   server-side configuration store.
+2. Use a typed configuration boundary in application code.
+3. Redeploy after the operator confirms the intended values are present.
 
-Access in code:
+Access the boundary in code:
 ```typescript
-const queueUrl = process.env.WEBHOOK_QUEUE_URL;
+const queueUrl = getServerOnlyAppConfig().webhookQueueUrl;
 ```
 
 ## Theme CLI
@@ -708,14 +751,14 @@ npm install @shopify/shopify-app-remix@^4.1.0
 npm run build
 ```
 
-### Error 2: "Invalid SHOPIFY_API_KEY or SHOPIFY_API_SECRET"
+### Error 2: "Invalid Shopify app configuration"
 
-**Cause:** Environment variables not set or incorrect
+**Cause:** Required server-side app settings are missing or incorrect
 
 **Fix:**
-1. Verify in .env: SHOPIFY_API_KEY=xxx and SHOPIFY_API_SECRET=yyy
-2. Check Partner dashboard App Credentials tab
-3. If using Codespace/CI: Add secrets to GitHub Secrets or deployment platform
+1. Ask the application operator to verify the configured values without sharing them.
+2. Check the Partner dashboard App Credentials tab for the app identity.
+3. In CI or hosted environments, use the provider's secret store rather than a checked-in file.
 
 ### Error 3: "Prisma: Could not find the 'libquery_engine' runtime"
 
@@ -856,9 +899,8 @@ cd my-app
 # 2. Install deps
 npm install
 
-# 3. Create .env
-cp .env.example .env
-# Edit .env: add SHOPIFY_API_KEY and SHOPIFY_API_SECRET from Partner dashboard
+# 3. Ask the application operator to configure the target app's server-side
+# settings through its approved secret store. Do not retrieve or paste values.
 
 # 4. Setup database
 npx prisma migrate dev --name "init"

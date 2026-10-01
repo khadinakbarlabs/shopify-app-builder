@@ -3,6 +3,9 @@ import { createServer } from "node:http";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 
 const MAX_REQUEST_BYTES = 64 * 1024;
+const REQUEST_TIMEOUT_MS = 15_000;
+const HEADERS_TIMEOUT_MS = 10_000;
+const KEEP_ALIVE_TIMEOUT_MS = 5_000;
 
 function sendJson(response, status, payload) {
   response.writeHead(status, {
@@ -63,5 +66,9 @@ export function createMcpRequestHandler({ createMcpServer, challengeToken = "" }
 }
 
 export function createMcpHttpServer(options) {
-  return createServer(createMcpRequestHandler(options));
+  const server = createServer(createMcpRequestHandler(options));
+  server.requestTimeout = REQUEST_TIMEOUT_MS;
+  server.headersTimeout = HEADERS_TIMEOUT_MS;
+  server.keepAliveTimeout = KEEP_ALIVE_TIMEOUT_MS;
+  return server;
 }

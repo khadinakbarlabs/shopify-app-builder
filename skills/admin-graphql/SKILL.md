@@ -33,9 +33,10 @@ Use **Admin GraphQL API** when you need to:
 
 **Authentication:**
 ```javascript
+const appConfig = getServerOnlyAppConfig();
 const headers = {
   'Content-Type': 'application/json',
-  'X-Shopify-Access-Token': process.env.SHOPIFY_ACCESS_TOKEN,
+  'X-Shopify-Access-Token': appConfig.adminCredential,
 };
 ```
 

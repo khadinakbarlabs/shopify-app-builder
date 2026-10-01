@@ -305,7 +305,7 @@ How to load App Bridge 4.x correctly:
 ```html
 <head>
   <!-- This MUST come before your bundle -->
-  <meta name="shopify-api-key" content="YOUR_API_KEY" />
+  <meta name="shopify-api-key" content="{{ appConfig.publicAppKey }}" />
   <script src="https://cdn.shopify.com/shopifycloud/app-bridge.js"></script>
   <!-- Then your app bundle -->
   <script type="module" src="/build/entry.js"></script>

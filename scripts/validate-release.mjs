@@ -171,6 +171,7 @@ export async function validateRelease(root) {
     "docs/release-notes-v1.4.1.md",
     "docs/release-notes-v1.4.2.md",
     "docs/release-notes-v1.5.0.md",
+    "docs/release-notes-v1.5.2.md",
     "GEMINI.md",
     "gemini-extension.json",
     "LICENSE",

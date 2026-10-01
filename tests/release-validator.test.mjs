@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import { readdir, readFile } from "node:fs/promises";
+import path from "node:path";
 import test from "node:test";
 
 import {
@@ -33,6 +35,18 @@ test("release scanner rejects additional common provider credentials", () => {
   assert.deepEqual(findForbiddenText(anthropicKey), ["Anthropic key"]);
   assert.deepEqual(findForbiddenText(googleKey), ["Google API key"]);
   assert.deepEqual(findForbiddenText(awsKey), ["AWS access key"]);
+});
+
+test("shipped skills do not instruct an agent to read local runtime secrets", async () => {
+  const skillsDirectory = "skills";
+  const entries = await readdir(skillsDirectory, { withFileTypes: true });
+
+  for (const entry of entries.filter((candidate) => candidate.isDirectory())) {
+    const skillPath = path.join(skillsDirectory, entry.name, "SKILL.md");
+    const skill = await readFile(skillPath, "utf8");
+    assert.doesNotMatch(skill, /process\.env|os\.getenv|os\.environ|Deno\.env|Bun\.env/,
+      `${skillPath} must use an explicit application configuration boundary`);
+  }
 });
 
 test("Agent Plugins manifest validator rejects nonportable schema fields", () => {

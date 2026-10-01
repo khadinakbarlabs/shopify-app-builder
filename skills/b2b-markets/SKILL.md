@@ -1344,7 +1344,7 @@ const fetchProducts = async (countryCode) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-Shopify-Storefront-Access-Token': 'your-token'
+      'X-Shopify-Storefront-Access-Token': getStorefrontServerConfig().privateStorefrontCredential
     },
     body: JSON.stringify({ query })
   });
@@ -1403,7 +1403,7 @@ export default async function handler(req, res) {
   // Verify webhook authenticity
   const message = body;
   const hash = crypto
-    .createHmac('sha256', process.env.SHOPIFY_WEBHOOK_SECRET)
+    .createHmac('sha256', getServerOnlyAppConfig().webhookSigningSecret)
     .update(message, 'utf8')
     .digest('base64');
 

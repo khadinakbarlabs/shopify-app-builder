@@ -15,11 +15,11 @@ You are scaffolding a new Shopify application. Follow these steps to create and 
    - Confirm package manager (npm/yarn/pnpm) based on store requirements
    - Reference skill: CLI scaffolding (01_cli_scaffolding.md)
 
-2. **Configure environment variables**
-   - Generate `.env` file with SHOPIFY_API_KEY, SHOPIFY_API_SECRET
-   - Add SCOPES (read_products, write_orders minimum)
-   - Set SHOP environment variable to [store-domain]
-   - Configure SHOPIFY_APP_URL for local ngrok tunneling
+2. **Configure server-only application settings**
+   - Ask the application operator to add the public app key and private app secret through the target app's approved secret store
+   - Add only the scopes the app needs (for example, read products and write orders)
+   - Record the store domain and public app URL in the application's deployment configuration
+   - Never inspect local credential files, shell variables, keychains, or browser storage; never write supplied values into source control
    - Reference skill: authentication patterns (04_functions_auth_billing_mcp.md)
 
 3. **Initialize local development**

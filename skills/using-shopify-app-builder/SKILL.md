@@ -41,6 +41,7 @@ Treat this skill as the router for the toolkit. Select focused skills before pro
 - Treat GraphQL HTTP success separately from GraphQL `errors`, mutation `userErrors`, and throttle metadata.
 - Verify webhooks with the raw request body and constant-time HMAC comparison.
 - Never expose, echo, commit, or publish tokens, app secrets, session data, `.env` contents, or personal filesystem paths.
+- The plugin has no credential requirement. When an implementation needs one, ask the application operator to configure it in the target app's approved server-side secret store; never inspect the agent host for it or generate a credential-bearing config file.
 - Do not deploy, publish, submit, alter billing, or enable paid advertising unless the user explicitly authorizes that action.
 - Preserve unrelated work in dirty repositories and avoid destructive cleanup.
 - Report live evidence for deployments and dashboard changes; source edits or a passing build alone are not proof of live success.

@@ -14,6 +14,16 @@ import { createShopifyAppBuilderServer } from "../src/server.mjs";
 const testDirectory = path.dirname(fileURLToPath(import.meta.url));
 const catalog = loadGuidanceCatalog({ skillsDirectory: path.resolve(testDirectory, "../../skills") });
 
+test("HTTP server bounds slow-client connection time", () => {
+  const httpServer = createMcpHttpServer({
+    createMcpServer: () => createShopifyAppBuilderServer(catalog),
+  });
+
+  assert.equal(httpServer.requestTimeout, 15_000);
+  assert.equal(httpServer.headersTimeout, 10_000);
+  assert.equal(httpServer.keepAliveTimeout, 5_000);
+});
+
 test("Streamable HTTP server exposes only the documented read-only tools", async () => {
   const httpServer = createMcpHttpServer({
     createMcpServer: () => createShopifyAppBuilderServer(catalog),

@@ -40,7 +40,7 @@ App Bridge 4.x is a **web components-first framework**. The major shift from 3.x
   <div id="app"></div>
 
   <script src="https://cdn.shopify.com/shopifycloud/app-bridge.js"
-          data-api-key="YOUR_PUBLIC_API_KEY"
+          data-api-key="{{ appConfig.publicAppKey }}"
           data-host="{{ request.host }}">
   </script>
 
@@ -65,7 +65,7 @@ npm install @shopify/app-bridge @shopify/app-bridge-react
 import { initializeApp } from '@shopify/app-bridge';
 
 const app = initializeApp({
-  apiKey: process.env.REACT_APP_SHOPIFY_API_KEY,
+  apiKey: getBrowserAppConfig().publicAppKey,
   host: new URLSearchParams(location.search).get('host'),
 });
 
@@ -397,7 +397,7 @@ async function validateSessionToken(req, res, next) {
       throw new Error('Invalid issuer');
     }
 
-    if (!decoded.aud || decoded.aud !== process.env.SHOPIFY_API_KEY) {
+    if (!decoded.aud || decoded.aud !== getServerOnlyAppConfig().publicAppKey) {
       throw new Error('Invalid audience');
     }
 
@@ -441,7 +441,7 @@ def validate_session_token(f):
             if not decoded.get('iss') or 'shopify.com' not in decoded['iss']:
                 raise ValueError('Invalid issuer')
 
-            if decoded.get('aud') != os.getenv('SHOPIFY_API_KEY'):
+            if decoded.get('aud') != get_server_only_app_config()['public_app_key']:
                 raise ValueError('Invalid audience')
 
             request.shop = decoded.get('dest')
@@ -471,7 +471,7 @@ def update_settings():
 <html>
 <body>
   <script src="https://cdn.shopify.com/shopifycloud/app-bridge.js"
-          data-api-key="pk_test_12345"
+          data-api-key="{{ appConfig.publicAppKey }}"
           data-host="example.myshopify.com">
   </script>
 

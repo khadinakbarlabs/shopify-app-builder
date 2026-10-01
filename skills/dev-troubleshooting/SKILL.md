@@ -145,7 +145,7 @@ import { Provider } from '@shopify/app-bridge-react';
 ```tsx
 <script
   src="https://cdn.shopify.com/shopifycloud/app-bridge.js"
-  data-api-key={process.env.SHOPIFY_API_KEY}
+  data-api-key={getBrowserAppConfig().publicAppKey}
 />
 ```
 

@@ -152,9 +152,10 @@ function verifyWebhookSignature(req, secret) {
 
 // Express middleware example
 app.use(express.raw({ type: 'application/json' }));
+const appConfig = getServerOnlyAppConfig();
 
 app.post('/webhooks/shopify', (req, res) => {
-  if (!verifyWebhookSignature(req, process.env.SHOPIFY_WEBHOOK_SECRET)) {
+  if (!verifyWebhookSignature(req, appConfig.webhookSigningSecret)) {
     return res.status(401).send('Unauthorized');
   }
 
@@ -457,7 +458,7 @@ export const action: ActionFunction = async ({ request }) => {
     return json({ error: 'Method not allowed' }, { status: 405 });
   }
 
-  if (!verifyWebhookSignature(request, process.env.WEBHOOK_SECRET!)) {
+  if (!verifyWebhookSignature(request, getServerOnlyAppConfig().webhookSigningSecret)) {
     return json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -523,7 +524,7 @@ export default async function handler(
   }
   (req as any).rawBody = Buffer.concat(chunks).toString('utf-8');
 
-  if (!verifySignature(req, process.env.WEBHOOK_SECRET!)) {
+  if (!verifySignature(req, getServerOnlyAppConfig().webhookSigningSecret)) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 

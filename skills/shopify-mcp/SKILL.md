@@ -11,44 +11,18 @@ Model Context Protocol (MCP) servers connect Claude to Shopify data and operatio
 
 Shopify Dev MCP is a read-only developer toolkit integrated into Claude Code. It provides access to admin APIs, schema introspection, development store management, and app testing utilities without building a custom MCP.
 
-### Installation and Setup
+### Installation and setup
 
-The Shopify Dev MCP is installed via command-line setup:
+Treat Shopify Dev MCP as a separately installed first-party integration. Before
+recommending it, direct the operator to Shopify's current official installation
+documentation and ask them to complete its interactive setup themselves. Do not
+run a package-manager bootstrap command from this skill, inspect an existing
+agent configuration, read a keychain or local credential source, or add a
+credential to configuration on the operator's behalf.
 
-```bash
-npx -y @shopify/dev-mcp setup
-```
-
-This command:
-1. Prompts for Shopify organization/store selection
-2. Creates a development app or reuses existing one
-3. Stores authentication tokens securely in system keychain
-4. Registers the MCP server in `~/.claude.json/mcpServers`
-5. Restarts Claude Code to load the new MCP
-
-No additional configuration is required post-setup. The MCP automatically handles token refresh and scope validation.
-
-### Claude Code Configuration
-
-After setup, `~/.claude.json/mcpServers` contains:
-
-```json
-{
-  "mcpServers": {
-    "shopify": {
-      "command": "npx",
-      "args": ["-y", "@shopify/dev-mcp", "run"],
-      "env": {
-        "SHOPIFY_AUTH_TOKEN": "shpat_...",
-        "SHOPIFY_STORE": "dev-store-name.myshopify.com",
-        "SHOPIFY_ORG_ID": "gid://shopify/Organization/12345"
-      }
-    }
-  }
-}
-```
-
-Manual configuration is unnecessary unless you need environment-specific tokens or custom server paths. For advanced setups (air-gapped networks, custom HTTP proxies), edit the env dict directly.
+After the operator connects the integration, use only the tools the host
+exposes. The integration should handle its own authorization, scope validation,
+and credential rotation; this plugin never needs a Shopify credential.
 
 ### Dev MCP Capabilities
 
@@ -93,8 +67,8 @@ query GetProductMetafields($id: ID!) {
 
 **App Testing Tool**
 - Trigger test webhooks (app/installed, app/uninstalled, orders/create)
-- List development app credentials
-- Rotate API credentials securely
+- Report app configuration metadata that the connected integration explicitly exposes
+- Direct credential rotation to the application operator in Shopify's dashboard
 - Simulate store events without live transactions
 
 **Schema Browser Tool**
@@ -552,25 +526,13 @@ export async function handleInventoryTool(
 }
 ```
 
-### Registering Custom MCP in Claude Code
+### Registering a custom MCP
 
-Add to `~/.claude.json/mcpServers`:
-
-```json
-{
-  "mcpServers": {
-    "shopify-inventory": {
-      "command": "node",
-      "args": ["path/to/shopify-app-mcp/stdio.mjs"],
-      "env": {
-        "SHOPIFY_ACCESS_TOKEN": "shpat_...",
-        "SHOPIFY_SHOP": "mystore.myshopify.com",
-        "DATABASE_URL": "postgres://..."
-      }
-    }
-  }
-}
-```
+Use the target harness's current MCP configuration documentation. Have the
+operator create the server entry and store any server-only values in that
+harness's approved secret mechanism. This plugin must not generate, edit, or
+inspect a local agent configuration, and it must never include example
+credentials in a configuration snippet.
 
 ## Agentic Commerce: AI-Powered Shopping
 

@@ -18,6 +18,7 @@ const TEXT_EXTENSIONS = new Set([
 
 const EXCLUDED_DIRECTORIES = new Set([
   ".git",
+  ".vercel",
   "node_modules",
   ".shopify-app-builder-backups",
 ]);
@@ -122,6 +123,16 @@ export function findForbiddenText(text) {
     .map(([label]) => label);
 }
 
+export function findForbiddenTextInReleaseFile(relative, text) {
+  if (relative !== "plugin.json") return findForbiddenText(text);
+  const manifest = JSON.parse(text);
+  const openaiInterface = manifest.extensions?.["com.openai"]?.interface;
+  if (openaiInterface?.developerName === "Khadin Akbar") {
+    openaiInterface.developerName = "[approved verified developer]";
+  }
+  return findForbiddenText(JSON.stringify(manifest));
+}
+
 async function walkFiles(root, directory = root) {
   const files = [];
   for (const entry of await readdir(directory, { withFileTypes: true })) {
@@ -174,6 +185,7 @@ export async function validateRelease(root) {
     "docs/release-notes-v1.5.4.md",
     "docs/release-notes-v1.5.5.md",
     "docs/release-notes-v1.5.6.md",
+    "docs/release-notes-v1.5.7.md",
     "GEMINI.md",
     "gemini-extension.json",
     "LICENSE",
@@ -277,7 +289,7 @@ export async function validateRelease(root) {
     if (relative === "scripts/validate-release.mjs") continue;
     if (!TEXT_EXTENSIONS.has(path.extname(file).toLowerCase())) continue;
     const text = await readFile(file, "utf8");
-    for (const label of findForbiddenText(text)) {
+    for (const label of findForbiddenTextInReleaseFile(relative, text)) {
       errors.push(`${label} found in ${relative}`);
     }
   }

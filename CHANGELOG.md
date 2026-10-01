@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.7 - 2026-10-01
+
+- Fixed the hosted MCP function bundle so production requests can initialize and use all three guidance tools. The npm skill installer remains dependency-free.
+- Updated the MCP SDK and runtime dependencies; dependency audits report no known findings for the public package or MCP server at release time.
+- Declared the public MCP endpoint for Agent Plugins and Codex clients and added OpenAI listing, test-case, and release metadata to the portable manifest.
+- Packaged the existing square brand artwork referenced by the OpenAI listing metadata.
+- Kept domain-verification material outside the public repository; a deployment operator must serve any portal-provided verification response separately.
+
 ## 1.5.6 - 2026-10-01
 
 - Clarified theme schema setting identifiers and synthetic security-test fixtures so directory analysis does not confuse them with installer credentials. Existing validation behavior and secret-detection coverage are preserved.

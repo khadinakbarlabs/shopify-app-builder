@@ -6,6 +6,7 @@ import test from "node:test";
 import {
   AGENT_PLUGINS_SCHEMA,
   findForbiddenText,
+  findForbiddenTextInReleaseFile,
   validateAgentPluginManifest,
 } from "../scripts/validate-release.mjs";
 
@@ -24,6 +25,23 @@ test("release scanner permits explicit credential placeholders", () => {
   assert.deepEqual(
     findForbiddenText("SHOPIFY_API_SECRET=<SHOPIFY_API_SECRET>"),
     [],
+  );
+});
+
+test("release scanner permits only the approved OpenAI developer identity field", () => {
+  const approvedName = ["Khadin", "Akbar"].join(" ");
+  const manifest = {
+    extensions: { "com.openai": { interface: { developerName: approvedName } } },
+  };
+  assert.deepEqual(findForbiddenTextInReleaseFile("plugin.json", JSON.stringify(manifest)), []);
+  assert.deepEqual(
+    findForbiddenTextInReleaseFile("README.md", JSON.stringify(manifest)),
+    ["personal publisher identity"],
+  );
+  manifest.other = approvedName;
+  assert.deepEqual(
+    findForbiddenTextInReleaseFile("plugin.json", JSON.stringify(manifest)),
+    ["personal publisher identity"],
   );
 });
 

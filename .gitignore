@@ -1,4 +1,6 @@
 node_modules/
+/package-lock.json
+api/_mcp-bundle.cjs
 *.tgz
 coverage/
 # Exclude private local configuration and tool metadata by default.
@@ -6,6 +8,7 @@ coverage/
 # Keep the reviewed, portable plugin and CI metadata.
 !/.gitignore
 !.npmignore
+!/.mcp.json
 !/.agents/
 !/.claude-plugin/
 !/.codex/
@@ -13,3 +16,5 @@ coverage/
 !/.cursor-plugin/
 !/.github/
 !/.opencode/
+!/api/.npmignore
+!/public/.gitkeep

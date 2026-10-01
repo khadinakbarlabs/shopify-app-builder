@@ -152,7 +152,7 @@ The npm installer copies only bundled skill directories. It has no runtime depen
 
 The repository root is directly installable as a portable Agent Plugins package by clients that support the 1.0 format. Point the client at this checkout or a downloaded release directory; it discovers [`plugin.json`](plugin.json) first and then the immediate skill directories under [`skills/`](skills/). Installation UX is intentionally client-owned by the standard, so use the client’s documented directory/plugin installation command.
 
-The portable core contains no MCP server configuration, no credential references, and no client-specific command, hook, or agent contract. That keeps the common surface useful to any Agent Plugins client while the native adapters retain each harness’s richer features.
+The portable package also declares the public, read-only MCP endpoint in [`mcp.json`](mcp.json). Clients that support Agent Plugins MCP discovery can connect to it for guidance search, document retrieval, and phased planning. Installation does not start a local server or request Shopify credentials. Codex uses the matching [`.mcp.json`](.mcp.json) adapter; the native Claude bundle continues to use its own manifest and skills.
 
 ### Clone or download
 

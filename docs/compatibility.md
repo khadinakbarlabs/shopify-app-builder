@@ -10,8 +10,8 @@ Shopify App Builder follows the Agent Plugins 1.0 package model: a root portable
 | Portable identity | `shopify-app-builder` is lowercase, hyphenated, 19 characters, and matches the npm package name. | Release validation compares `plugin.json` with `package.json`. |
 | Fixed skills location | All 32 skills live at `skills/<skill-name>/SKILL.md`. | Release validation checks every immediate skill directory and its frontmatter name. |
 | Package containment | The release validator rejects symlinks anywhere in public source. | `npm run validate` walks the package before publication. |
-| Optional MCP | None. The portable package does not ship `mcp.json`, remote headers, or credential references. | No MCP process or network connection is created by installation. |
-| Client extensions | None are claimed by the portable manifest. | Native adapters remain separate distribution artifacts and are documented below. |
+| Optional MCP | Root [`mcp.json`](../mcp.json) declares one public Streamable HTTP server without credentials or custom headers. | A compatible client can connect to three read-only guidance tools; installation creates no local MCP process. |
+| Client extensions | `extensions.com.openai` provides OpenAI listing and review metadata. | Native adapters remain separate distribution artifacts and are documented below. |
 
 Agent Plugins deliberately leaves distribution, permissions, installation, and user experience to each client. A successful manifest check means a client can identify the portable skills; it does not imply that every client supports every native adapter or automatically triggers every skill.
 
@@ -19,9 +19,9 @@ Agent Plugins deliberately leaves distribution, permissions, installation, and u
 
 | Agent or harness | Native package surface | Portable project directory | Portable global directory | Components |
 | --- | --- | --- | --- | --- |
-| Agent Plugins-compatible client | Root `plugin.json` plus `skills/` | Client-defined | Client-defined | 32 Agent Skills; no portable MCP server |
+| Agent Plugins-compatible client | Root `plugin.json`, `mcp.json`, and `skills/` | Client-defined | Client-defined | 32 Agent Skills and one remote guidance MCP server |
 | Claude Code | `.claude-plugin/plugin.json` and marketplace | `.claude/skills/` | `~/.claude/skills/` | Skills, commands, specialist agents |
-| Codex | `.codex-plugin/plugin.json` and `.agents/plugins/marketplace.json` | `.agents/skills/` | `~/.codex/skills/` | Skills and Codex plugin metadata |
+| Codex | `.codex-plugin/plugin.json`, `.mcp.json`, and `.agents/plugins/marketplace.json` | `.agents/skills/` | `~/.codex/skills/` | Skills and the remote guidance MCP server |
 | Cursor | `.cursor-plugin/plugin.json` | `.agents/skills/` | `~/.cursor/skills/` | Skills; manifest also declares commands and agents for compatible plugin installs |
 | Gemini CLI | `gemini-extension.json` and `GEMINI.md` | `.gemini/skills/` | `~/.gemini/skills/` | Extension context and shared skills |
 | OpenCode | `.opencode/plugins/shopify-app-builder.js` | `.opencode/skills/` | `~/.config/opencode/skills/` | Native skill-path registration or copied skills |
@@ -36,7 +36,7 @@ Native plugin support means the repository includes the harness's manifest and p
 
 Portable skill support means the harness can read one directory per skill with a `SKILL.md` file and matching YAML `name`. Automatic triggering varies by harness; explicitly invoke `using-shopify-app-builder` when needed.
 
-Claude-specific command and agent definitions are not represented as native Codex, OpenCode, Command Code, or generic Agent Skills components. Those harnesses receive the same domain knowledge through the 32 canonical skills without pretending that harness-specific orchestration primitives are interchangeable. The root `plugin.json` contains only Agent Plugins fields; it does not embed any vendor-native manifest fields.
+Claude-specific command and agent definitions are not represented as native Codex, OpenCode, Command Code, or generic Agent Skills components. Those harnesses receive the same domain knowledge through the 32 canonical skills without pretending that harness-specific orchestration primitives are interchangeable. The root `plugin.json` contains only Agent Plugins fields; OpenAI-specific listing data is isolated under its standard extension namespace.
 
 ## Installation strategy
 

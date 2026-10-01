@@ -35,7 +35,7 @@ docker build -f mcp-server/Dockerfile -t shopify-app-builder-mcp .
 docker run --rm -p 3000:3000 shopify-app-builder-mcp
 ```
 
-This repository also includes a Vercel adapter. From the repository root, use `vercel --prod`; it installs the nested server dependencies and exposes `/mcp` and `/health`. The public plugin runtime does not read or serve credentials or domain-verification values.
+This repository also includes a Vercel adapter. From the repository root, use `vercel --prod`; the build installs the nested server dependencies, bundles them into the function, and exposes `/mcp` and `/health`. The public plugin runtime does not read or serve credentials or domain-verification values. Verify an MCP `initialize` request after deployment; the health endpoint alone does not prove the function bundle contains its dependencies.
 
 Deploy that image to a stable HTTPS origin and submit the resulting `https://your-domain.example/mcp` endpoint with **With MCP** in the OpenAI plugin portal. A localhost server or temporary tunnel is suitable for development only, not directory review.
 

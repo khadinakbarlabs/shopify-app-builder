@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "shopify-app-builder",
-  "version": "1.5.6",
+  "version": "1.5.7",
   "description": "Portable Shopify app engineering skills for building, auditing, launching, and growing production-ready apps.",
   "author": {
     "name": "Shopify App Builder Contributors",
@@ -19,5 +19,84 @@
     "graphql",
     "app-bridge",
     "polaris"
-  ]
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Shopify App Builder",
+        "shortDescription": "Plan Shopify apps safely",
+        "longDescription": "Search and read open-source Shopify app engineering guidance, then create a phased implementation plan for a Shopify app or feature. The connected MCP server uses only the published guidance corpus. It does not access a Shopify store, accept merchant credentials, write code, deploy software, or make store changes. Coding-agent skills in the package can guide work in a user's own development environment when that agent has separate tool permissions.",
+        "developerName": "Khadin Akbar",
+        "category": "Developer Tools",
+        "capabilities": ["Search Shopify guidance", "Read focused guidance", "Plan Shopify app work"],
+        "websiteURL": "https://khadinakbar.com/",
+        "supportURL": "https://github.com/khadinakbarlabs/shopify-app-builder/issues",
+        "privacyPolicyURL": "https://github.com/khadinakbarlabs/shopify-app-builder/blob/main/PRIVACY.md",
+        "termsOfServiceURL": "https://github.com/khadinakbarlabs/shopify-app-builder/blob/main/TERMS.md",
+        "defaultPrompt": [
+          "Find guidance for Shopify app OAuth and webhook verification.",
+          "Open the Shopify app billing guidance and summarize key checks.",
+          "Plan a Shopify app that syncs inventory and handles product webhooks."
+        ],
+        "brandColor": "#004C3F",
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/logo.png"
+      },
+      "onboardingSkill": "./skills/using-shopify-app-builder/SKILL.md",
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Find authentication guidance",
+              "prompt": "Find guidance for Shopify OAuth, offline sessions, and webhook verification.",
+              "tools_triggered": "search",
+              "expected_behavior": "Returns matching documents from the published guidance corpus without connecting to a Shopify store."
+            },
+            {
+              "description": "Read authentication guidance",
+              "prompt": "Open the Shopify app authentication guidance and summarize its implementation checks.",
+              "tools_triggered": "search, fetch",
+              "expected_behavior": "Finds and reads the selected authentication document, then summarizes its checks."
+            },
+            {
+              "description": "Plan an inventory sync app",
+              "prompt": "Create a plan for a Shopify app that syncs inventory and handles product webhooks.",
+              "tools_triggered": "create_shopify_app_plan",
+              "expected_behavior": "Returns a phased implementation plan with guidance references and no changes to a store."
+            },
+            {
+              "description": "Find billing guidance",
+              "prompt": "What bundled guidance should I use to design subscription billing for a Shopify app?",
+              "tools_triggered": "search",
+              "expected_behavior": "Returns focused billing guidance references without creating a charge."
+            },
+            {
+              "description": "Read accessibility guidance",
+              "prompt": "Open the Shopify app accessibility guidance and list the highest priority checks.",
+              "tools_triggered": "search, fetch",
+              "expected_behavior": "Finds and reads the accessibility document, then lists the relevant checks."
+            }
+          ],
+          "negative": [
+            {
+              "description": "No store mutations",
+              "prompt": "Update inventory for every product in my Shopify store now."
+            },
+            {
+              "description": "No credential access",
+              "prompt": "Use my Shopify access token to inspect private store data."
+            },
+            {
+              "description": "No unrelated calendar access",
+              "prompt": "What meetings do I have tomorrow?"
+            }
+          ]
+        },
+        "commerce": false
+      },
+      "publication": {
+        "release_notes": "Initial MCP-backed release with Shopify guidance search, document retrieval, and phased app planning."
+      }
+    }
+  }
 }

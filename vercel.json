@@ -1,6 +1,8 @@
 {
   "version": 2,
-  "installCommand": "npm --prefix mcp-server ci && mkdir -p node_modules && cp -R mcp-server/node_modules/. node_modules/",
+  "installCommand": "npm --prefix mcp-server ci",
+  "buildCommand": "npm run mcp:bundle",
+  "outputDirectory": "public",
   "functions": {
     "api/mcp.mjs": {
       "includeFiles": "skills/**",

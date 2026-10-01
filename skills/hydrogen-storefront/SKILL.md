@@ -83,21 +83,20 @@ application owner and hosting platform.
 
 ## Storefront API Client
 
-### Initialize & Query
+### Use Hydrogen's request-scoped Storefront client
 
 ```typescript
-// app/lib/shopify.server.ts
-import { createStorefrontClient } from '@shopify/hydrogen';
-import { getStorefrontServerConfig } from '~/lib/config.server';
-
-const storefrontConfig = getStorefrontServerConfig();
-
-export const storefront = createStorefrontClient({
-  apiUrl: `https://${storefrontConfig.storeDomain}/api/2024-01/graphql.json`,
-  apiVersion: '2024-01',
-  privateStorefrontToken: storefrontConfig.privateStorefrontCredential,
-});
+// app/routes/products.$handle.tsx
+export async function loader({params, context}: LoaderFunctionArgs) {
+  const product = await context.storefront.query(PRODUCT_QUERY, {
+    variables: {handle: params.handle},
+  });
+  if (!product.product) throw new Response('Not found', {status: 404});
+  return product;
+}
 ```
+
+Hydrogen supplies `context.storefront` per request. Keep its credentials in the deployment's server-only configuration; never compose an API URL from an unvalidated store domain or pass a customer credential to it.
 
 ### Fetch Product Details
 
@@ -105,7 +104,6 @@ export const storefront = createStorefrontClient({
 // app/routes/products/$handle.tsx
 import { json, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
 import { useLoaderData } from '@remix-run/react';
-import { storefront } from '~/lib/shopify.server';
 
 const PRODUCT_QUERY = `
   query getProduct($handle: String!) {
@@ -159,7 +157,7 @@ const PRODUCT_QUERY = `
 `;
 
 export async function loader({ params, context }: LoaderFunctionArgs) {
-  const { product } = await storefront.query(PRODUCT_QUERY, {
+  const { product } = await context.storefront.query(PRODUCT_QUERY, {
     variables: { handle: params.handle },
     cache: context.storefront.CacheShort(),
   });
@@ -440,174 +438,51 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
 ### Enable & Setup
 
-Keep the Customer Account endpoint and private client credential in the same
-server-only configuration boundary. Request the values from the application
-operator only when implementing the integration; never retrieve them from the
-agent host.
+Configure Customer Account API for the storefront using Shopify's Hydrogen setup. The Customer Account client is separate from the Storefront API client. Let Hydrogen handle login, authorization, credential refresh, and logout rather than accepting passwords in a custom form or storing customer tokens manually.
 
 ### Customer Login & Auth
 
 ```typescript
-// app/routes/account/login.tsx
-import { redirect } from '@shopify/remix-oxygen';
+// app/routes/account_.login.tsx
+import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
-export async function loader({ context }: LoaderFunctionArgs) {
-  const customerAccessToken = await getCustomerAccessToken(context);
-  if (customerAccessToken) {
-    return redirect('/account/profile');
-  }
-  return null;
+export async function loader({context}: LoaderFunctionArgs) {
+  return context.customerAccount.login();
 }
-
-export async function action({ request, context }: ActionFunctionArgs) {
-  if (request.method === 'POST') {
-    const formData = await request.formData();
-    const email = formData.get('email');
-    const password = formData.get('password');
-
-    const { customerAccessToken, customerUserErrors } =
-      await context.storefront.mutate(CUSTOMER_LOGIN_MUTATION, {
-        variables: { email, password },
-      });
-
-    if (customerAccessToken?.accessToken) {
-      // Store token in session
-      const session = await getSession(request.headers.get('cookie'));
-      session.set('customerAccessToken', customerAccessToken.accessToken);
-      return redirect('/account/profile', {
-        headers: { 'Set-Cookie': await commitSession(session) },
-      });
-    }
-
-    return json({ errors: customerUserErrors });
-  }
-}
-
-export default function LoginPage() {
-  return (
-    <form method="post">
-      <input type="email" name="email" placeholder="Email" required />
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        required
-      />
-      <button type="submit">Sign In</button>
-    </form>
-  );
-}
-
-const CUSTOMER_LOGIN_MUTATION = `
-  mutation customerAccessTokenCreate(
-    $input: CustomerAccessTokenCreateInput!
-  ) {
-    customerAccessTokenCreate(input: $input) {
-      customerAccessToken {
-        accessToken
-        expiresAt
-      }
-      customerUserErrors {
-        code
-        field
-        message
-      }
-    }
-  }
-`;
 ```
+
+Register a callback route that calls `context.customerAccount.authorize()` using the current Hydrogen starter's route conventions. Follow Shopify's [Customer Account API with Hydrogen](https://shopify.dev/docs/storefronts/headless/building-with-the-customer-account-api/hydrogen) for the callback and logout route details.
 
 ### Fetch Customer Profile
 
 ```typescript
-// app/routes/account/profile.tsx
+// app/routes/account.tsx
+import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+
 const CUSTOMER_QUERY = `
-  query getCustomer($customerAccessToken: String!) {
-    customer(customerAccessToken: $customerAccessToken) {
-      id
-      email
+  query CustomerProfile {
+    customer {
       firstName
       lastName
-      phone
-      defaultAddress {
-        id
-        formatted
-        address1
-        address2
-        city
-        province
-        country
-        zip
-      }
-      orders(first: 10) {
-        edges {
-          node {
-            id
-            orderNumber
-            processedAt
-            totalPriceSet {
-              shopMoney {
-                amount
-                currencyCode
-              }
-            }
-            lineItems(first: 5) {
-              edges {
-                node {
-                  title
-                  quantity
-                  originalTotalSet {
-                    shopMoney {
-                      amount
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
     }
   }
 `;
 
-export async function loader({ request, context }: LoaderFunctionArgs) {
-  const session = await getSession(request.headers.get('cookie'));
-  const customerAccessToken = session.get('customerAccessToken');
-
-  if (!customerAccessToken) {
-    return redirect('/account/login');
+export async function loader({context}: LoaderFunctionArgs) {
+  const {data, errors} = await context.customerAccount.query(CUSTOMER_QUERY);
+  if (errors?.length || !data?.customer) {
+    throw new Response('Customer profile unavailable', {status: 502});
   }
-
-  const { customer } = await context.storefront.query(CUSTOMER_QUERY, {
-    variables: { customerAccessToken },
-    cache: context.storefront.CacheShort(),
+  return json({customer: data.customer}, {
+    headers: {
+      'Set-Cookie': await context.session.commit(),
+      'Cache-Control': 'private, no-store',
+    },
   });
-
-  return json({ customer });
-}
-
-export default function ProfilePage() {
-  const { customer } = useLoaderData<typeof loader>();
-
-  return (
-    <div>
-      <h1>Welcome, {customer.firstName}</h1>
-      <p>Email: {customer.email}</p>
-      <p>Phone: {customer.phone}</p>
-      <h2>Recent Orders</h2>
-      <ul>
-        {customer.orders.edges.map(({ node: order }) => (
-          <li key={order.id}>
-            Order #{order.orderNumber} - $
-            {order.totalPriceSet.shopMoney.amount}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
 }
 ```
+
+Do not cache personalized customer responses in a public Storefront API cache.
 
 ---
 
@@ -687,28 +562,11 @@ hydrogen deploy --logs
 
 ### Configuration
 
-```typescript
-// hydrogen.config.ts
-import { defineConfig } from '@shopify/hydrogen/config';
-
-export default defineConfig({
-  storefront: {
-    id: 'your-storefront-id',
-    title: 'My Store',
-    apiUrl: 'https://your-store.myshopify.com/api/2024-01/graphql.json',
-  },
-  oxygen: {
-    preloadRequestCookie: [],
-  },
-});
-```
+Start from the current Hydrogen starter configuration. Configure the store connection and Customer Account API using Shopify's setup flow, then keep server-only values in the deployment secret store.
 
 ### Environment Variables in Oxygen
 
-Set via dashboard or CLI:
-```bash
-hydrogen deploy --set PRIVATE_STOREFRONT_API_TOKEN=token_value
-```
+Set sensitive values in Oxygen's secret management UI or another approved server-side secret store. Never place a real credential on a command line, in a deploy script, or in version control.
 
 ---
 

@@ -1,6 +1,6 @@
 {
   "name": "shopify-app-builder",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "Open-source Shopify app development guidance for AI coding agents, with a read-only MCP server and native agent plugins.",
   "type": "module",
   "main": ".opencode/plugins/shopify-app-builder.js",

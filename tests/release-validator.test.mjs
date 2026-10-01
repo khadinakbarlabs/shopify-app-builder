@@ -49,6 +49,17 @@ test("shipped skills do not instruct an agent to read local runtime secrets", as
   }
 });
 
+test("authentication guidance does not interpolate credentials into queries or trust substring shop validation", async () => {
+  const appAuth = await readFile("skills/app-auth/SKILL.md", "utf8");
+  const hydrogen = await readFile("skills/hydrogen-storefront/SKILL.md", "utf8");
+
+  assert.doesNotMatch(appAuth, /customer\(customerAccessToken:\s*"\$\{/);
+  assert.doesNotMatch(appAuth, /\.includes\(['"]\.myshopify\.com['"]\)/);
+  assert.match(appAuth, /context\.customerAccount\.query/);
+  assert.match(hydrogen, /context\.customerAccount\.query/);
+  assert.doesNotMatch(hydrogen, /hydrogen deploy --set PRIVATE_STOREFRONT_API_TOKEN/);
+});
+
 test("Agent Plugins manifest validator rejects nonportable schema fields", () => {
   assert.deepEqual(
     validateAgentPluginManifest({

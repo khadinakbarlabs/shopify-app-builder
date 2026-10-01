@@ -72,7 +72,6 @@ theme/
 ├── assets/                  # CSS, JS, images, fonts
 │   ├── base.css
 │   ├── custom.js
-│   └── logo.png
 ├── config/
 │   ├── settings_schema.json # Theme-wide settings
 │   └── settings_data.json   # Store settings values

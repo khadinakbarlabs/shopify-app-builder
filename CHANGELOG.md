@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.3 - 2026-10-01
+
+- Removed unsafe hand-written OAuth example that accepted shop domains by substring and sent an app secret to a constructed URL.
+- Replaced customer-token interpolation and legacy password-token flows with Hydrogen's Customer Account client.
+- Removed command-line secret examples and unnecessary credential-adjacent remote URL examples from shared skills.
+- Kept brand PNG assets as inert images required by the Codex manifest; directory asset warnings still require marketplace review.
+- Added authentication-guidance regression coverage and synchronized agent/MCP manifest versions.
+
 ## 1.5.2 - 2026-10-01
 
 - Replaced shipped credential-like examples and host environment reads in the shared skills corpus with explicit, server-only application configuration boundaries.

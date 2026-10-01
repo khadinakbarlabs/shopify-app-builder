@@ -22,38 +22,13 @@ App Bridge 4.x is a **web components-first framework**. The major shift from 3.x
 - **Native web components** — built-in elements like `<ui-modal>`, `<ui-save-bar>`, `<ui-toast>` instead of React/Vue wrappers
 - **shopify global object** — replaces AppBridge context; provides toast(), modal(), navigate(), loading(), idToken(), etc.
 - **Session tokens** — automatic JWT exchange for backend authentication
-- **CDN-first delivery** — loaded via script tag with data-api-key; works in any HTML/framework
+- **Shopify-managed delivery** — current Shopify CLI templates load App Bridge for embedded apps
 
 ## Installation & CDN Setup
 
-### CDN Script (Recommended for Admin Apps)
+### Loading App Bridge
 
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shopify Admin App</title>
-</head>
-<body>
-  <div id="app"></div>
-
-  <script src="https://cdn.shopify.com/shopifycloud/app-bridge.js"
-          data-api-key="{{ appConfig.publicAppKey }}"
-          data-host="{{ request.host }}">
-  </script>
-
-  <script>
-    // shopify global object is now available
-    console.log(shopify);
-  </script>
-</body>
-</html>
-```
-
-**data-api-key**: Your Shopify public app API key (from shopify.app configuration)
-**data-host**: Base64-encoded host parameter (usually `{{ request.host }}` in server templates)
+Use the current Shopify CLI app template, which adds App Bridge to embedded apps. If integrating it manually, follow [Shopify's App Bridge setup](https://shopify.dev/docs/api/app-home/latest/app-bridge-web-components) for the current script, public API key metadata, and content security policy. Loading Shopify's script is separate from sending an ID token to your own authenticated API routes; never put a session token into a third-party script URL or query parameter.
 
 ### npm Package (for React/Node.js apps)
 
@@ -470,10 +445,7 @@ def update_settings():
 <!DOCTYPE html>
 <html>
 <body>
-  <script src="https://cdn.shopify.com/shopifycloud/app-bridge.js"
-          data-api-key="{{ appConfig.publicAppKey }}"
-          data-host="example.myshopify.com">
-  </script>
+  <!-- App Bridge is loaded by the Shopify CLI app template. -->
 
   <ui-title-bar>
     <h1 slot="title">Product Settings</h1>

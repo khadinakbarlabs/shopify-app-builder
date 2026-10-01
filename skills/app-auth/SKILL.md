@@ -5,24 +5,22 @@ description: "Implement OAuth 2.0, Token Exchange, Managed Installation, App Pro
 
 # Shopify App Authentication
 
-Shopify provides multiple authentication flows depending on your app type and use case. The modern standard is **Token Exchange** (2024+) for server-rendered apps, **Managed Installation** for headless apps, and **OAuth 2.0 Authorization Code Grant** for legacy/custom implementations. All flows result in an access token for the Shopify GraphQL Admin API.
+Shopify provides different authentication flows for embedded and non-embedded apps. Use Shopify's maintained app package and its authenticated API clients; never implement a token exchange or callback by copying a sketch. Request only the scopes an app actually needs.
 
 ## Authentication Flows Overview
 
 ### 1. Token Exchange (Recommended for 2024+)
 
-**Use Case:** Server-rendered apps (Remix, Next.js with SSR), Shopify CLI apps
-**Flow:** Merchant installs app → Shopify generates temporary exchange token → App exchanges for access token
-**Security:** No client secret exposed; uses PKCE-style rotation per request
-**Token Lifetime:** Access tokens are short-lived; refresh tokens rotate automatically
+**Use Case:** Embedded apps launched from Shopify Admin.
+**Flow:** App Bridge obtains a session token; the server validates it and exchanges it for the required online or offline Admin API access token through Shopify's maintained app library.
+**Security:** Keep the app secret and Admin API tokens server-side. Session tokens and Admin API access tokens are distinct.
 
 **Token Exchange Diagram:**
 ```
-1. Merchant clicks "Install" in Shopify Admin
-2. Shopify redirects: https://your-app.com/auth/callback?code=EXCHANGE_TOKEN
-3. App validates HMAC, exchanges code for access token (private, server-side only)
-4. Shopify Admin API grants scopes; token stored in session/database
-5. Token auto-refreshes on next request if expired
+1. Merchant grants the app's configured scopes during installation.
+2. The embedded app obtains an App Bridge session token.
+3. The server authenticates the request and uses Shopify's library for token exchange.
+4. An authenticated Admin API client makes the scoped request.
 ```
 
 **Remix Implementation (Token Exchange):**
@@ -40,20 +38,7 @@ const appConfig = getServerOnlyAppConfig();
 const shopify = shopifyApp({
   apiKey: appConfig.publicAppKey,
   apiSecret: appConfig.privateAppSecret,
-  scopes: appConfig.scopes ?? [
-    'write_products',
-    'read_products',
-    'write_orders',
-    'read_orders',
-    'write_customers',
-    'read_customers',
-    'write_discounts',
-    'read_discounts',
-    'write_fulfillments',
-    'read_fulfillments',
-    'write_inventory',
-    'read_inventory',
-  ],
+  scopes: appConfig.scopes, // Configure only the scopes the app actually needs.
   appUrl: appConfig.appUrl,
   auth: {
     path: '/auth',
@@ -107,16 +92,14 @@ export const loader = async ({ request }) => {
 };
 ```
 
-**Using Token in API Calls (routes/app.products.tsx):**
+**Using the authenticated Admin API client (routes/app.products.tsx):**
 ```typescript
 import { json } from '@shopify/remix-oxygen';
 import { authenticate } from '~/shopify.server';
-import { GraphQLClient } from 'graphql-request';
 
 export const loader = async ({ request }) => {
-  const { session, admin } = await authenticate.admin(request);
+  const { admin } = await authenticate.admin(request);
 
-  // Method 1: Use Shopify's admin helper (recommended)
   const response = await admin.graphql(`
     query GetProducts {
       products(first: 10) {
@@ -131,20 +114,9 @@ export const loader = async ({ request }) => {
     }
   `);
 
-  // Method 2: Manual GraphQL call
-  const client = new GraphQLClient(
-    `https://${session.shop}/admin/api/2026-07/graphql.json`,
-    {
-      headers: {
-        'X-Shopify-Access-Token': session.accessToken,
-        'Content-Type': 'application/json',
-      },
-    }
-  );
-
-  const data = await client.request(/* ... */);
-
-  return json({ products: response.data?.products?.edges || [] });
+  const { data, errors } = await response.json();
+  if (errors?.length) throw new Response('Products unavailable', { status: 502 });
+  return json({ products: data?.products?.edges ?? [] });
 };
 ```
 
@@ -155,12 +127,10 @@ Token Exchange tokens auto-refresh via Shopify's session middleware. No manual r
 const response = await admin.graphql(query); // Handles refresh internally
 ```
 
-### 2. Managed Installation (Headless/Custom Apps)
+### 2. Managed Installation
 
-**Use Case:** Headless storefront, mobile apps, third-party integrations
-**Flow:** Merchant authorizes app → Shopify generates permanent access token (no secret rotation)
-**Token Lifetime:** Long-lived; no refresh required
-**Security:** Token is permanent; store securely in environment variable
+**Use Case:** Shopify-managed installation and scope updates for an app. This concerns Admin API app installation, not Hydrogen customer authentication.
+**Security:** Use the selected Shopify app package's authenticated Admin API client. Do not assume every token is permanent or construct a merchant-supplied URL to send credentials to.
 
 **Managed Installation Setup:**
 
@@ -168,29 +138,7 @@ In Shopify Partner Dashboard:
 1. App Settings > API Credentials
 2. Select "Managed installation" under Admin API access scopes
 3. Merchant grants permission once
-4. Have the application operator place the store domain and long-lived
-   credential in the target application's server-only secret store.
-
-**Using Managed Installation Token:**
-```typescript
-import { GraphQLClient } from 'graphql-request';
-import { getManagedInstallationConfig } from '~/lib/config.server';
-
-const managedConfig = getManagedInstallationConfig();
-
-const client = new GraphQLClient(
-  `https://${managedConfig.storeDomain}/admin/api/2026-07/graphql.json`,
-  {
-    headers: {
-      'X-Shopify-Access-Token': managedConfig.adminCredential,
-    },
-  }
-);
-
-// Token never expires; call API anytime
-const query = `query { products(first: 10) { edges { node { id title } } } }`;
-const products = await client.request(query);
-```
+4. Configure a persistent, server-only session store and use the authenticated client as shown above.
 
 ### 3. OAuth 2.0 Authorization Code Grant (Legacy, Still Supported)
 
@@ -199,118 +147,9 @@ const products = await client.request(query);
 **Token Lifetime:** Long-lived access token (no expiration unless revoked)
 **Security:** Client secret required; PKCE optional
 
-**OAuth Flow Diagram:**
-```
-1. Merchant visits: https://your-app.com/auth
-2. App redirects to: https://your-shop.myshopify.com/admin/oauth/authorize?client_id=KEY&scope=write_products&redirect_uri=https://your-app.com/auth/callback&state=RANDOM
-3. Merchant authorizes app in Shopify Admin
-4. Shopify redirects back: https://your-app.com/auth/callback?code=AUTHORIZATION_CODE&hmac=SIGNATURE&state=RANDOM&shop=your-shop.myshopify.com
-5. App validates HMAC and state
-6. App exchanges code for token (server-side, using client secret)
-7. App stores token in database
-```
+**OAuth Flow:** The merchant authorizes in Shopify Admin. The app library validates the callback and one-time state, exchanges the authorization code server-side, and persists the resulting session in a server-only store. Redirect URIs and scopes must match the app configuration.
 
-**Express.js OAuth Example:**
-```typescript
-import express from 'express';
-import axios from 'axios';
-import crypto from 'crypto';
-
-const app = express();
-const oauthConfig = getServerOnlyOAuthConfig();
-
-const API_KEY = oauthConfig.publicAppKey;
-const API_SECRET = oauthConfig.privateAppSecret;
-const REDIRECT_URI = oauthConfig.redirectUri;
-const SCOPES = 'write_products,read_products';
-
-// Step 1: Redirect merchant to Shopify OAuth
-app.get('/auth', (req, res) => {
-  const shop = req.query.shop as string;
-
-  if (!shop || !shop.includes('.myshopify.com')) {
-    return res.status(400).send('Missing or invalid shop parameter');
-  }
-
-  const state = crypto.randomBytes(16).toString('hex');
-  const nonce = crypto.randomBytes(16).toString('hex');
-
-  // Store state in session (or database) for validation
-  req.session.state = state;
-  req.session.nonce = nonce;
-
-  const authUrl = new URL(
-    `/admin/oauth/authorize`,
-    `https://${shop}`
-  );
-  authUrl.searchParams.append('client_id', API_KEY);
-  authUrl.searchParams.append('scope', SCOPES);
-  authUrl.searchParams.append('redirect_uri', REDIRECT_URI);
-  authUrl.searchParams.append('state', state);
-
-  res.redirect(authUrl.toString());
-});
-
-// Step 2: Handle OAuth callback
-app.get('/auth/callback', async (req, res) => {
-  const { code, hmac, shop, state } = req.query;
-
-  // Validate HMAC
-  const message = Object.entries(req.query)
-    .filter(([key]) => key !== 'hmac')
-    .map(([key, value]) => `${key}=${value}`)
-    .sort()
-    .join('&');
-
-  const hash = crypto
-    .createHmac('sha256', API_SECRET)
-    .update(message, 'utf8')
-    .digest('base64');
-
-  if (hash !== hmac) {
-    return res.status(401).send('Unauthorized request detected');
-  }
-
-  // Validate state
-  if (state !== req.session.state) {
-    return res.status(401).send('State mismatch');
-  }
-
-  try {
-    // Exchange code for access token
-    const response = await axios.post(
-      `https://${shop}/admin/oauth/access_token`,
-      {
-        client_id: API_KEY,
-        client_secret: API_SECRET,
-        code,
-      }
-    );
-
-    const { access_token, scope } = response.data;
-
-    // Store access token (in database, not session, for persistence)
-    await storeAccessToken(shop as string, access_token, scope);
-
-    // Redirect to app dashboard
-    res.redirect(`/app?shop=${shop}`);
-  } catch (error) {
-    console.error('Token exchange error:', error);
-    res.status(500).send('Authentication failed');
-  }
-});
-
-// Helper function to store token
-async function storeAccessToken(shop: string, token: string, scope: string) {
-  // Store in database (example using mock storage)
-  const db = {
-    shops: {} as Record<string, { token: string; scope: string }>,
-  };
-  db.shops[shop] = { token, scope };
-}
-
-app.listen(3000);
-```
+Do not implement the authorization URL, HMAC comparison, state storage, or code exchange from an illustrative snippet. Use Shopify's maintained app/auth library for the chosen framework. If an application must implement this flow itself, its security review must verify a canonical `*.myshopify.com` shop hostname (not a substring match), one-time state, the exact callback HMAC algorithm and constant-time comparison, a fixed redirect URI, and server-only secret handling before sending any credential to Shopify. See [Shopify authentication and authorization](https://shopify.dev/docs/apps/build/authentication-authorization).
 
 ## Session Storage Adapters
 
@@ -608,43 +447,23 @@ export const webhooks = {
 **Authentication:** Customer-specific access tokens (from Shopify Hydrogen or customer flow)
 **Note:** Different from admin API; limited to customer data only
 
-**Get Customer Access Token (in Hydrogen/Storefront):**
+**Use Hydrogen's authenticated Customer Account client:**
 ```typescript
-// This is typically handled by Shopify's customer auth flow
-const customerAccessToken = await getAuthenticatedCustomerCredential(request);
-const storefrontConfig = getStorefrontServerConfig();
-
-const response = await fetch(
-  `https://example-shop.myshopify.com/api/2026-07/graphql.json`,
-  {
-    method: 'POST',
-    headers: {
-      'X-Shopify-Storefront-Access-Token': storefrontConfig.publicStorefrontCredential,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      query: `
-        query {
-          customer(customerAccessToken: "${customerAccessToken}") {
-            id
-            firstName
-            email
-            orders(first: 10) {
-              edges {
-                node {
-                  id
-                  orderNumber
-                  totalPrice
-                }
-              }
-            }
-          }
-        }
-      `,
-    }),
+// In a Hydrogen route loader after the customer login/authorization callback:
+const {data, errors} = await context.customerAccount.query(`
+  query CustomerProfile {
+    customer {
+      firstName
+      lastName
+    }
   }
-);
+`);
+if (errors?.length) throw new Response('Customer profile unavailable', {status: 502});
+  // A route loader must also commit context.session to persist any auth refresh.
+  return data.customer;
 ```
+
+`context.customerAccount` manages the customer credential and Customer Account API endpoint. Never place a customer access token inside a GraphQL string or send it to a manually assembled Storefront API URL. See [Customer Account API with Hydrogen](https://shopify.dev/docs/storefronts/headless/building-with-the-customer-account-api/hydrogen).
 
 ## Public vs. Custom vs. Custom Distribution Apps
 

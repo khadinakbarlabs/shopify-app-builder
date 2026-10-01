@@ -1,7 +1,15 @@
 node_modules/
 *.tgz
 coverage/
-.DS_Store
-.shopify-app-builder-backups/
-.release/reports/
-.vercel
+# Exclude private local configuration and tool metadata by default.
+.*
+# Keep the reviewed, portable plugin and CI metadata.
+!/.gitignore
+!.npmignore
+!/.agents/
+!/.claude-plugin/
+!/.codex/
+!/.codex-plugin/
+!/.cursor-plugin/
+!/.github/
+!/.opencode/

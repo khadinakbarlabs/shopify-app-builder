@@ -110,6 +110,14 @@ test("Agent Plugins manifest validator rejects nonportable schema fields", () =>
   );
 });
 
+test("Claude directory manifest declares the public privacy policy", async () => {
+  const claude = JSON.parse(await readFile(".claude-plugin/plugin.json", "utf8"));
+  const portable = JSON.parse(await readFile("plugin.json", "utf8"));
+  assert.equal(claude.privacyPolicyUrl, portable.extensions["com.openai"].interface.privacyPolicyURL);
+  assert.equal(new URL(claude.privacyPolicyUrl).protocol, "https:");
+  assert.match(claude.privacyPolicyUrl, /\/PRIVACY\.md$/);
+});
+
 test("native remote MCP configuration declares Claude's HTTP transport", async () => {
   const native = JSON.parse(await readFile(".mcp.json", "utf8"));
   const portable = JSON.parse(await readFile("mcp.json", "utf8"));

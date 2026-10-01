@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
+import path from "node:path";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 
-import { findGuidance, searchGuidance } from "../src/catalog.mjs";
+import { findGuidance, loadGuidanceCatalog, searchGuidance } from "../src/catalog.mjs";
 import { createBuildPlan } from "../src/plan.mjs";
 
 const catalog = [
@@ -18,6 +20,22 @@ const catalog = [
 test("searchGuidance scores focused Shopify terms and respects the limit", () => {
   const results = searchGuidance(catalog, "oauth session", 1);
   assert.deepEqual(results.map((result) => result.id), ["app-auth"]);
+});
+
+test("review prompts rank the requested subject ahead of generic Shopify text", () => {
+  const skillsDirectory = fileURLToPath(new URL("../../skills/", import.meta.url));
+  const publishedCatalog = loadGuidanceCatalog({ skillsDirectory: path.resolve(skillsDirectory) });
+  for (const [query, expected] of [
+    ["What bundled guidance should I use to design subscription billing for a Shopify app?", "app-billing"],
+    ["Open the Shopify app accessibility guidance and list the highest priority checks.", "app-accessibility"],
+    ["Open the Shopify app authentication guidance and summarize its implementation checks.", "app-auth"],
+  ]) {
+    assert.equal(searchGuidance(publishedCatalog, query, 1)[0]?.id, expected, query);
+  }
+});
+
+test("repeating query words does not change search relevance", () => {
+  assert.deepEqual(searchGuidance(catalog, "OAuth session OAuth OAuth"), searchGuidance(catalog, "OAuth session"));
 });
 
 test("findGuidance returns only an exact catalog identifier", () => {

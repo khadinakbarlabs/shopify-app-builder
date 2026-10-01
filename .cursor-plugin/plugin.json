@@ -2,7 +2,7 @@
   "name": "shopify-app-builder",
   "displayName": "Shopify App Builder",
   "description": "Production-focused Shopify app engineering skills, commands, and specialist agents.",
-  "version": "1.5.8",
+  "version": "1.5.9",
   "author": {
     "name": "Shopify App Builder Contributors",
     "url": "https://github.com/khadinakbarlabs/shopify-app-builder"

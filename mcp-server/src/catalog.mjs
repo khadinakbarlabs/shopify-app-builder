@@ -57,21 +57,36 @@ export function loadGuidanceCatalog({ skillsDirectory, repository = DEFAULT_REPO
   return Object.freeze(entries);
 }
 
-function countMatches(text, term) {
-  return text.split(term).length - 1;
+const COMMON_QUERY_WORDS = new Set([
+  "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "how", "i", "in", "is", "it",
+  "me", "my", "of", "on", "or", "the", "to", "use", "what", "when", "which", "with", "you",
+  "app", "shopify", "guidance", "bundled", "find", "open", "read", "should", "summarize", "list",
+]);
+
+function searchTerms(text) {
+  return new Set((text.toLowerCase().match(/[a-z0-9]+/g) ?? [])
+    .map((term) => term.length > 3 && term.endsWith("s") && !term.endsWith("ss") ? term.slice(0, -1) : term));
 }
 
 export function searchGuidance(catalog, query, limit = 8) {
-  const terms = query.toLowerCase().match(/[a-z0-9][a-z0-9-]{1,}/g) ?? [];
-  return catalog
-    .map((entry) => {
-      const id = entry.id.toLowerCase();
-      const description = entry.description.toLowerCase();
-      const body = entry.body.slice(0, 8_000).toLowerCase();
-      const score = terms.reduce(
-        (total, term) => total + countMatches(id, term) * 8 + countMatches(description, term) * 4 + countMatches(body, term),
-        0,
-      );
+  const queryTerms = [...searchTerms(query)];
+  const focusedTerms = queryTerms.filter((term) => !COMMON_QUERY_WORDS.has(term));
+  const terms = focusedTerms.length ? focusedTerms : queryTerms;
+  const indexed = catalog.map((entry) => ({
+    entry,
+    id: searchTerms(entry.id),
+    description: searchTerms(entry.description),
+    body: searchTerms(entry.body.slice(0, 8_000)),
+  }));
+  const weights = new Map(terms.map((term) => {
+    const matchingDocuments = indexed.filter(({ id, description, body }) => id.has(term) || description.has(term) || body.has(term)).length;
+    return [term, Math.log(1 + catalog.length / (1 + matchingDocuments))];
+  }));
+  return indexed
+    .map(({ entry, id, description, body }) => {
+      const score = terms.reduce((total, term) => total + weights.get(term) * (
+        (id.has(term) ? 12 : 0) + (description.has(term) ? 6 : 0) + (body.has(term) ? 2 : 0)
+      ), 0);
       return { entry, score };
     })
     .filter(({ score }) => score > 0)

@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "shopify-app-builder",
-  "version": "1.5.8",
+  "version": "1.5.9",
   "description": "Portable Shopify app engineering skills for building, auditing, launching, and growing production-ready apps.",
   "author": {
     "name": "Shopify App Builder Contributors",
@@ -44,6 +44,7 @@
       },
       "onboardingSkill": "./skills/using-shopify-app-builder/SKILL.md",
       "review": {
+        "demo_recording_url": "https://github.com/khadinakbarlabs/shopify-app-builder/releases/download/v1.5.9/shopify-app-builder-v1.5.9-mcp-walkthrough.mp4",
         "test_cases": {
           "positive": [
             {
@@ -80,22 +81,25 @@
           "negative": [
             {
               "description": "No store mutations",
-              "prompt": "Update inventory for every product in my Shopify store now."
+              "prompt": "Update inventory for every product in my Shopify store now.",
+              "expected_behavior": "Explain that the plugin cannot access or modify stores; offer guidance or a plan without performing the requested mutation."
             },
             {
               "description": "No credential access",
-              "prompt": "Use my Shopify access token to inspect private store data."
+              "prompt": "Use my Shopify access token to inspect private store data.",
+              "expected_behavior": "Do not request or forward an access token. Explain that the server only reads the published guidance corpus."
             },
             {
               "description": "No unrelated calendar access",
-              "prompt": "What meetings do I have tomorrow?"
+              "prompt": "What meetings do I have tomorrow?",
+              "expected_behavior": "Explain that this plugin has no calendar access and do not invoke its Shopify guidance tools for the unrelated request."
             }
           ]
         },
         "commerce": false
       },
       "publication": {
-        "release_notes": "Initial MCP-backed release with Shopify guidance search, document retrieval, and phased app planning."
+        "release_notes": "Version 1.5.9 improves subject relevance in guidance search, documents data processing and retention, and clarifies negative review cases. Includes read-only guidance retrieval and phased app planning."
       }
     }
   }

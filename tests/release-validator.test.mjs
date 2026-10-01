@@ -109,3 +109,14 @@ test("Agent Plugins manifest validator rejects nonportable schema fields", () =>
     ["unknown top-level field: unsupported"],
   );
 });
+
+test("native remote MCP configuration declares Claude's HTTP transport", async () => {
+  const native = JSON.parse(await readFile(".mcp.json", "utf8"));
+  const portable = JSON.parse(await readFile("mcp.json", "utf8"));
+  assert.deepEqual(Object.keys(native.mcpServers), ["shopify-app-builder"]);
+  const nativeServer = native.mcpServers["shopify-app-builder"];
+  assert.equal(nativeServer.type, "http");
+  assert.equal(nativeServer.url, portable.mcpServers["shopify-app-builder"].url);
+  assert.equal(new URL(nativeServer.url).protocol, "https:");
+  assert.equal(portable.mcpServers["shopify-app-builder"].type, "streamable-http");
+});

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.9 - 2026-10-01
+
+- Declared the remote HTTP transport in the native `.mcp.json` configuration so Claude does not drop the server as a malformed stdio entry. Added a regression test while preserving the portable Agent Plugins transport name.
+- Fixed guidance search ranking so the subject requested in billing, authentication, and accessibility review prompts outranks repeated generic Shopify text. Added regression tests against the shipped corpus.
+- Expanded the published privacy policy with input purposes, hosting and support recipients, retention details, and user controls.
+- Clarified safe fallback behavior in the three negative OpenAI review cases and refreshed the submission checklist against the current documentation.
+
 ## 1.5.8 - 2026-10-01
 
 - Fix GitHub Actions YAML parsing for the bundled MCP smoke check. This carries forward the MCP-backed OpenAI plugin package from 1.5.7.

@@ -17,7 +17,7 @@ function textResult(structuredContent, text) {
   };
 }
 
-export function createShopifyAppBuilderServer(catalog, version = "1.5.8") {
+export function createShopifyAppBuilderServer(catalog, version = "1.5.9") {
   const server = new McpServer(
     { name: "shopify-app-builder", version },
     {

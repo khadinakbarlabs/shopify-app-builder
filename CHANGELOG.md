@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.0.0 — 2026-10-02
+
+- Breaking: removed bundled MCP configuration, runtime/API source, hosting config and obsolete MCP submission metadata. Existing hosted deployments/connections require separate removal.
+- Reworked every skill into a beginner-first, goal-led entrypoint with optional technical references. Now 35 skills, 13 guided commands and 8 specialist-agent roles.
+- Added official Shopify CLI/Dev Dashboard/Partner setup and optional Apify CLI app-market research with explicit target/input/budget gates and manual fallback.
+- Added app foundation and release-readiness workflows; corrected unsafe credential-cache debugging, misleading deployment proofs and unconditional legacy-template defaults.
+- Updated privacy, compatibility, install/upgrade guidance and offline research helper tests. No publisher credentials or automatic paid calls are included.
+
+
 ## 1.5.11 - 2026-10-02
 
 - Corrected public publisher attribution and homepage links across agent manifests and npm metadata.

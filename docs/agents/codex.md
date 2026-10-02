@@ -1,47 +1,40 @@
 # Codex guide
 
-Codex receives the 32 portable skills through the native Codex plugin manifest. Claude-specific slash commands and specialist-agent definitions are not presented as native Codex components.
+35 portable skills through the native manifest or .agents/skills copy. Claude command/agent files are not automatically registered Codex subagents.
 
 ## Install
 
-```bash
-codex plugin marketplace add khadinakbarlabs/shopify-app-builder
-codex plugin add shopify-app-builder@shopify-app-builder
-```
-
-Portable fallback:
-
-```bash
-npx skills add khadinakbarlabs/shopify-app-builder --skill '*' --agent codex --copy --yes
-```
+If supported by your installed build: codex plugin marketplace add khadinakbarlabs/shopify-app-builder, then codex plugin add shopify-app-builder@shopify-app-builder. Otherwise run this checkout's scripts/install-agent-skills.mjs install --agent codex from your app project; use --dry-run first.
+Use a verified checkout/release. npm and marketplace versions may lag GitHub; this guide does not assert publication or approval.
 
 ## Best use cases
 
-- Repository-wide Shopify implementation and refactoring with file-level verification.
-- Security-sensitive authentication, webhook, billing, and scope audits.
-- Debugging GraphQL, CLI, extension, and embedded-app failures from terminal evidence.
-- Pre-release checks where builds, tests, source inspection, and live-surface verification must be kept distinct.
+- Existing-repository implementation with test-first changes.
+- Authentication, privacy, webhook and tenant-isolation audits.
+- Guided first-app setup using official CLI and Dev Dashboard.
+- Evidence-backed release preparation without unauthorized deployment.
 
 ## Operating guidelines
 
-- Name `using-shopify-app-builder` on the first broad Shopify request, or name a focused skill directly.
-- Ask Codex to inspect the repository before selecting framework- or version-specific advice.
-- Preserve unrelated dirty-worktree changes and require focused tests for edits.
-- Keep deployment, Partner Dashboard, App Store submission, billing, and advertising actions behind explicit authorization.
-- Use official Shopify documentation for time-sensitive API and platform claims.
+- Begin broad tasks with using-shopify-app-builder. Explain unfamiliar terms, recommend one small milestone, and track Done / Next / Blocked / Not tested.
+- Inspect existing projects and preserve the framework, local customizations and unrelated changes.
+- Use shopify-connections for official Dev/Partner/CLI setup. No bundled MCP or auto-configured connector is needed.
+- Apify research is optional. Login is not paid-run authorization; inspect schema/pricing and approve input plus enforceable budget first. Use manual sources/exports if unavailable.
+- Never read credential caches, print tokens or collect customer data for research. Operator-managed server secrets stay outside prompts/public files.
+- Ask before store writes, access expansion, spending, charges, deployment and submission. Respect this host's permissions and delegation rules.
+- Use current official Shopify docs; retained technical references may target older projects. Test before reporting success and distinguish local checks from live proof.
 
 ## Example prompts
 
 ```text
-Use using-shopify-app-builder to route this request, then fix our webhook HMAC verification and test it.
-Use built-for-shopify-standards to audit this app; report blockers before changing files.
-Use admin-graphql to replace this REST product sync with a cost-aware GraphQL flow.
+Use using-shopify-app-builder. Inspect this project, explain the next small milestone, and preserve my edits.
+```
+
+```text
+Use app-release-readiness to audit. Separate local tests from untested store/deployment checks.
 ```
 
 ## Verify
 
-```bash
-codex plugin list
-```
-
-Confirm `shopify-app-builder` is installed, start a new task, and ask Codex to identify the relevant skills for an OAuth loop.
+Check the supported plugin/skill listing or copied directories. Invoke the router and verify it selects shopify-connections for account setup and app-framework for a first feature.
+If upgrading from v1.x, remove the specific saved MCP connection and retired copied shopify-mcp folder after backing up customizations. A source update does not prove a host disconnected its old entry.

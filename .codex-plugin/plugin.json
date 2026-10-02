@@ -1,7 +1,7 @@
 {
   "name": "shopify-app-builder",
-  "version": "1.5.11",
-  "description": "Open-source Shopify app development skills for Claude Code, Codex, Cursor, OpenCode, Command Code, and compatible AI coding agents.",
+  "version": "2.0.0",
+  "description": "Beginner-friendly Shopify app-building skills with guided setup, research, implementation and release checks. No MCP required.",
   "author": {
     "name": "Khadin Akbar",
     "url": "https://khadinakbar.com/"
@@ -19,11 +19,10 @@
     "opencode"
   ],
   "skills": "./skills/",
-  "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "Shopify App Builder",
-    "shortDescription": "Build, audit, launch, and grow Shopify apps.",
-    "longDescription": "A comprehensive open-source Shopify app engineering toolkit with 32 focused skills for routing, APIs, authentication, billing, webhooks, extensions, UX, accessibility, performance, App Store listings, and acquisition.",
+    "shortDescription": "Shopify apps, step by step",
+    "longDescription": "35 portable skills covering Shopify app development from idea to maintenance. Optional Shopify and Apify CLI setup, beginner milestones, safety and verification. Command/agent definitions are reference workflows where not supported natively.",
     "developerName": "Khadin Akbar",
     "category": "Productivity",
     "capabilities": [

@@ -1,33 +1,35 @@
-# Privacy
+# Privacy — local skills edition
 
-Effective date: October 1, 2026.
+Effective date: October 2, 2026. Applies to Shopify App Builder v2.0.0 and later local-skills editions.
 
-Shopify App Builder is an open-source project maintained by the publisher identified in its directory listing. It has a local skills package and an optional read-only MCP server. The application has no user accounts, advertising identifiers, analytics, tracking, or database of user requests.
+## What this package does
 
-## Information processed and purpose
+This release bundles Markdown skills, command/agent instructions, static branding and local helpers. It has no bundled MCP server, hosted API, account system, database of conversations or runtime tracking. The copy installer does not authenticate, inspect credentials or make service requests. The optional research-input helper prepares public, non-secret JSON locally; it does not launch an Actor.
 
-The hosted MCP server receives the explicit tool arguments your agent sends: a search query, document identifier, optional result limits, or an app goal and optional constraints. These fields can contain personal information if you choose to include it. They are used only to search the published guidance corpus, retrieve a document, or calculate an implementation plan and return the response to your agent. The application does not reconstruct your conversation, inspect your repository, connect to Shopify stores, request merchant credentials, or make store changes.
+Your coding-agent provider and enabled tools process prompts/files under their own policies. A skill instructing an agent is not a new permission grant. Installing from a registry or GitHub involves the ordinary processing by that service and your package client.
 
-Do not include passwords, API keys, customer records, payment details, health information, or other sensitive personal data in tool arguments. Use generic or synthetic app requirements instead. The application does not intentionally log request bodies or tool outputs; its error logging reports the error type rather than request contents.
+## Separately enabled services
 
-## Recipients and retention
+If you choose to use Shopify CLI/Dev Dashboard/Partner Dashboard, Shopify processes the sign-in and authorized app/store operations under its policies. The user selects the account/organization and grants the required permissions. The package includes no publisher Shopify credentials.
 
-The public MCP endpoint runs on Vercel. Vercel processes network requests and standard operational metadata to provide hosting and security. Its infrastructure may process IP addresses, request paths, timing, status codes, and other request metadata. This is operational hosting, not behavioral profiling by this application. See [Vercel's privacy policy](https://vercel.com/legal/privacy-policy) for its data practices.
+If you choose Apify research, the official CLI/Console handles authentication. Apify and the selected Actor process the explicit public research input and produce stored run results under their policies. Runs can incur charges. Inputs should contain only public niche queries or app/review URLs—not passwords, tokens or customer records. The workflow requires input/spending review before execution and minimizes unnecessary reviewer identifiers in summaries.
 
-The application does not persist tool arguments or outputs. It uses them in memory for the request and does not maintain them as saved user records. Vercel's published runtime-log availability is one hour on Hobby, one day on Pro, or three days on Enterprise; Observability Plus extends availability to 30 days. The public deployment uses Pro. These [runtime-log limits](https://vercel.com/docs/logs/runtime) describe dashboard log availability, not all provider security or legal retention; Vercel's own policy governs that processing. Self-hosted deployments may use different providers and retention settings, which their operators must disclose.
+The package does not collect or forward credential values itself. Agents should never read CLI auth caches, print secrets or copy sensitive data into a prompt, public issue or research input.
 
-If you open a support issue, GitHub and project maintainers receive the issue text and public account information you submit. Public issues remain available until deleted through GitHub's controls or removed by maintainers. Do not put private information in public issues. GitHub's retention and account controls are governed by [GitHub's privacy statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement). Security reports should use the private reporting process in [SECURITY.md](SECURITY.md).
+## Support and controls
 
-Your coding-agent provider processes its conversations and the responses it receives under its own privacy policy. This application does not sell personal information or forward your tool arguments to Shopify, other APIs, or an external model provider.
+GitHub and maintainers receive information you choose to include in issues. Public issues may be retained publicly; do not include private information. Use [private security reporting](SECURITY.md) for vulnerabilities and [GitHub support](https://github.com/khadinakbarlabs/shopify-app-builder/issues) for non-sensitive questions. GitHub's own policies govern its processing.
 
-## Your controls
+You can uninstall copied/native skills and disconnect separately enabled tools in your host. Removing this package does not delete Shopify apps, Apify runs or records stored by those providers; manage them through the provider's controls.
 
-You control the arguments sent to the server. You can stop sending requests, disconnect or uninstall the plugin in your agent, use the local skills without the public MCP endpoint, or self-host the server. Since the application has no saved request history or user accounts, it offers no account-level export or deletion interface. For a support issue or a privacy request involving information you supplied to maintainers, use the [project support page](https://github.com/khadinakbarlabs/shopify-app-builder/issues) without disclosing sensitive details publicly; for a security concern, use private reporting.
+## Historical remote edition
 
-## Local package and separately enabled tools
+Version 1.x included an optional hosted guidance MCP service. This release removes its source/configuration from the package, but does not itself undeploy a previously hosted endpoint or disconnect a saved client connection. Do not assume a historical service has stopped operating merely because v2 is installed.
 
-The installer copies bundled Markdown skills and scripts to a directory selected by the user. It does not read Shopify credentials, browser data, source files, or environment variables. It does not make network requests.
+For that edition, see [the v1.5.11 privacy disclosure](https://github.com/khadinakbarlabs/shopify-app-builder/blob/v1.5.11/PRIVACY.md) and the relevant host/provider policies. Historical remote operation is separate from this local package.
 
-When an AI coding agent uses a skill, that agent and any tools the user enables may process repository content or connect to third-party services. Those actions are governed by the user's agent configuration and the applicable service policies, not by this package. Users should review proposed commands, keep credentials in secret stores or environment variables, and limit tool permissions to the task.
+## References
 
-Changes to these practices will be reflected here with an updated effective date.
+[Shopify privacy](https://www.shopify.com/legal/privacy), [Apify privacy](https://docs.apify.com/legal/privacy-policy), [GitHub privacy](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement).
+
+This is a description of the package, not a replacement privacy policy for the app you build. Your app operator must disclose its actual collection, retention, recipients and deletion practices.

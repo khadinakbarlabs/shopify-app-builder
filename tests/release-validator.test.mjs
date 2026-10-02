@@ -86,17 +86,9 @@ test("App Bridge guidance does not retrieve credentials or accept unverified JWT
   assert.match(skill, /await authenticate\.admin\(request\)/);
 });
 
-test("MCP runtime environment access is limited to server binding and guidance location", async () => {
-  const allowed = new Set(["PORT", "HOST", "SHOPIFY_APP_BUILDER_SKILLS_DIR"]);
-  for (const directory of ["api", "mcp-server/src"]) {
-    for (const name of await readdir(directory)) {
-      if (!name.endsWith(".mjs")) continue;
-      const source = await readFile(path.join(directory, name), "utf8");
-      for (const match of source.matchAll(/process\.env(?:\.([A-Z_]+))?/g)) {
-        assert.ok(allowed.has(match[1]), `${directory}/${name}: unexpected runtime environment access`);
-      }
-    }
-  }
+test("offline research helper does not read credentials or call a service", async () => {
+  const source = await readFile("scripts/prepare-app-research.mjs", "utf8");
+  assert.doesNotMatch(source, /process\.env|fetch\s*\(|child_process|execFile/);
 });
 
 test("Agent Plugins manifest validator rejects nonportable schema fields", () => {
@@ -155,13 +147,6 @@ test("release scanner allows approved public publisher fields but not unrelated 
   assert.deepEqual(findForbiddenTextInReleaseFile(".claude-plugin/marketplace.json", JSON.stringify({owner: {name: approvedName}})), []);
 });
 
-test("native remote MCP configuration declares Claude's HTTP transport", async () => {
-  const native = JSON.parse(await readFile(".mcp.json", "utf8"));
-  const portable = JSON.parse(await readFile("mcp.json", "utf8"));
-  assert.deepEqual(Object.keys(native.mcpServers), ["shopify-app-builder"]);
-  const nativeServer = native.mcpServers["shopify-app-builder"];
-  assert.equal(nativeServer.type, "http");
-  assert.equal(nativeServer.url, portable.mcpServers["shopify-app-builder"].url);
-  assert.equal(new URL(nativeServer.url).protocol, "https:");
-  assert.equal(portable.mcpServers["shopify-app-builder"].type, "streamable-http");
+test("release scanner rejects Apify credential shapes", () => {
+  assert.deepEqual(findForbiddenText(`apify_${"api_"}${"a".repeat(30)}`), ["Apify token"]);
 });

@@ -1,8 +1,8 @@
 {
   "name": "shopify-app-builder",
   "displayName": "Shopify App Builder",
-  "description": "Production-focused Shopify app engineering skills, commands, and specialist agents.",
-  "version": "1.5.11",
+  "description": "Beginner-friendly Shopify app skills, guided commands and specialist roles with optional CLI research. No bundled MCP server.",
+  "version": "2.0.0",
   "author": {
     "name": "Khadin Akbar",
     "url": "https://khadinakbar.com/"

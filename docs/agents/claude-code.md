@@ -1,43 +1,40 @@
 # Claude Code guide
 
-Claude Code receives the complete plugin: 32 skills, 9 slash commands, and 5 specialist agents.
+35 skills, 13 command definitions and 8 specialist-agent definitions. Confirm actual registration in your host; namespaced commands may apply.
 
 ## Install
 
-```text
-/plugin marketplace add khadinakbarlabs/shopify-app-builder
-/plugin install shopify-app-builder@shopify-app-builder
-```
-
-Restart Claude Code after installing or updating.
+Native plugin: /plugin marketplace add khadinakbarlabs/shopify-app-builder, then /plugin install shopify-app-builder@shopify-app-builder. Update/reload per your installed client. Copy fallback: run this checkout's scripts/install-agent-skills.mjs install --agent claude-code from your app project.
+Use a verified checkout/release. npm and marketplace versions may lag GitHub; this guide does not assert publication or approval.
 
 ## Best use cases
 
-- End-to-end app architecture with the `shopify-app-architect` specialist agent.
-- Focused GraphQL, debugging, listing, or pre-submission reviews through specialist agents.
-- Repeatable actions through `/init-shopify-app`, `/graphql`, `/add-webhook`, `/audit-scopes`, and the other bundled commands.
-- Automatic routing from natural-language Shopify requests into focused skills.
+- Beginner coaching with shopify-app-coach or the router.
+- Small architecture/query/debugging reviews through bounded specialist roles.
+- Guided start, connect, research and readiness commands.
+- End-to-end feature development with explicit verification.
 
 ## Operating guidelines
 
-- Start broad Shopify work with `using-shopify-app-builder`, then load only the focused skills it identifies.
-- Use a specialist agent for a bounded review or artifact; keep consequential deployment and publication decisions in the main user conversation.
-- Treat slash commands as guided workflows, not permission to deploy, submit, spend, or expose credentials.
-- Verify current Shopify behavior in official documentation before changing production code.
+- Begin broad tasks with using-shopify-app-builder. Explain unfamiliar terms, recommend one small milestone, and track Done / Next / Blocked / Not tested.
+- Inspect existing projects and preserve the framework, local customizations and unrelated changes.
+- Use shopify-connections for official Dev/Partner/CLI setup. No bundled MCP or auto-configured connector is needed.
+- Apify research is optional. Login is not paid-run authorization; inspect schema/pricing and approve input plus enforceable budget first. Use manual sources/exports if unavailable.
+- Never read credential caches, print tokens or collect customer data for research. Operator-managed server secrets stay outside prompts/public files.
+- Ask before store writes, access expansion, spending, charges, deployment and submission. Respect this host's permissions and delegation rules.
+- Use current official Shopify docs; retained technical references may target older projects. Test before reporting success and distinguish local checks from live proof.
 
 ## Example prompts
 
 ```text
-Use shopify-app-architect to design the smallest production architecture for this app idea.
-/audit-scopes shopify.app.toml
-Use shopify-app-ux-reviewer for a pre-submission audit of this repository.
+Use using-shopify-app-builder. I'm new: help me build one inventory-alert feature on a test store.
+```
+
+```text
+Use app-market-research with manual sources first; show the input and budget before any Apify run.
 ```
 
 ## Verify
 
-```bash
-claude plugin list
-claude plugin details shopify-app-builder@shopify-app-builder
-```
-
-In a new session, ask: `Which Shopify App Builder skill should handle an OAuth redirect loop?` The answer should route to `app-auth` and usually `dev-troubleshooting`.
+Use the host's plugin/command list and ask for shopify-connections and app-market-research in a fresh session. Test one synthetic beginner task before live account operations.
+If upgrading from v1.x, remove the specific saved MCP connection and retired copied shopify-mcp folder after backing up customizations. A source update does not prove a host disconnected its old entry.

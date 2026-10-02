@@ -1,63 +1,24 @@
 ---
-description: "Add webhook subscriptions for Shopify events (orders, products, inventory) with signature verification and handler routing"
-argument-hint: "webhook-topic, handler-path"
+description: "Add a reliable authenticated Shopify event handler and test failure cases."
+argument-hint: "topic and existing project"
 ---
 
-# Add Webhook Subscription
+# add-webhook
 
-You are adding event-driven integrations to a Shopify app. Configure webhooks with proper signature verification and handler patterns.
+Skills: webhooks, app-auth
 
-## Topic Selection and Registration
+Read the named skills from this plugin before following the workflow. Use only the relevant ones; commands guide work rather than grant permissions.
 
-1. **Define webhook topic**
-   - Select from supported topics: ORDERS_PAID, PRODUCTS_CREATE, INVENTORY_LEVELS_UPDATE, CUSTOMER_CREATED, FULFILLMENT_EVENTS_CREATE
-   - Add to shopify.app.toml under webhooks section with `topic: [TOPIC_NAME]`
-   - Confirm compatibility with the latest supported stable API version
-   - Reference skill: webhook topics (02_apis.md)
+1. Verify current topic/config and framework before creating files.
+2. Use supported authentication, raw-body verification where custom code is needed, and durable enqueue before acknowledgement.
+3. Add shop isolation, deduplication, retry/recovery and real privacy cleanup where applicable.
+4. Test forged/altered body, duplicate event and failed queue; verify actual dev-store delivery if authorized.
 
-2. **Configure webhook endpoint**
-   - Create handler at `/routes/webhooks/[webhook-topic].jsx`
-   - Endpoint receives POST requests from Shopify infrastructure
-   - Ensure endpoint returns 200 OK within 5 seconds (async processing recommended)
-   - Reference skill: webhook architecture (01_cli_scaffolding.md)
+## Beginner-friendly delivery
 
-## Handler Implementation
+Explain unfamiliar terms once, recommend one next action and state the expected result before executing. Preserve unrelated work. Never read credential caches or print secrets. Paid runs, store writes, scope/access expansion, charges, deployment and submission require explicit task-specific authorization.
 
-3. **Implement signature verification**
-   - Extract X-Shopify-Hmac-SHA256 header from request
-   - Compute HMAC-SHA256 using raw request body + SHOPIFY_API_SECRET
-   - Compare computed vs provided HMAC (constant-time comparison)
-   - Reject if signatures don't match (security critical)
-   - Reference skill: webhook security (02_apis.md)
+## Completion evidence
 
-4. **Process webhook payload**
-   - Parse JSON body from webhook request
-   - Extract relevant fields from event object (e.g., orderId, productId)
-   - Route to business logic handlers based on webhook topic
-   - Log processed event with timestamp and status
-   - Reference skill: event processing patterns (01_cli_scaffolding.md)
-
-5. **Handle async operations**
-   - Queue long-running tasks (API calls, data syncs) to job processor
-   - Return 200 immediately; process details asynchronously
-   - Implement retry logic for failed webhook processing (exponential backoff)
-   - Store webhook state in database for idempotency
-
-## Testing and Deployment
-
-6. **Test webhook delivery**
-   - Use Shopify admin "Test event" button for registered topics
-   - Verify handler receives payload and returns 200
-   - Confirm log entries show successful processing
-   - Check database for expected side effects
-
-## Output Sample
-
-Display completion with:
-```
-✓ Webhook registered: [WEBHOOK_TOPIC]
-✓ Handler created at [handler-path]
-✓ Signature verification enabled
-✓ Test event processed successfully
-✓ Ready for integration (next: validate-idea to track metrics)
-```
+Separate handler tests, configuration registration and observed real event delivery.
+Show actual results, the remaining blocker and the next step; do not print anticipated success checkmarks. If the host cannot register commands, invoke the listed skills in ordinary language instead.

@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "shopify-app-builder": {
-      "type": "http",
-      "url": "https://shopify-app-builder-one.vercel.app/mcp"
-    }
-  }
-}

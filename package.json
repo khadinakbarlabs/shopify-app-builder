@@ -1,7 +1,7 @@
 {
   "name": "shopify-app-builder",
-  "version": "1.5.11",
-  "description": "Open-source Shopify app development guidance for AI coding agents, with a read-only MCP server and native agent plugins.",
+  "version": "2.0.0",
+  "description": "Beginner-friendly Shopify app development skills, guided commands and specialist agents for AI coding harnesses. No bundled MCP server.",
   "type": "module",
   "main": ".opencode/plugins/shopify-app-builder.js",
   "bin": {
@@ -14,14 +14,10 @@
     ".codex-plugin",
     ".cursor-plugin",
     ".opencode",
-    "api",
     "agents",
     "assets",
     "commands",
     "docs",
-    "mcp-server",
-    "mcp.json",
-    ".mcp.json",
     "scripts",
     "skills",
     "CHANGELOG.md",
@@ -34,16 +30,12 @@
     "README.md",
     "SECURITY.md",
     "TERMS.md",
-    "vercel.json",
     "gemini-extension.json"
   ],
   "scripts": {
-    "mcp:start": "npm --prefix mcp-server run start",
-    "mcp:test": "npm --prefix mcp-server test",
-    "mcp:bundle": "mcp-server/node_modules/.bin/esbuild api/_mcp-entry.mjs --bundle --platform=node --format=cjs --outfile=api/_mcp-bundle.cjs",
     "test": "node --test tests/*.test.mjs",
     "validate": "node scripts/validate-release.mjs",
-    "release:check": "npm test && npm run mcp:test && npm run validate",
+    "release:check": "npm test && npm run validate",
     "prepack": "npm run release:check"
   },
   "engines": {

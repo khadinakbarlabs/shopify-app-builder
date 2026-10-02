@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, realpath } from "node:fs/promises";
 import test from "node:test";
 
 import {
@@ -94,5 +94,5 @@ test("OpenCode plugin registers the canonical skills directory once", async () =
   await hooks.config(config);
 
   assert.equal(config.skills.paths.length, 1);
-  assert.match(config.skills.paths[0], /shopify-app-builder\/skills$/);
+  assert.equal(await realpath(config.skills.paths[0]), await realpath("skills"));
 });

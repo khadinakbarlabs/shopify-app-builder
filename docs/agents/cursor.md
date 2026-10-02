@@ -1,40 +1,40 @@
 # Cursor guide
 
-Cursor can consume the native `.cursor-plugin/plugin.json` package surface or install the shared Agent Skills collection directly.
+35 portable skills; the native manifest additionally declares commands and roles where the current client supports them. Directory approval is separate.
 
 ## Install
 
-Until the plugin is accepted into Cursor's public marketplace, use the portable installation path:
-
-```bash
-npx skills add khadinakbarlabs/shopify-app-builder --skill '*' --agent cursor --copy --yes
-```
-
-The repository already includes the Cursor manifest needed for marketplace submission and compatible direct-plugin tooling.
+Use Cursor's supported repository/plugin installation flow where available. Portable fallback: run this checkout's scripts/install-agent-skills.mjs install --agent cursor from the app project, with --dry-run first. Confirm your client discovers .agents/skills or use its documented location.
+Use a verified checkout/release. npm and marketplace versions may lag GitHub; this guide does not assert publication or approval.
 
 ## Best use cases
 
-- In-editor implementation of Polaris, App Bridge, Remix, and Shopify API flows.
-- Reviewing selected files or diffs for scopes, HMAC handling, GraphQL errors, and UX anti-patterns.
-- Generating small extensions or webhook handlers while keeping the active code context visible.
-- Applying focused Shopify guidance during Composer or Agent workflows.
+- Interactive embedded-page iteration and current Polaris UI.
+- Beginner first-feature implementation with visible diffs.
+- Code-level GraphQL/auth/webhook debugging.
+- Keyboard/mobile onboarding reviews before submission.
 
 ## Operating guidelines
 
-- Reference a skill by name in the prompt when the automatic trigger is ambiguous.
-- Include the relevant configuration, route, extension, or schema files in context; do not ask the agent to infer them.
-- Request a focused diff and verification command for each change.
-- Do not paste live secrets into chat or accept a deployment/publication action without explicit approval.
-- Re-check unstable Shopify facts against official documentation.
+- Begin broad tasks with using-shopify-app-builder. Explain unfamiliar terms, recommend one small milestone, and track Done / Next / Blocked / Not tested.
+- Inspect existing projects and preserve the framework, local customizations and unrelated changes.
+- Use shopify-connections for official Dev/Partner/CLI setup. No bundled MCP or auto-configured connector is needed.
+- Apify research is optional. Login is not paid-run authorization; inspect schema/pricing and approve input plus enforceable budget first. Use manual sources/exports if unavailable.
+- Never read credential caches, print tokens or collect customer data for research. Operator-managed server secrets stay outside prompts/public files.
+- Ask before store writes, access expansion, spending, charges, deployment and submission. Respect this host's permissions and delegation rules.
+- Use current official Shopify docs; retained technical references may target older projects. Test before reporting success and distinguish local checks from live proof.
 
 ## Example prompts
 
 ```text
-Use polaris-ui and ux-polaris-antipatterns to review the selected route.
-Use app-auth to fix this token-exchange handler without widening scopes.
-Use ux-empty-error-states to implement loading, empty, and partial-failure states here.
+Use polaris-ui and ux-empty-error-states. Build one clear page and test loading, empty and failure states.
+```
+
+```text
+Use using-shopify-app-builder. I'm new; explain what each change does before making it.
 ```
 
 ## Verify
 
-Start a new Cursor Agent chat and ask it to use `using-shopify-app-builder`. Confirm it can read the installed skill and route a webhook request to `webhooks` plus `app-auth`.
+Confirm skill discovery in the actual project and ask for the router's first milestone. Inspect command/role registration rather than assuming Claude parity.
+If upgrading from v1.x, remove the specific saved MCP connection and retired copied shopify-mcp folder after backing up customizations. A source update does not prove a host disconnected its old entry.

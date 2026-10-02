@@ -22,14 +22,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           package-manager-cache: false
-      - run: npm --prefix mcp-server ci
       - run: npm run release:check
       - if: matrix.node-version == 24
         run: npx --yes @secretlint/quick-start@11.1.0 "**/*"
       - if: matrix.node-version == 24
         run: npm pack --dry-run --ignore-scripts
-      - if: matrix.node-version == 24
-        run: npm run mcp:bundle
-      - if: matrix.node-version == 24
-        run: |
-          node --input-type=module -e "const {default: handler} = await import('./api/mcp.mjs'); if (typeof handler !== 'function') process.exit(1)"

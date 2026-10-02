@@ -1,68 +1,24 @@
 ---
-description: "Validate Shopify app idea against market demand, category saturation, App Store discovery patterns, and monetization viability"
-argument-hint: "app-category, target-merchant-type"
+description: "Test a Shopify app idea using narrow evidence and a small experiment."
+argument-hint: "idea or merchant problem"
 ---
 
-# Validate App Idea
+# validate-idea
 
-You are assessing Shopify app concept against market conditions, discovery patterns, and monetization models before committing to development.
+Skills: app-validation, app-market-research, app-niche-finder
 
-## Market Validation
+Read the named skills from this plugin before following the workflow. Use only the relevant ones; commands guide work rather than grant permissions.
 
-1. **Assess category saturation**
-   - Map app category against saturation matrix (undersaturated vs oversaturated)
-   - Undersaturated categories: shipping analytics, advanced inventory, supplier management, accounting integrations
-   - Oversaturated categories: discount apps, basic analytics, page builders
-   - Identify category positioning and competitive differentiation
-   - Reference skill: category analysis (05_appstore_strategy.md)
+1. Clarify merchant, task, current workaround and intended improvement.
+2. Gather public evidence manually or propose an explicitly approved paid research sample.
+3. Identify the riskiest assumption and define a bounded experiment plus pass/pivot criterion.
+4. Deliver observed facts separately from hypotheses and recommend the smallest next step.
 
-2. **Evaluate merchant target**
-   - Define merchant persona: SMB (1-50 employees), Mid-market (50-500), Enterprise (500+)
-   - Identify pain points specific to target segment
-   - Research if similar problems solved by existing apps
-   - Confirm addressable market size (how many Shopify stores match criteria)
-   - Reference skill: market opportunity sizing (05_appstore_strategy.md)
+## Beginner-friendly delivery
 
-3. **Research discovery patterns**
-   - Study top 20 apps in target category (search volume, install velocity)
-   - Analyze app listing SEO: keywords, description length, icon clarity
-   - Check if app requires "Built for Shopify" badge for discoverability
-   - Identify messaging pillars (efficiency, revenue impact, ease-of-use)
-   - Reference skill: App Store discovery (05_appstore_strategy.md)
+Explain unfamiliar terms once, recommend one next action and state the expected result before executing. Preserve unrelated work. Never read credential caches or print secrets. Paid runs, store writes, scope/access expansion, charges, deployment and submission require explicit task-specific authorization.
 
-## Monetization and Feasibility
+## Completion evidence
 
-4. **Select monetization model**
-   - Freemium: free tier + premium paid features (highest discovery)
-   - Tiered pricing: $99/mo, $299/mo, $999/mo tiers (most common)
-   - Usage-based: charge per transaction/order processed
-   - One-time charges for setup/migration
-   - Model Shopify's current revenue-share tier, 2.9% processing fee, taxes, refunds, and regional fees separately
-   - Reference skill: pricing models (05_appstore_strategy.md)
-
-5. **Project financial viability**
-   - Estimate install velocity: undersaturated category ≈ 5-20/month new installs
-   - Model revenue: 100 installs × $50/mo average = $5,000/mo at steady state
-   - Account for 30% churn; maintain pricing test assumptions
-   - Identify breakeven install count based on development + infrastructure costs
-   - Reference skill: monetization strategy (05_appstore_strategy.md)
-
-6. **Confirm technical feasibility**
-   - Verify APIs support core functionality (GraphQL mutations available)
-   - Check Shopify Functions availability for dynamic pricing/cart logic
-   - Confirm theme accessibility for storefront features (if needed)
-   - Estimate development time: MVP ≈ 4-8 weeks for experienced developers
-   - Reference skill: technical architecture (01_cli_scaffolding.md, 04_functions_auth_billing_mcp.md)
-
-## Output Sample
-
-Display completion with:
-```
-✓ Category: [app-category] ([saturation-level])
-✓ Target merchants: [target-merchant-type]
-✓ Positioning: [key-differentiator]
-✓ Monetization model: [model] at [pricing-tier]
-✓ Projected baseline revenue: [estimate]
-✓ Technical feasibility: Confirmed
-✓ Ready for development (next: init-shopify-app to begin scaffolding)
-```
+No invented market size, interviews or willingness-to-pay findings.
+Show actual results, the remaining blocker and the next step; do not print anticipated success checkmarks. If the host cannot register commands, invoke the listed skills in ordinary language instead.

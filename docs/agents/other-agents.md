@@ -1,50 +1,40 @@
-# Other coding agents
+# Other coding agents guide
 
-Any harness that implements the open Agent Skills directory convention can use the canonical `skills/` collection. This tier includes Windsurf, Cline, Roo Code, Kilo Code, Continue, and other profiles supported by the community `skills` CLI; exact support depends on the installed CLI version.
+35 portable instructions. Richer native commands, agents and execution tools vary. A chat-only host can plan/review supplied content, not execute local scaffolding or account setup.
 
 ## Install
 
-List the repository's skills first:
-
-```bash
-npx skills add khadinakbarlabs/shopify-app-builder --list
-```
-
-Then replace `<agent-profile>` with a profile supported by your current `skills` CLI:
-
-```bash
-npx skills add khadinakbarlabs/shopify-app-builder --skill '*' --agent <agent-profile> --copy --yes
-```
-
-If a harness reads `.agents/skills/`, the bundled universal fallback is:
-
-```bash
-npx shopify-app-builder install --agent universal --global
-```
+Install the complete skills collection at the host's documented Agent Skills location. The checkout installer supports --agent universal as a .agents/skills fallback, but this does not prove a given harness scans it. Keep references and sibling skills intact.
+Use a verified checkout/release. npm and marketplace versions may lag GitHub; this guide does not assert publication or approval.
 
 ## Best use cases
 
-- Domain-specific Shopify guidance inside an existing coding-agent workflow.
-- Portable GraphQL, authentication, billing, webhook, Functions, storefront, UX, and launch reviews.
-- Natural-language routing when the harness recognizes skill descriptions.
-- Manual skill selection when automatic triggers are unavailable.
+- Natural-language task routing for Agent Skills clients.
+- Offline architecture/research briefs without account access.
+- Focused code review using supplied repository files.
+- Manual milestone handoff when terminal/browser is unavailable.
 
 ## Operating guidelines
 
-- Confirm that the chosen harness actually discovers installed skills; compatibility is not the same as automatic activation.
-- Invoke `using-shopify-app-builder` explicitly when the harness lacks trigger-based routing.
-- Use only the domain guidance relevant to the task and keep the harness's own permission model intact.
-- Verify unstable Shopify facts against official sources and keep credentials out of prompts and generated files.
-- Require explicit approval for deployment, publication, billing, or paid advertising.
+- Begin broad tasks with using-shopify-app-builder. Explain unfamiliar terms, recommend one small milestone, and track Done / Next / Blocked / Not tested.
+- Inspect existing projects and preserve the framework, local customizations and unrelated changes.
+- Use shopify-connections for official Dev/Partner/CLI setup. No bundled MCP or auto-configured connector is needed.
+- Apify research is optional. Login is not paid-run authorization; inspect schema/pricing and approve input plus enforceable budget first. Use manual sources/exports if unavailable.
+- Never read credential caches, print tokens or collect customer data for research. Operator-managed server secrets stay outside prompts/public files.
+- Ask before store writes, access expansion, spending, charges, deployment and submission. Respect this host's permissions and delegation rules.
+- Use current official Shopify docs; retained technical references may target older projects. Test before reporting success and distinguish local checks from live proof.
 
 ## Example prompts
 
 ```text
-Read the using-shopify-app-builder skill and route this Shopify request.
-Use webhooks and app-auth to review this handler.
-Use app-performance and built-for-shopify-standards for a pre-ship audit.
+Read using-shopify-app-builder and guide me through one merchant problem and small MVP.
+```
+
+```text
+Read app-market-research and analyze this exported public dataset without running paid services.
 ```
 
 ## Verify
 
-Open a new session in the target harness and ask it to identify the installed Shopify App Builder skills. If it cannot, inspect that harness's current Agent Skills directory documentation or use the universal `.agents/skills/` fallback.
+Invoke the selected skill explicitly and confirm its linked references are accessible. Verify actual file/terminal/browser capability before promising implementation or connection.
+If upgrading from v1.x, remove the specific saved MCP connection and retired copied shopify-mcp folder after backing up customizations. A source update does not prove a host disconnected its old entry.

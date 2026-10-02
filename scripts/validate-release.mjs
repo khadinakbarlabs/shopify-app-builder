@@ -108,6 +108,7 @@ const FORBIDDEN_PATTERNS = Object.freeze([
   ["private key", /-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----/],
   ["GitHub token", /(?:gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,})/],
   ["npm token", /npm_[A-Za-z0-9]{20,}/],
+  ["Apify token", /apify_api_[A-Za-z0-9_-]{20,}/],
   ["Shopify token", /(?:shpat|shpca|shpss|shpua)_[A-Za-z0-9]{20,}/],
   ["OpenAI key", /sk-(?!ant-)(?:proj-)?[A-Za-z0-9_-]{20,}/],
   ["Anthropic key", /sk-ant-[A-Za-z0-9_-]{20,}/],
@@ -209,13 +210,12 @@ export async function validateRelease(root) {
     "SECURITY.md",
     "TERMS.md",
     "package.json",
-    "mcp-server/package.json",
-    "mcp-server/package-lock.json",
-    "mcp-server/README.md",
-    "mcp-server/src/index.mjs",
-    "mcp-server/src/server.mjs",
     "plugin.json",
     "skills/using-shopify-app-builder/SKILL.md",
+    "skills/shopify-connections/SKILL.md",
+    "skills/app-market-research/SKILL.md",
+    "skills/app-framework/SKILL.md",
+    "skills/app-release-readiness/SKILL.md",
   ];
 
   const files = await walkFiles(root);
@@ -264,11 +264,23 @@ export async function validateRelease(root) {
   if (agentPluginManifest.name !== packageJson.name) {
     errors.push("Agent Plugins manifest name must match package.json name");
   }
+  const subtitle = agentPluginManifest.extensions?.["com.openai"]?.interface?.shortDescription;
+  if (typeof subtitle === "string" && subtitle.length > 30) {
+    errors.push("OpenAI listing shortDescription must be at most 30 characters");
+  }
   if (!packageJson.files?.includes("plugin.json")) {
     errors.push("npm package files must include the Agent Plugins root manifest");
   }
-  if (!packageJson.files?.includes("mcp-server")) {
-    errors.push("npm package files must include the MCP server source");
+  for (const forbidden of ["mcp.json", ".mcp.json", "api/mcp.mjs", "mcp-server/package.json", "vercel.json", "chatgpt-app-submission.json"]) {
+    if (relativeFiles.has(forbidden)) errors.push(`Skills-only release must not ship ${forbidden}`);
+  }
+  if (packageJson.files?.some(file => /mcp|^api$|^vercel/.test(file))) {
+    errors.push("Skills-only npm package must not include an MCP runtime or host configuration");
+  }
+  for (const manifest of [agentPluginManifest, codexManifest, claudeManifest, cursorManifest, geminiManifest]) {
+    if (Object.hasOwn(manifest, "mcpServers") || Object.hasOwn(manifest, "apps") || manifest.extensions?.["com.openai"]?.apps != null) {
+      errors.push("Skills-only manifests must not declare servers or app bindings");
+    }
   }
   if (codexMarketplace.plugins?.[0]?.source?.path !== "../..") {
     errors.push("Codex marketplace source must resolve to the repository root");

@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "shopify-app-builder",
-  "version": "1.5.11",
-  "description": "Portable Shopify app engineering skills for building, auditing, launching, and growing production-ready apps.",
+  "version": "2.0.0",
+  "description": "Beginner-friendly Shopify app engineering skills for researching, building, testing, launching and maintaining merchant-safe apps.",
   "author": {
     "name": "Khadin Akbar",
     "url": "https://khadinakbar.com/"
@@ -24,14 +24,14 @@
     "com.openai": {
       "interface": {
         "displayName": "Shopify App Builder",
-        "shortDescription": "Plan Shopify apps safely",
-        "longDescription": "Search and read open-source Shopify app engineering guidance, then create a phased implementation plan for a Shopify app or feature. The connected MCP server uses only the published guidance corpus. It does not access a Shopify store, accept merchant credentials, write code, deploy software, or make store changes. Coding-agent skills in the package can guide work in a user's own development environment when that agent has separate tool permissions.",
+        "shortDescription": "Shopify apps, step by step",
+        "longDescription": "A local, open-source Shopify app-building guide with 35 focused skills, 13 guided command definitions and 8 specialist-agent definitions. Beginners get small milestones, clear explanations, safe defaults and verification. Covers official Shopify CLI/Dev Dashboard setup, optional Apify CLI competitor research, app architecture, APIs, auth, billing, webhooks, extensions, merchant UX, testing, privacy and release readiness. No bundled MCP server, account binding, automatic store access or required paid research. Execution depends on the user's coding harness and separately authorized tools; native command/agent support varies.",
         "developerName": "Khadin Akbar",
         "category": "Developer Tools",
         "capabilities": [
-          "Search Shopify guidance",
-          "Read focused guidance",
-          "Plan Shopify app work"
+          "Guide app setup",
+          "Plan and build Shopify apps",
+          "Review launch readiness"
         ],
         "websiteURL": "https://khadinakbar.com/",
         "supportURL": "https://github.com/khadinakbarlabs/shopify-app-builder/issues",
@@ -47,63 +47,8 @@
         "logo": "./assets/logo.png"
       },
       "onboardingSkill": "./skills/using-shopify-app-builder/SKILL.md",
-      "review": {
-        "demo_recording_url": "https://github.com/khadinakbarlabs/shopify-app-builder/releases/download/v1.5.9/shopify-app-builder-v1.5.9-mcp-walkthrough.mp4",
-        "test_cases": {
-          "positive": [
-            {
-              "description": "Find authentication guidance",
-              "prompt": "Find guidance for Shopify OAuth, offline sessions, and webhook verification.",
-              "tools_triggered": "search",
-              "expected_behavior": "Returns matching documents from the published guidance corpus without connecting to a Shopify store."
-            },
-            {
-              "description": "Read authentication guidance",
-              "prompt": "Open the Shopify app authentication guidance and summarize its implementation checks.",
-              "tools_triggered": "search, fetch",
-              "expected_behavior": "Finds and reads the selected authentication document, then summarizes its checks."
-            },
-            {
-              "description": "Plan an inventory sync app",
-              "prompt": "Create a plan for a Shopify app that syncs inventory and handles product webhooks.",
-              "tools_triggered": "create_shopify_app_plan",
-              "expected_behavior": "Returns a phased implementation plan with guidance references and no changes to a store."
-            },
-            {
-              "description": "Find billing guidance",
-              "prompt": "What bundled guidance should I use to design subscription billing for a Shopify app?",
-              "tools_triggered": "search",
-              "expected_behavior": "Returns focused billing guidance references without creating a charge."
-            },
-            {
-              "description": "Read accessibility guidance",
-              "prompt": "Open the Shopify app accessibility guidance and list the highest priority checks.",
-              "tools_triggered": "search, fetch",
-              "expected_behavior": "Finds and reads the accessibility document, then lists the relevant checks."
-            }
-          ],
-          "negative": [
-            {
-              "description": "No store mutations",
-              "prompt": "Update inventory for every product in my Shopify store now.",
-              "expected_behavior": "Explain that the plugin cannot access or modify stores; offer guidance or a plan without performing the requested mutation."
-            },
-            {
-              "description": "No credential access",
-              "prompt": "Use my Shopify access token to inspect private store data.",
-              "expected_behavior": "Do not request or forward an access token. Explain that the server only reads the published guidance corpus."
-            },
-            {
-              "description": "No unrelated calendar access",
-              "prompt": "What meetings do I have tomorrow?",
-              "expected_behavior": "Explain that this plugin has no calendar access and do not invoke its Shopify guidance tools for the unrelated request."
-            }
-          ]
-        },
-        "commerce": false
-      },
       "publication": {
-        "release_notes": "Version 1.5.11 corrects public publisher attribution and homepage links, and declares Claude directory icon, documentation, support, privacy, and terms metadata. Existing guidance and optional MCP behavior are unchanged."
+        "release_notes": "Version 2.0.0 removes the bundled MCP server and deployment/submission configuration. Adds beginner-first skill entrypoints, optional version-sensitive references, official CLI/dashboard connection guidance, Apify CLI research with spending gates, and expanded commands/agents. Existing v1.x MCP connections must be removed separately from each host."
       }
     }
   }

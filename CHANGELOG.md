@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.5.11 - 2026-10-02
+
+- Corrected public publisher attribution and homepage links across agent manifests and npm metadata.
+- Declared Claude directory icon, documentation, support, privacy-policy, and terms links using the documented listing fields.
+- Added regression checks for Claude listing completeness and precise public-publisher allowances in the release scanner; credential detection remains active.
+- Image-screening and portable-manifest notices remain review information, not claims that artwork is executed as code. The existing optional MCP configuration is unchanged; the separate OpenAI skills-only edition has no remote connection.
+
+## 1.5.10 - 2026-10-02 (OpenAI skills-only submission edition)
+
+- Prepared a separate 32-skill OpenAI upload without an MCP connection. Not a GitHub or npm release; the existing OpenAI MCP draft cannot accept a server-inventory change.
+
 ## 1.5.9 - 2026-10-01
 
 - Declared the remote HTTP transport in the native `.mcp.json` configuration so Claude does not drop the server as a malformed stdio entry. Added a regression test while preserving the portable Agent Plugins transport name.

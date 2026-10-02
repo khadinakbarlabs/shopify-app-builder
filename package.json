@@ -1,6 +1,6 @@
 {
   "name": "shopify-app-builder",
-  "version": "1.5.9",
+  "version": "1.5.11",
   "description": "Open-source Shopify app development guidance for AI coding agents, with a read-only MCP server and native agent plugins.",
   "type": "module",
   "main": ".opencode/plugins/shopify-app-builder.js",
@@ -65,7 +65,7 @@
     "polaris",
     "webhooks"
   ],
-  "author": "Shopify App Builder Contributors",
+  "author": "Khadin Akbar",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -74,7 +74,7 @@
   "bugs": {
     "url": "https://github.com/khadinakbarlabs/shopify-app-builder/issues"
   },
-  "homepage": "https://github.com/khadinakbarlabs/shopify-app-builder#readme",
+  "homepage": "https://khadinakbar.com/",
   "publishConfig": {
     "access": "public"
   }

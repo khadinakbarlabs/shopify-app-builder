@@ -1,13 +1,13 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "shopify-app-builder",
-  "version": "1.5.9",
+  "version": "1.5.11",
   "description": "Portable Shopify app engineering skills for building, auditing, launching, and growing production-ready apps.",
   "author": {
-    "name": "Shopify App Builder Contributors",
-    "url": "https://github.com/khadinakbarlabs/shopify-app-builder"
+    "name": "Khadin Akbar",
+    "url": "https://khadinakbar.com/"
   },
-  "homepage": "https://github.com/khadinakbarlabs/shopify-app-builder#readme",
+  "homepage": "https://khadinakbar.com/",
   "repository": "https://github.com/khadinakbarlabs/shopify-app-builder",
   "license": "MIT",
   "keywords": [
@@ -28,7 +28,11 @@
         "longDescription": "Search and read open-source Shopify app engineering guidance, then create a phased implementation plan for a Shopify app or feature. The connected MCP server uses only the published guidance corpus. It does not access a Shopify store, accept merchant credentials, write code, deploy software, or make store changes. Coding-agent skills in the package can guide work in a user's own development environment when that agent has separate tool permissions.",
         "developerName": "Khadin Akbar",
         "category": "Developer Tools",
-        "capabilities": ["Search Shopify guidance", "Read focused guidance", "Plan Shopify app work"],
+        "capabilities": [
+          "Search Shopify guidance",
+          "Read focused guidance",
+          "Plan Shopify app work"
+        ],
         "websiteURL": "https://khadinakbar.com/",
         "supportURL": "https://github.com/khadinakbarlabs/shopify-app-builder/issues",
         "privacyPolicyURL": "https://github.com/khadinakbarlabs/shopify-app-builder/blob/main/PRIVACY.md",
@@ -99,7 +103,7 @@
         "commerce": false
       },
       "publication": {
-        "release_notes": "Version 1.5.9 improves subject relevance in guidance search, documents data processing and retention, and clarifies negative review cases. Includes read-only guidance retrieval and phased app planning."
+        "release_notes": "Version 1.5.11 corrects public publisher attribution and homepage links, and declares Claude directory icon, documentation, support, privacy, and terms metadata. Existing guidance and optional MCP behavior are unchanged."
       }
     }
   }

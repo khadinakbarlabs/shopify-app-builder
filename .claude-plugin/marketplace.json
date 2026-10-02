@@ -3,13 +3,13 @@
   "name": "shopify-app-builder",
   "description": "Open-source Shopify development tools for AI coding agents.",
   "owner": {
-    "name": "Shopify App Builder Contributors",
-    "url": "https://github.com/khadinakbarlabs/shopify-app-builder"
+    "name": "Khadin Akbar",
+    "url": "https://khadinakbar.com/"
   },
   "plugins": [
     {
       "name": "shopify-app-builder",
-      "version": "1.5.9",
+      "version": "1.5.11",
       "source": "./",
       "description": "Build, audit, launch, and grow production-grade Shopify apps.",
       "category": "Development",

@@ -2,13 +2,13 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "shopify-app-builder",
   "displayName": "Shopify App Builder",
-  "version": "1.5.9",
+  "version": "1.5.11",
   "description": "Open-source Shopify app development skills, commands, and specialist agents for building production-grade apps.",
   "author": {
-    "name": "Shopify App Builder Contributors",
-    "url": "https://github.com/khadinakbarlabs/shopify-app-builder"
+    "name": "Khadin Akbar",
+    "url": "https://khadinakbar.com/"
   },
-  "homepage": "https://github.com/khadinakbarlabs/shopify-app-builder#readme",
+  "homepage": "https://khadinakbar.com/",
   "privacyPolicyUrl": "https://github.com/khadinakbarlabs/shopify-app-builder/blob/main/PRIVACY.md",
   "repository": "https://github.com/khadinakbarlabs/shopify-app-builder",
   "license": "MIT",
@@ -22,5 +22,9 @@
     "polaris"
   ],
   "skills": "./skills/",
-  "commands": "./commands/"
+  "commands": "./commands/",
+  "icon": "./assets/icon.png",
+  "documentationUrl": "https://github.com/khadinakbarlabs/shopify-app-builder#readme",
+  "supportUrl": "https://github.com/khadinakbarlabs/shopify-app-builder/issues",
+  "termsOfServiceUrl": "https://github.com/khadinakbarlabs/shopify-app-builder/blob/main/TERMS.md"
 }

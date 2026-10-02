@@ -54,7 +54,7 @@ If your harness does not trigger the router automatically, invoke `using-shopify
 
 ## MCP server for ChatGPT and coding agents
 
-The public ChatGPT directory accepts this product through its MCP submission path, not as a skills ZIP. The included server exposes three safe, read-only tools:
+OpenAI's plugin directory supports skills-only packages as well as MCP-backed packages. The separate skills-only submission edition needs no remote server; the optional MCP edition requires endpoint setup and domain verification. The included server exposes three safe, read-only tools:
 
 - `search` locates focused Shopify engineering guidance.
 - `fetch` retrieves one selected guidance document.

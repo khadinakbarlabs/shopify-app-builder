@@ -1,6 +1,6 @@
 {
   "name": "@khadinakbarlabs/shopify-app-builder-mcp",
-  "version": "1.5.9",
+  "version": "1.5.11",
   "description": "Read-only MCP server for Shopify App Builder engineering guidance.",
   "type": "module",
   "private": true,

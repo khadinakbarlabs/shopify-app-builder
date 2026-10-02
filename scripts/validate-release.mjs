@@ -124,11 +124,25 @@ export function findForbiddenText(text) {
 }
 
 export function findForbiddenTextInReleaseFile(relative, text) {
-  if (relative !== "plugin.json") return findForbiddenText(text);
+  const publisherFields = {
+    "plugin.json": ["author.name", "extensions.com.openai.interface.developerName"],
+    ".claude-plugin/plugin.json": ["author.name"],
+    ".claude-plugin/marketplace.json": ["owner.name"],
+    ".codex-plugin/plugin.json": ["author.name", "interface.developerName"],
+    ".cursor-plugin/plugin.json": ["author.name"],
+    "package.json": ["author"],
+  };
+  if (!Object.hasOwn(publisherFields, relative)) return findForbiddenText(text);
   const manifest = JSON.parse(text);
-  const openaiInterface = manifest.extensions?.["com.openai"]?.interface;
-  if (openaiInterface?.developerName === "Khadin Akbar") {
-    openaiInterface.developerName = "[approved verified developer]";
+  for (const field of publisherFields[relative]) {
+    const keys = field === "extensions.com.openai.interface.developerName"
+      ? ["extensions", "com.openai", "interface", "developerName"]
+      : field.split(".");
+    const key = keys.pop();
+    const parent = keys.reduce((value, part) => value?.[part], manifest);
+    if (parent?.[key] === "Khadin Akbar") {
+      parent[key] = "[approved public publisher]";
+    }
   }
   return findForbiddenText(JSON.stringify(manifest));
 }

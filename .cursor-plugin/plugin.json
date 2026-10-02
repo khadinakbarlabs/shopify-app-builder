@@ -2,12 +2,12 @@
   "name": "shopify-app-builder",
   "displayName": "Shopify App Builder",
   "description": "Production-focused Shopify app engineering skills, commands, and specialist agents.",
-  "version": "1.5.9",
+  "version": "1.5.11",
   "author": {
-    "name": "Shopify App Builder Contributors",
-    "url": "https://github.com/khadinakbarlabs/shopify-app-builder"
+    "name": "Khadin Akbar",
+    "url": "https://khadinakbar.com/"
   },
-  "homepage": "https://github.com/khadinakbarlabs/shopify-app-builder#readme",
+  "homepage": "https://khadinakbar.com/",
   "repository": "https://github.com/khadinakbarlabs/shopify-app-builder",
   "license": "MIT",
   "keywords": [

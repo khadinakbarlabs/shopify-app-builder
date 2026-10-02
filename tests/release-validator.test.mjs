@@ -118,6 +118,43 @@ test("Claude directory manifest declares the public privacy policy", async () =>
   assert.match(claude.privacyPolicyUrl, /\/PRIVACY\.md$/);
 });
 
+test("Claude directory listing has the approved publisher, website, links, and icon", async () => {
+  const claude = JSON.parse(await readFile(".claude-plugin/plugin.json", "utf8"));
+  const marketplace = JSON.parse(await readFile(".claude-plugin/marketplace.json", "utf8"));
+  const portable = JSON.parse(await readFile("plugin.json", "utf8"));
+  const listing = portable.extensions["com.openai"].interface;
+  const approvedName = ["Khadin", "Akbar"].join(" ");
+  assert.equal(claude.author.name, approvedName);
+  assert.equal(marketplace.owner.name, approvedName);
+  assert.equal(claude.author.url, "https://khadinakbar.com/");
+  assert.equal(claude.homepage, "https://khadinakbar.com/");
+  assert.equal(claude.supportUrl, listing.supportURL);
+  assert.equal(claude.termsOfServiceUrl, listing.termsOfServiceURL);
+  assert.equal(claude.documentationUrl, portable.repository + "#readme");
+  for (const field of ["homepage", "documentationUrl", "supportUrl", "privacyPolicyUrl", "termsOfServiceUrl"]) {
+    assert.equal(new URL(claude[field]).protocol, "https:");
+  }
+  assert.equal(claude.icon, "./assets/icon.png");
+  const icon = await readFile(claude.icon);
+  assert.deepEqual([...icon.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
+  assert.equal(icon.readUInt32BE(16), icon.readUInt32BE(20));
+});
+
+test("release scanner allows approved public publisher fields but not unrelated names or secrets", () => {
+  const approvedName = ["Khadin", "Akbar"].join(" ");
+  for (const file of ["plugin.json", ".claude-plugin/plugin.json", ".codex-plugin/plugin.json", ".cursor-plugin/plugin.json"]) {
+    const manifest = {author: {name: approvedName}};
+    assert.deepEqual(findForbiddenTextInReleaseFile(file, JSON.stringify(manifest)), []);
+    manifest.description = approvedName;
+    assert.deepEqual(findForbiddenTextInReleaseFile(file, JSON.stringify(manifest)), ["personal publisher identity"]);
+    delete manifest.description;
+    manifest.author.name = `ghp_${"abcdefghijklmnopqrstuvwxyz123456"}`;
+    assert.deepEqual(findForbiddenTextInReleaseFile(file, JSON.stringify(manifest)), ["GitHub token"]);
+  }
+  assert.deepEqual(findForbiddenTextInReleaseFile("package.json", JSON.stringify({author: approvedName})), []);
+  assert.deepEqual(findForbiddenTextInReleaseFile(".claude-plugin/marketplace.json", JSON.stringify({owner: {name: approvedName}})), []);
+});
+
 test("native remote MCP configuration declares Claude's HTTP transport", async () => {
   const native = JSON.parse(await readFile(".mcp.json", "utf8"));
   const portable = JSON.parse(await readFile("mcp.json", "utf8"));

@@ -1,12 +1,12 @@
 {
   "name": "shopify-app-builder",
-  "version": "1.5.9",
+  "version": "1.5.11",
   "description": "Open-source Shopify app development skills for Claude Code, Codex, Cursor, OpenCode, Command Code, and compatible AI coding agents.",
   "author": {
-    "name": "Shopify App Builder Contributors",
-    "url": "https://github.com/khadinakbarlabs/shopify-app-builder"
+    "name": "Khadin Akbar",
+    "url": "https://khadinakbar.com/"
   },
-  "homepage": "https://github.com/khadinakbarlabs/shopify-app-builder#readme",
+  "homepage": "https://khadinakbar.com/",
   "repository": "https://github.com/khadinakbarlabs/shopify-app-builder",
   "license": "MIT",
   "keywords": [
@@ -24,13 +24,13 @@
     "displayName": "Shopify App Builder",
     "shortDescription": "Build, audit, launch, and grow Shopify apps.",
     "longDescription": "A comprehensive open-source Shopify app engineering toolkit with 32 focused skills for routing, APIs, authentication, billing, webhooks, extensions, UX, accessibility, performance, App Store listings, and acquisition.",
-    "developerName": "Shopify App Builder Contributors",
+    "developerName": "Khadin Akbar",
     "category": "Productivity",
     "capabilities": [
       "Read",
       "Write"
     ],
-    "websiteURL": "https://github.com/khadinakbarlabs/shopify-app-builder",
+    "websiteURL": "https://khadinakbar.com/",
     "privacyPolicyURL": "https://github.com/khadinakbarlabs/shopify-app-builder/blob/main/PRIVACY.md",
     "termsOfServiceURL": "https://github.com/khadinakbarlabs/shopify-app-builder/blob/main/TERMS.md",
     "defaultPrompt": [
@@ -38,6 +38,7 @@
       "Audit my Shopify app before App Store submission.",
       "Debug this Shopify API, auth, billing, or webhook issue."
     ],
-    "brandColor": "#004C3F"
+    "brandColor": "#004C3F",
+    "supportURL": "https://github.com/khadinakbarlabs/shopify-app-builder/issues"
   }
 }

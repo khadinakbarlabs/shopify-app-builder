@@ -45,6 +45,22 @@ test("release scanner permits only the approved OpenAI developer identity field"
   );
 });
 
+test("release scanner permits the verified business only in public publisher fields", () => {
+  const businessName = ["Khadin", "Akbar", "Ventures"].join(" ");
+  for (const [file, manifest] of [
+    ["plugin.json", {author: {name: businessName}, extensions: {"com.openai": {interface: {developerName: businessName}}}}],
+    [".codex-plugin/plugin.json", {author: {name: businessName}, interface: {developerName: businessName}}],
+  ]) {
+    assert.deepEqual(findForbiddenTextInReleaseFile(file, JSON.stringify(manifest)), []);
+    manifest.description = businessName;
+    assert.deepEqual(findForbiddenTextInReleaseFile(file, JSON.stringify(manifest)), ["personal publisher identity"]);
+    delete manifest.description;
+    manifest.author.name = `${businessName} Unverified`;
+    assert.deepEqual(findForbiddenTextInReleaseFile(file, JSON.stringify(manifest)), ["personal publisher identity"]);
+  }
+  assert.deepEqual(findForbiddenTextInReleaseFile("README.md", businessName), ["personal publisher identity"]);
+});
+
 test("release scanner rejects additional common provider credentials", () => {
   const syntheticFixtures = [
     {sample: `sk-ant-${"a".repeat(24)}`, expected: "Anthropic key"},

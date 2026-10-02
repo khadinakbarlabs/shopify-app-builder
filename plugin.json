@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "shopify-app-builder",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Beginner-friendly Shopify app engineering skills for researching, building, testing, launching and maintaining merchant-safe apps.",
   "author": {
     "name": "Khadin Akbar",
@@ -48,7 +48,7 @@
       },
       "onboardingSkill": "./skills/using-shopify-app-builder/SKILL.md",
       "publication": {
-        "release_notes": "Version 2.0.0 removes the bundled MCP server and deployment/submission configuration. Adds beginner-first skill entrypoints, optional version-sensitive references, official CLI/dashboard connection guidance, Apify CLI research with spending gates, and expanded commands/agents. Existing v1.x MCP connections must be removed separately from each host."
+        "release_notes": "Version 2.0.1 fixes release validation for the approved verified business identity in public publisher fields and clarifies Claude directory-only metadata and static artwork. Retains 35 beginner-first skills, 13 guided command definitions and 8 specialist-agent definitions, with no bundled MCP server. Existing v1.x MCP connections must be removed separately from each host."
       }
     }
   }

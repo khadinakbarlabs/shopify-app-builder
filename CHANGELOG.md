@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.1 — 2026-10-02
+
+- Allow the approved verified business identity in explicit public publisher fields of submission copies. Unknown identity variants, unrelated identity text and credential patterns remain rejected.
+- Add regression coverage for the business-name allowance and retained rejection boundaries.
+- Explain directory-only Claude fields, the portable manifest notice and static-PNG review references without deleting branding, policy links or test coverage to evade validation.
+
 ## 2.0.0 — 2026-10-02
 
 - Breaking: removed bundled MCP configuration, runtime/API source, hosting config and obsolete MCP submission metadata. Existing hosted deployments/connections require separate removal.

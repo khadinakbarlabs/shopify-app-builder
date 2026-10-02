@@ -125,6 +125,7 @@ export function findForbiddenText(text) {
 }
 
 export function findForbiddenTextInReleaseFile(relative, text) {
+  const approvedPublisherNames = new Set(["Khadin Akbar", "Khadin Akbar Ventures"]);
   const publisherFields = {
     "plugin.json": ["author.name", "extensions.com.openai.interface.developerName"],
     ".claude-plugin/plugin.json": ["author.name"],
@@ -141,7 +142,7 @@ export function findForbiddenTextInReleaseFile(relative, text) {
       : field.split(".");
     const key = keys.pop();
     const parent = keys.reduce((value, part) => value?.[part], manifest);
-    if (parent?.[key] === "Khadin Akbar") {
+    if (approvedPublisherNames.has(parent?.[key])) {
       parent[key] = "[approved public publisher]";
     }
   }

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.1.0 — 2026-10-05
+
+- Add a portable local project copilot for source-backed facts, decisions, cross-session handoffs, optional feedback and milestone evidence. Preserve existing projects and flag stale assumptions before using them.
+- Add an offline Node helper and `shopify-project` CLI for explicit initialization, validated conflict-safe updates, status, feedback, and local Markdown/responsive script-free HTML reports. No network, telemetry, credential discovery or background service.
+- Add four guided commands: resume-shopify-app, report-shopify-app, feedback-shopify-app and plan-shopify-check-ins. Now 36 skills, 17 command definitions and 8 specialist-agent definitions.
+- Add bounded quality/feedback/API check-in proposals, with explicit timezone and host/runner authorization rather than automatic schedules. Update harness guidance and local data/privacy controls.
+- Add executable behavioral and security regressions for resume, stale context, evidence levels, untrusted feedback, validation, conflicting writers, symlinks and copy-only installation. Host/model evaluations remain distinct from these local tests.
+
 ## 2.0.1 — 2026-10-02
 
 - Allow the approved verified business identity in explicit public publisher fields of submission copies. Unknown identity variants, unrelated identity text and credential patterns remain rejected.

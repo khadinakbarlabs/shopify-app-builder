@@ -2,14 +2,14 @@
 
 [![license](https://img.shields.io/badge/license-MIT-0b6e4f)](LICENSE)
 [![Agent Plugins](https://img.shields.io/badge/Agent%20Plugins-1.0%20portable-5b21b6)](https://agent-plugins.org/)
-[![skills](https://img.shields.io/badge/skills-35-004c3f)](skills/)
+[![skills](https://img.shields.io/badge/skills-36-004c3f)](skills/)
 [![release checks](https://github.com/khadinakbarlabs/shopify-app-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/khadinakbarlabs/shopify-app-builder/actions/workflows/ci.yml)
 
 A beginner-friendly, open-source Shopify app development plugin for Claude Code, Codex, Cursor, OpenCode, Gemini CLI and other Agent Skills-compatible coding harnesses.
 
 You bring the merchant problem and choose your coding agent. The plugin helps that agent explain unfamiliar terms, recommend a sensible path, implement small testable changes and show evidence before calling something done.
 
-**v2.0.0 is skills-first: no bundled MCP server, remote endpoint, required connector subscription or hidden credentials.** It contains 35 focused skills, 13 guided command definitions and 8 specialist-agent definitions. Native command/agent support depends on the harness; all clients can use the same portable skill workflows.
+**v2.1.0 is skills-first: no bundled MCP server, telemetry, required cloud account or hidden credentials.** It contains 36 focused skills, 17 guided command definitions and 8 specialist-agent definitions, plus an optional offline project helper. Native command/agent support depends on the harness; all clients can use the same portable skill workflows.
 
 > Independent community project. Not affiliated with, endorsed by or sponsored by Shopify. No guarantee of security, profitability, trademark clearance, App Store acceptance or Built for Shopify designation.
 
@@ -49,6 +49,7 @@ The skill entrypoints are deliberately short. Detailed v1.x examples are retaine
 
 ## Contents
 
+- [Your local project copilot](#your-local-project-copilot)
 - [Install in your coding agent](#install-in-your-coding-agent)
 - [Connect only what you need](#connect-only-what-you-need)
 - [Your app-building roadmap](#your-app-building-roadmap)
@@ -62,6 +63,33 @@ The skill entrypoints are deliberately short. Detailed v1.x examples are retaine
 - [Safety, privacy and limitations](#safety-privacy-and-limitations)
 - [Contribute and verify](#contribute-and-verify)
 - [FAQ](#faq)
+
+## Your local project copilot
+
+Ask naturally: "Continue my app", "What should we do next?", "Show me the evidence", or "Help turn this feedback into an improvement". Use [shopify-project-copilot](skills/shopify-project-copilot/SKILL.md); beginners don't need to memorize every skill. Choose Guide me / Build with me / Expert mode for the explanation style, not extra permissions.
+
+- **Context that travels:** short project facts, decisions and session handoffs in your app folder. Share the selected folder between harnesses yourself; there is no automatic cloud sync.
+- **Practical next steps:** diagnose blockers, flag assumed/stale facts, preserve existing projects and resume unfinished work. Recommendations never execute themselves.
+- **Feedback without tracking:** keep optional redacted plugin/app observations locally. Preview and approve anything shared publicly.
+- **Readable reports:** local Markdown plus responsive, script-free HTML with milestone cards, environment-specific evidence, recent sessions and feedback. No invented readiness percentage or unsupported user metrics.
+- **Optional check-ins:** proposed weekly/monthly quality, feedback or API reviews. You choose exact time/timezone, runner, access, costs and pause controls. No task is enabled by installing the plugin.
+
+From a verified checkout, use the contained helper (Node 20+):
+
+```bash
+node skills/shopify-project-copilot/scripts/project.mjs init --project /path/to/your-app --name "Inventory helper"
+node skills/shopify-project-copilot/scripts/project.mjs status --project /path/to/your-app
+node skills/shopify-project-copilot/scripts/project.mjs report --project /path/to/your-app
+node skills/shopify-project-copilot/scripts/project.mjs schedule --routine quality --cadence weekly --timezone Asia/Karachi
+```
+
+Replace `/path/to/your-app` with the explicit existing app folder; commands never scaffold it. Copy-only installs include the helper inside the installed skill, so find that actual location. Published npm packages additionally expose `shopify-project` as a convenience; verify registry version rather than assuming it matches this GitHub release.
+
+State and reports live in `.shopify-app-builder/` inside the chosen folder. It has an inner Git ignore file and private permissions, but neither is encryption. Keep secrets, customer/contact data, raw logs and transcripts out. The helper blocks common sensitive patterns, unknown fields, symlinks and conflicting revisions. Read [the context contract](skills/shopify-project-copilot/references/context.md) before updating a reviewed JSON copy; don't bypass conflicts or overwrite a corrupt/unknown-schema file.
+
+Local tests, development-store behavior, production checks and directory approval remain separate. The dashboard describes recorded observations, not independently certified app quality. With no terminal/files, the agent can provide an unsaved Markdown handoff instead.
+
+See [check-in controls](skills/shopify-project-copilot/references/check-ins.md), [behavioral evaluation scenarios](docs/project-copilot-evaluation.md), [privacy](PRIVACY.md), and [v2.1 release notes](docs/release-notes-v2.1.0.md).
 
 ## Install in your coding agent
 
@@ -205,6 +233,8 @@ Apify output is public-page research, not Shopify merchant-store data or competi
 
 ## Skill catalog
 
+New: [shopify-project-copilot](skills/shopify-project-copilot/SKILL.md) connects optional project context, resume, feedback, local visual reports and bounded check-in proposals.
+
 The router selects the smallest relevant set. You can also invoke a skill directly by its folder name or natural-language intent.
 
 | Skill | Beginner outcome |
@@ -251,6 +281,10 @@ Commands are guided instructions, not automatic approval to run their actions. N
 
 | Guided command | Purpose |
 | --- | --- |
+| resume-shopify-app | Reconcile saved context and continue one useful milestone. |
+| report-shopify-app | Generate local Markdown and visual HTML evidence reports. |
+| feedback-shopify-app | Capture optional redacted feedback and propose an improvement. |
+| plan-shopify-check-ins | Propose bounded recurring reviews; nothing is enabled automatically. |
 | start-shopify-app | Start a beginner-friendly Shopify app project from idea or an existing repository. |
 | connect-shopify | Guide Shopify Dev/Partner dashboard setup and optional Apify CLI access without MCP. |
 | research-shopify-app | Research a Shopify app niche with public sources or the optional Apify CLI Actor. |

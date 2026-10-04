@@ -1,6 +1,8 @@
 # Agent compatibility
 
-v2 is a local Agent Plugins 1.0 package with 35 contained Agent Skills, 13 command definitions and 8 specialist-agent definitions. There is no portable/native MCP configuration, hosted API source or app-account binding.
+v2.1 is a local Agent Plugins 1.0 package with 36 contained Agent Skills, 17 command definitions and 8 specialist-agent definitions. There is no portable/native MCP configuration, hosted API source or app-account binding.
+
+The project copilot's optional offline helper needs Node 20+ and access to the selected app folder. Complete copy-only skill installs retain the helper. Project state is local and ignored by default; it isn't automatically synchronized by the plugin. Scheduling requires a separately supported, explicitly configured runner. In chat-only hosts, use unsaved Markdown handoffs instead. See the copilot skill for conflict checks, privacy controls and report limitations.
 
 ## Portable core
 

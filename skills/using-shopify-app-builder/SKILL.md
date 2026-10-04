@@ -19,10 +19,13 @@ Use [the beginner working agreement](references/beginner-workflow.md) for a broa
 
 Maintain a short project checklist with done, next, blocked and not-yet-tested. Save decisions in the user's chosen project notes, not a global configuration; don't duplicate secrets or customer data.
 
+For ongoing work, resume requests, feedback, reports or check-in plans, use [shopify-project-copilot](../shopify-project-copilot/SKILL.md). Reconcile its saved context with current files and the latest user request. Offer optional portable local state rather than requiring setup. Adapt presentation to Guide me / Build with me / Expert mode; that choice doesn't expand permissions. Load only topic-specific references needed for the next milestone.
+
 ## Pick the next milestone
 
 | User outcome | First skills | Useful next skills |
 | --- | --- | --- |
+| Continue a project, understand progress or collect feedback | shopify-project-copilot | affected implementation skill |
 | Pick a problem and validate demand | app-niche-finder, app-market-research, app-validation | app-naming, app-pricing-strategy |
 | Connect accounts and run the first page | shopify-connections, shopify-cli, app-framework | app-auth, app-bridge, polaris-ui |
 | Read/update merchant data | admin-graphql, app-auth | metafields-metaobjects, webhooks |

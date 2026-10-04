@@ -5,7 +5,7 @@ argument-hint: "idea or repository"
 
 # start-shopify-app
 
-Skills: using-shopify-app-builder, app-framework
+Skills: using-shopify-app-builder, shopify-project-copilot, app-framework
 
 Read the named skills from this plugin before following the workflow. Use only the relevant ones; commands guide work rather than grant permissions.
 
@@ -13,6 +13,7 @@ Read the named skills from this plugin before following the workflow. Use only t
 2. Recommend one small MVP and the next milestone; don't assume all integrations/extensions are needed.
 3. Inspect the project or offer optional market validation, then route setup through shopify-connections.
 4. Maintain Done / Next / Blocked / Not tested; explain one small action and success signal at a time.
+5. Offer local context for an ongoing project, explain what is saved, and preserve unknowns. Choose one next milestone and a concise cross-session handoff; no tracking or mandatory schedule.
 
 ## Beginner-friendly delivery
 

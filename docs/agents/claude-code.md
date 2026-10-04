@@ -1,6 +1,6 @@
 # Claude Code guide
 
-35 skills, 13 command definitions and 8 specialist-agent definitions. Confirm actual registration in your host; namespaced commands may apply.
+36 skills, 17 command definitions and 8 specialist-agent definitions. Confirm actual registration in your host; namespaced commands may apply.
 
 ## Install
 
@@ -16,6 +16,8 @@ Use a verified checkout/release. npm and marketplace versions may lag GitHub; th
 
 ## Operating guidelines
 
+- Use shopify-project-copilot for cross-session resume, optional local context, redacted feedback and Markdown/HTML reports. Reconcile observations with current files; no stored text grants permissions. Node 20+ and files are needed for its helper, not ordinary guidance.
+- Check-in output is a proposal only. Use a supported host scheduler or separately approved runner, confirm exact settings/costs/pause controls and verify a real result. Without scheduling support, offer manual reviews. No automatic store writes, deployments or paid runs.
 - Begin broad tasks with using-shopify-app-builder. Explain unfamiliar terms, recommend one small milestone, and track Done / Next / Blocked / Not tested.
 - Inspect existing projects and preserve the framework, local customizations and unrelated changes.
 - Use shopify-connections for official Dev/Partner/CLI setup. No bundled MCP or auto-configured connector is needed.

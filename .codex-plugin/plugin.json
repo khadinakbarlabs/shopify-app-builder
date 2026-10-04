@@ -1,6 +1,6 @@
 {
   "name": "shopify-app-builder",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Beginner-friendly Shopify app-building skills with guided setup, research, implementation and release checks. No MCP required.",
   "author": {
     "name": "Khadin Akbar",
@@ -22,7 +22,7 @@
   "interface": {
     "displayName": "Shopify App Builder",
     "shortDescription": "Shopify apps, step by step",
-    "longDescription": "35 portable skills covering Shopify app development from idea to maintenance. Optional Shopify and Apify CLI setup, beginner milestones, safety and verification. Command/agent definitions are reference workflows where not supported natively.",
+    "longDescription": "36 portable skills covering Shopify apps from idea to maintenance, with local project context, cross-session resume, redacted feedback, Markdown/HTML reports and optional check-in proposals. No MCP or tracking; scheduling requires a separately authorized supported runner. Commands and roles are reference workflows where not supported natively.",
     "developerName": "Khadin Akbar",
     "category": "Productivity",
     "capabilities": [

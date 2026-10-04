@@ -10,6 +10,7 @@ Before acting on a Shopify request:
 3. Inspect the user's repository and preserve unrelated changes.
 4. Verify time-sensitive Shopify API, CLI, Polaris, App Bridge, review, pricing, and advertising claims against current official Shopify documentation.
 5. Run proportionate tests and report observed evidence before claiming completion.
+6. For resume, context, feedback or progress reports, read `skills/shopify-project-copilot/SKILL.md`. Its helper stores optional local state, not a cloud memory. Reconcile it with current files; schedule proposals require an actual supported runner and separate authorization.
 
 Never read, print, commit, or publish credentials. Do not deploy, submit an app, change billing, or enable paid advertising without explicit authorization for that consequential action.
 

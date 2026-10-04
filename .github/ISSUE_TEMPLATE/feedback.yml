@@ -1,0 +1,30 @@
+name: Workflow feedback
+description: Share a redacted observation that can improve the plugin.
+title: "feedback: "
+body:
+  - type: markdown
+    attributes:
+      value: Share only reviewed, non-sensitive summaries. No project.json, transcripts, customer data, credentials or private URLs. Use private security reporting for vulnerabilities.
+  - type: input
+    id: version
+    attributes:
+      label: Plugin version
+    validations:
+      required: true
+  - type: input
+    id: harness
+    attributes:
+      label: Coding harness and version
+  - type: textarea
+    id: goal
+    attributes:
+      label: What were you trying to achieve?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: What helped, or remained confusing?
+      description: Include expected versus observed behavior and minimal redacted reproduction steps.
+    validations:
+      required: true

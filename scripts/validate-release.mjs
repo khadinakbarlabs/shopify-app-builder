@@ -217,6 +217,12 @@ export async function validateRelease(root) {
     "skills/app-market-research/SKILL.md",
     "skills/app-framework/SKILL.md",
     "skills/app-release-readiness/SKILL.md",
+    "skills/shopify-project-copilot/SKILL.md",
+    "skills/shopify-project-copilot/scripts/project.mjs",
+    "skills/shopify-project-copilot/references/context.md",
+    "skills/shopify-project-copilot/references/check-ins.md",
+    "docs/release-notes-v2.1.0.md",
+    "docs/project-copilot-evaluation.md",
   ];
 
   const files = await walkFiles(root);
@@ -294,6 +300,9 @@ export async function validateRelease(root) {
   }
   if (packageJson.bin?.["shopify-app-builder"] !== "scripts/install-agent-skills.mjs") {
     errors.push("package.json bin must use npm's canonical relative path");
+  }
+  if (packageJson.bin?.["shopify-project"] !== "skills/shopify-project-copilot/scripts/project.mjs") {
+    errors.push("Project CLI must use the contained portable skill helper");
   }
   for (const lifecycle of ["install", "postinstall", "prepare"]) {
     if (packageJson.scripts?.[lifecycle]) {

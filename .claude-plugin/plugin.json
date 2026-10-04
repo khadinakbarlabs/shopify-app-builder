@@ -2,8 +2,8 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "shopify-app-builder",
   "displayName": "Shopify App Builder",
-  "version": "2.0.1",
-  "description": "Beginner-friendly Shopify app development with 35 skills, 13 guided commands and 8 specialist agents. No bundled MCP server.",
+  "version": "2.1.0",
+  "description": "Shopify app development with 36 skills, 17 guided commands and 8 specialist agents; local context, resume, feedback and visual reports. No bundled MCP or tracking.",
   "author": {
     "name": "Khadin Akbar",
     "url": "https://khadinakbar.com/"

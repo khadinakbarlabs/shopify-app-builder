@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "shopify-app-builder",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Beginner-friendly Shopify app engineering skills for researching, building, testing, launching and maintaining merchant-safe apps.",
   "author": {
     "name": "Khadin Akbar",
@@ -25,7 +25,7 @@
       "interface": {
         "displayName": "Shopify App Builder",
         "shortDescription": "Shopify apps, step by step",
-        "longDescription": "A local, open-source Shopify app-building guide with 35 focused skills, 13 guided command definitions and 8 specialist-agent definitions. Beginners get small milestones, clear explanations, safe defaults and verification. Covers official Shopify CLI/Dev Dashboard setup, optional Apify CLI competitor research, app architecture, APIs, auth, billing, webhooks, extensions, merchant UX, testing, privacy and release readiness. No bundled MCP server, account binding, automatic store access or required paid research. Execution depends on the user's coding harness and separately authorized tools; native command/agent support varies.",
+        "longDescription": "An open-source Shopify app-building partner with 36 focused skills, 17 guided command definitions and 8 specialist-agent definitions. A local project copilot adds portable context, cross-session handoffs, stale-assumption reminders, optional redacted feedback and Markdown/visual HTML progress reports. Check-in plans stay proposed until a supported host scheduler is explicitly configured. Covers official Shopify CLI/Dev Dashboard setup, optional Apify CLI competitor research, architecture, APIs, auth, billing, webhooks, extensions, merchant UX, tests, privacy and release readiness. No bundled MCP server, telemetry, required cloud account, automatic store access or paid research. Execution and scheduling depend on the user's harness and separately authorized tools; native command/agent support varies. Reports describe recorded evidence, not certification or guaranteed app approval.",
         "developerName": "Khadin Akbar",
         "category": "Developer Tools",
         "capabilities": [
@@ -48,7 +48,7 @@
       },
       "onboardingSkill": "./skills/using-shopify-app-builder/SKILL.md",
       "publication": {
-        "release_notes": "Version 2.0.1 fixes release validation for the approved verified business identity in public publisher fields and clarifies Claude directory-only metadata and static artwork. Retains 35 beginner-first skills, 13 guided command definitions and 8 specialist-agent definitions, with no bundled MCP server. Existing v1.x MCP connections must be removed separately from each host."
+        "release_notes": "Version 2.1.0 adds a portable local project copilot: source-backed context, resume and next-action recommendations, optional redacted feedback, Markdown and script-free HTML reports, and bounded check-in proposals. Includes 36 skills, 17 guided command definitions and 8 specialist roles. The helper is offline and dependency-free, with schema validation, revision conflict checks, atomic writes and symlink refusal. No bundled MCP, telemetry, automatic schedules or paid calls. Existing v1.x MCP connections remain a separate host setting."
       }
     }
   }

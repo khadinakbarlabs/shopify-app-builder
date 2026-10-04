@@ -1,11 +1,12 @@
 {
   "name": "shopify-app-builder",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Beginner-friendly Shopify app development skills, guided commands and specialist agents for AI coding harnesses. No bundled MCP server.",
   "type": "module",
   "main": ".opencode/plugins/shopify-app-builder.js",
   "bin": {
-    "shopify-app-builder": "scripts/install-agent-skills.mjs"
+    "shopify-app-builder": "scripts/install-agent-skills.mjs",
+    "shopify-project": "skills/shopify-project-copilot/scripts/project.mjs"
   },
   "files": [
     ".agents",

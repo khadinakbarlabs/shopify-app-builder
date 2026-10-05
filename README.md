@@ -9,7 +9,7 @@ A beginner-friendly, open-source Shopify app development plugin for Claude Code,
 
 You bring the merchant problem and choose your coding agent. The plugin helps that agent explain unfamiliar terms, recommend a sensible path, implement small testable changes and show evidence before calling something done.
 
-**v2.1.0 is skills-first: no bundled MCP server, telemetry, required cloud account or hidden credentials.** It contains 36 focused skills, 17 guided command definitions and 8 specialist-agent definitions, plus an optional offline project helper. Native command/agent support depends on the harness; all clients can use the same portable skill workflows.
+**v2.1.1 is skills-first: no bundled MCP server, telemetry, required cloud account or hidden credentials.** It contains 36 focused skills, 17 guided command definitions and 8 specialist-agent definitions, plus an optional offline project helper. Native command/agent support depends on the harness; all clients can use the same portable skill workflows. GitHub source, npm packages and directory serving versions are separate; this source version does not imply directory approval or npm publication.
 
 > Independent community project. Not affiliated with, endorsed by or sponsored by Shopify. No guarantee of security, profitability, trademark clearance, App Store acceptance or Built for Shopify designation.
 
@@ -78,7 +78,9 @@ From a verified checkout, use the contained helper (Node 20+):
 
 ```bash
 node skills/shopify-project-copilot/scripts/project.mjs init --project /path/to/your-app --name "Inventory helper"
+node skills/shopify-project-copilot/scripts/project.mjs doctor --project /path/to/your-app
 node skills/shopify-project-copilot/scripts/project.mjs status --project /path/to/your-app
+node skills/shopify-project-copilot/scripts/project.mjs handoff --project /path/to/your-app
 node skills/shopify-project-copilot/scripts/project.mjs report --project /path/to/your-app
 node skills/shopify-project-copilot/scripts/project.mjs schedule --routine quality --cadence weekly --timezone Asia/Karachi
 ```
@@ -90,6 +92,14 @@ State and reports live in `.shopify-app-builder/` inside the chosen folder. It h
 Local tests, development-store behavior, production checks and directory approval remain separate. The dashboard describes recorded observations, not independently certified app quality. With no terminal/files, the agent can provide an unsaved Markdown handoff instead.
 
 See [check-in controls](skills/shopify-project-copilot/references/check-ins.md), [behavioral evaluation scenarios](docs/project-copilot-evaluation.md), [privacy](PRIVACY.md), and [v2.1 release notes](docs/release-notes-v2.1.0.md).
+
+### Short paths to useful work
+
+Ask "Fix this failed save", "Review this diff", "Continue the last isolation test" or "Build the first low-stock page". The [router](skills/using-shopify-app-builder/SKILL.md) separates build, fix, audit, improve, import, review, release and resume; it inspects existing context before asking questions. Read-only review stays read-only. A build request should finish a tested merchant increment, not just a plan or progress dashboard; see [first merchant value](skills/using-shopify-app-builder/references/first-merchant-value.md).
+
+`doctor` inspects two selected local metadata files without initialization, account access or command execution. `handoff` summarizes an existing record's actual goal/blockers/evidence for another session. Non-help helper calls return structured JSON success/failure receipts with recovery and verification levels; see [execution contract](skills/shopify-project-copilot/references/execution.md). A partial inspection is not app readiness. Missing Node permits manual guidance, and missing global helper names do not prevent using the contained script.
+
+See [v2.1.1 changes](docs/release-notes-v2.1.1.md) and [native evaluation cases](evals/README.md). Prepared cases and package tests are not proof of measured agent uplift or live-store behavior.
 
 ## Install in your coding agent
 

@@ -2,6 +2,7 @@ node_modules/
 /package-lock.json
 *.tgz
 coverage/
+evals/results/
 # Exclude private local configuration and tool metadata by default.
 .*
 # Keep the reviewed, portable plugin and CI metadata.

@@ -1,6 +1,6 @@
 ---
 name: shopify-project-copilot
-description: "Resume a Shopify app project across sessions or coding agents, maintain source-backed project context, collect optional redacted feedback, generate local progress reports, and propose bounded check-in schedules. Not a background service, tracker or deployment authorization."
+description: "Continue a Shopify app from its last blocker, inspect local app metadata, hand off decisions, record optional feedback or report progress. Reconcile saved evidence with current files; no background service or deployment authority."
 ---
 
 # A project partner, not another setup requirement
@@ -20,12 +20,20 @@ The dependency-free [project helper](scripts/project.mjs) travels with this skil
 
 ```text
 node <installed-skill>/scripts/project.mjs init --project <app-folder> --name "Inventory helper" --problem "Alert merchants about low stock"
+node <installed-skill>/scripts/project.mjs doctor --project <app-folder>
 node <installed-skill>/scripts/project.mjs status --project <app-folder>
+node <installed-skill>/scripts/project.mjs handoff --project <app-folder>
 node <installed-skill>/scripts/project.mjs update --project <app-folder> --input <reviewed-context-copy.json>
 node <installed-skill>/scripts/project.mjs report --project <app-folder>
 ```
 
 Read [the context contract](references/context.md) before updates. Edit a copy of the current record and retain its revision; don't directly overwrite `project.json`. The helper validates fields, rejects common credential/contact patterns, uses a write lock and revision conflict check, and writes atomically. It does not prove a report's claims true or detect every kind of sensitive data. Minimize and review the content yourself.
+
+`doctor` reads only the chosen folder's regular `package.json` and `shopify.app.toml`, reports known framework dependencies, check names, simple literal scopes/API version and conflicts. It needs no account or saved record and runs no package/Shopify CLI commands. Unsupported TOML forms and custom frameworks need manual inspection; absent metadata is unknown, not proof of readiness. Never install global tools silently. Even version checks can have vendor-specific side effects; inspect tool help/current documentation before execution.
+
+All non-help operations return one JSON receipt on stdout, including failures; exit 0 means the helper operation completed (or returned an inspection/proposal), not that the app works. Use `ok`, `state`, `error.code` and `continuation`, not English error matching. `handoff` is read-only recorded context. Read [the execution contract](references/execution.md) for input bounds, partial results and recovery. If Node is absent, explain that prerequisite and continue manually; no helper can emit a receipt before its runtime starts.
+
+For an implementation request, route the handoff's actual unfinished merchant task to the affected skill, reconcile files, implement and test it. Do not finish with only a status/report. No record is required for a small fix.
 
 ## Anticipate consequential gaps
 

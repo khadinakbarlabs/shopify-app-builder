@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.1.1 — 2026-10-06
+
+- Preserve focused Shopify development routes and complete a tested merchant increment rather than only bookkeeping.
+- Add read-only local metadata inspection, a portable task handoff and safe JSON helper receipts/recovery.
+- Preserve conflicting/corrupt state and partial report outputs; add regression coverage and native evaluation cases.
+- Use Claude's documented default agent scan after discovering that its inventory omitted the explicit file array.
+- No new MCP, paid processing or schedule activation. Directory approval and npm publication are separate from the GitHub source update.
+
 ## 2.1.0 — 2026-10-05
 
 - Add a portable local project copilot for source-backed facts, decisions, cross-session handoffs, optional feedback and milestone evidence. Preserve existing projects and flag stale assumptions before using them.

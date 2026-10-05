@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "shopify-app-builder",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Beginner-friendly Shopify app engineering skills for researching, building, testing, launching and maintaining merchant-safe apps.",
   "author": {
     "name": "Khadin Akbar",
@@ -48,7 +48,7 @@
       },
       "onboardingSkill": "./skills/using-shopify-app-builder/SKILL.md",
       "publication": {
-        "release_notes": "Version 2.1.0 adds a portable local project copilot: source-backed context, resume and next-action recommendations, optional redacted feedback, Markdown and script-free HTML reports, and bounded check-in proposals. Includes 36 skills, 17 guided command definitions and 8 specialist roles. The helper is offline and dependency-free, with schema validation, revision conflict checks, atomic writes and symlink refusal. No bundled MCP, telemetry, automatic schedules or paid calls. Existing v1.x MCP connections remain a separate host setting."
+        "release_notes": "Version 2.1.1 local candidate improves focused build/fix/audit/improve/import/review/release/resume routing, first merchant-feature acceptance and recovery. The contained offline helper adds read-only metadata inspection, portable handoffs and safe JSON receipts with partial-result recovery. Retains 36 skills, 17 commands, 8 specialist definitions and schema-1 state. Claude uses its documented default agent scan. Includes regression coverage and eight prepared native evaluation cases, not measured behavioral uplift. No MCP, telemetry, automatic scheduling or paid calls. Publication and host execution remain separate checks."
       }
     }
   }

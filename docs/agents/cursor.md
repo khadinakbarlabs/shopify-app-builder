@@ -38,5 +38,9 @@ Use using-shopify-app-builder. I'm new; explain what each change does before mak
 
 ## Verify
 
+For local native testing, copy the reviewed package (not an external symlink) into `~/.cursor/plugins/local/shopify-app-builder`, including its manifests/components. Restart or run Developer: Reload Window, then check Customize for the expected version/components. Local imports can be restricted by team policy; a marketplace install of the same name takes precedence. See [Cursor's current local testing instructions](https://cursor.com/docs/plugins#test-plugins-locally).
+
+Preserve customized global skill copies. Move only byte-verified unmodified legacy copies into a recoverable backup outside active skill paths when consolidating, including the retired shopify-mcp skill. A copied folder is not proof that the current window loaded it or that a separately saved MCP connection was disconnected.
+
 Confirm skill discovery in the actual project and ask for the router's first milestone. Inspect command/role registration rather than assuming Claude parity.
 If upgrading from v1.x, remove the specific saved MCP connection and retired copied shopify-mcp folder after backing up customizations. A source update does not prove a host disconnected its old entry.

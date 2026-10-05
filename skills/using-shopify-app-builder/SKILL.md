@@ -1,6 +1,6 @@
 ---
 name: using-shopify-app-builder
-description: "Guide a new or existing Shopify app project from idea through setup, implementation, testing, launch readiness and maintenance. Start here when the user is unsure which focused skill to use."
+description: "Build a Shopify app, fix an existing app, audit authentication/scopes, improve merchant UX, review changes or resume a Shopify project. Route unclear Shopify development requests to one focused workflow; not shopping advice or unrelated app development."
 ---
 
 # Your Shopify app building guide
@@ -8,7 +8,7 @@ description: "Guide a new or existing Shopify app project from idea through setu
 ## Start with the user, not the tools
 
 Help the user achieve a working, maintainable app; never promise a perfect app, automatic approval or guaranteed revenue.
-Ask at most three questions initially, only if unknown: what merchant problem, new or existing project, and public app versus a single-store/custom integration. Offer a recommended beginner path when unsure. Inspect an existing project before choosing its framework.
+Inspect the selected repository, relevant files/tests and existing decisions before questions. Reuse the merchant goal and framework when known. Ask only for information that blocks the next dependent action; continue independent local work. For a new project, the merchant problem may be the only first question. Distribution matters when choosing auth/install architecture, not before every small repair.
 
 This plugin is local skills, commands and specialist-agent instructions. It has no bundled MCP server, account requirement or automatic store access. Shopify account access becomes necessary for live development-store testing; Apify is optional for research.
 
@@ -22,6 +22,21 @@ Maintain a short project checklist with done, next, blocked and not-yet-tested. 
 For ongoing work, resume requests, feedback, reports or check-in plans, use [shopify-project-copilot](../shopify-project-copilot/SKILL.md). Reconcile its saved context with current files and the latest user request. Offer optional portable local state rather than requiring setup. Adapt presentation to Guide me / Build with me / Expert mode; that choice doesn't expand permissions. Load only topic-specific references needed for the next milestone.
 
 ## Pick the next milestone
+
+First select the user's intent. A focused repair must not become a research/setup tour.
+
+| Intent | Shortest route and completion |
+| --- | --- |
+| Build | Existing stack + affected skill → one implemented merchant feature and tests. For a broad new app use [first merchant value](references/first-merchant-value.md). |
+| Fix | dev-troubleshooting + affected skill → reproduce, failing regression, smallest repair, rerun. Preserve framework and unrelated edits. |
+| Audit | Read-only affected-surface inspection → source-backed findings and priorities. Do not implement unless requested. |
+| Improve | Identify an observed pain point → affected UX/performance skill, reviewable change and before/after checks. |
+| Import | app-market-research for a user-selected public research export → validate schema, preserve sources/dates, flag coverage gaps. Importing data is not permission to collect more or run an Actor. |
+| Review | Compare the selected diff/files against task acceptance → actionable findings, no automatic edits/deployment. |
+| Release | app-release-readiness → local checks and unresolved external gates. Deploy/submit only with exact task-specific authority. |
+| Resume | shopify-project-copilot → reconcile handoff/current files → implement or diagnose the actual unfinished task, not only update a record. |
+
+If "continue" has no Shopify context, ask which project rather than activating this plugin for unrelated work. A multi-platform comparison can mention Shopify without requesting app implementation; answer the comparison without scaffolding.
 
 | User outcome | First skills | Useful next skills |
 | --- | --- | --- |
@@ -48,6 +63,7 @@ For ongoing work, resume requests, feedback, reports or check-in plans, use [sho
 6. Launch and maintain: owner-approved deployment/submission, monitoring, support and version updates.
 
 Adapt the route: a theme extension does not need Hydrogen; a free app does not need paid billing; an existing project need not be rescaffolded. Do not block coding on optional market research or advanced features.
+When asked to implement, finish a useful increment within the approved scope instead of stopping at a plan, project record or generated progress report. Define acceptance before coding; inspect available test scripts before running them. If a live store is unavailable, implement and verify locally with synthetic fixtures and clearly leave live proof open.
 
 ## Permissions and truthfulness
 

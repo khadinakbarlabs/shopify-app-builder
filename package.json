@@ -1,6 +1,6 @@
 {
   "name": "shopify-app-builder",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Beginner-friendly Shopify app development skills, guided commands and specialist agents for AI coding harnesses. No bundled MCP server.",
   "type": "module",
   "main": ".opencode/plugins/shopify-app-builder.js",
@@ -19,6 +19,7 @@
     "assets",
     "commands",
     "docs",
+    "evals",
     "scripts",
     "skills",
     "CHANGELOG.md",

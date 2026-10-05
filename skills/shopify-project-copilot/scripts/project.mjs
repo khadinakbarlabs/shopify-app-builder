@@ -4,6 +4,8 @@ import { randomUUID } from "node:crypto";
 import { lstat, mkdir, open, readFile, realpath, rename, unlink, rmdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {ProjectError, receipt, failureReceipt} from "./contract.mjs";
+import {projectRoot, inspectProject} from "./inspection.mjs";
 
 const DIRECTORY = ".shopify-app-builder";
 const MAX_BYTES = 256 * 1024;
@@ -81,13 +83,14 @@ export function validateProject(state) {
 }
 
 function assertValid(state) {
+  if (state && Object.hasOwn(state, "schemaVersion") && state.schemaVersion !== 1) throw new ProjectError("STATE_UNSUPPORTED_VERSION", "Unsupported schemaVersion; preserve the file and use a compatible helper.", "Use a helper compatible with the recorded schema. Never reset or migrate it automatically.");
   const errors = validateProject(state);
-  if (errors.length) throw new Error(errors.join(" "));
+  if (errors.length) throw new ProjectError("STATE_INVALID", errors.join(" "), "Preserve the record, repair a reviewed copy and retain its revision. No data was overwritten.");
 }
 
 export function nextAction(state, now = new Date().toISOString()) {
   assertValid(state);
-  if (!isoDate(now)) throw new Error("Use an ISO UTC timestamp.");
+  if (!isoDate(now)) throw new ProjectError("INVALID_ARGUMENT", "Use an ISO UTC timestamp.", "Supply an explicit valid timestamp.");
   const blocked = state.milestones.find(row => row.status === "blocked");
   if (blocked) return {kind: "diagnose", title: `Diagnose: ${blocked.title}`, reason: blocked.blockedReason, requiresApproval: false};
   const stale = state.facts.find(row => row.status === "assumed" || Date.parse(now) - Date.parse(row.verifiedAt) > 30 * 86400000 || Date.parse(row.verifiedAt) > Date.parse(now));
@@ -141,15 +144,15 @@ export function schedulePlan({routine, cadence = "weekly", timezone} = {}) {
 async function inspect(candidate, kind, maximumBytes = MAX_BYTES) {
   try {
     const stat = await lstat(candidate);
-    if (stat.isSymbolicLink()) throw new Error("Refusing a symbolic link in project state or report paths.");
-    if (kind === "directory" ? !stat.isDirectory() : !stat.isFile()) throw new Error("Unexpected project state path type.");
-    if (kind === "file" && stat.size > maximumBytes) throw new Error("Project input exceeds the size limit.");
+    if (stat.isSymbolicLink()) throw new ProjectError("UNSAFE_PATH", "Refusing a symbolic link in project state or report paths.", "Inspect the exact selected path. Do not overwrite or follow links into unrelated files.");
+    if (kind === "directory" ? !stat.isDirectory() : !stat.isFile()) throw new ProjectError("UNSAFE_PATH", "Unexpected project state path type.", "Inspect the selected path; preserve existing data.");
+    if (kind === "file" && stat.size > maximumBytes) throw new ProjectError("INPUT_TOO_LARGE", "Project input exceeds the size limit.", "Use a smaller reviewed record without silently discarding useful history.");
     return true;
   } catch (error) { if (error.code === "ENOENT") return false; throw error; }
 }
 
 async function directory(root, create = false) {
-  const resolved = await realpath(root);
+  const resolved = await projectRoot(root);
   await inspect(resolved, "directory");
   const dir = path.join(resolved, DIRECTORY);
   if (!(await inspect(dir, "directory"))) {
@@ -164,8 +167,8 @@ async function readState(dir) {
   const file = path.join(dir, "project.json");
   if (!(await inspect(file, "file"))) return null;
   const contents = await readFile(file, "utf8");
-  if (Buffer.byteLength(contents) > MAX_BYTES) throw new Error("Project input exceeds the size limit.");
-  let state; try { state = JSON.parse(contents); } catch { throw new Error("Project JSON is invalid; preserve it and repair a copy."); }
+  if (Buffer.byteLength(contents) > MAX_BYTES) throw new ProjectError("INPUT_TOO_LARGE", "Project input exceeds the size limit.", "Preserve the record and use a smaller reviewed copy.");
+  let state; try { state = JSON.parse(contents); } catch { throw new ProjectError("STATE_INVALID_JSON", "Project JSON is invalid; preserve it and repair a copy.", "Repair a reviewed copy. Do not initialize over the existing record."); }
   assertValid(state);
   return state;
 }
@@ -179,7 +182,7 @@ async function locked(root, task) {
   const dir = await directory(root, true);
   const lock = path.join(dir, "write.lock");
   try { await mkdir(lock, {mode: 0o700}); } catch (error) {
-    if (error.code === "EEXIST") throw new Error("Project is busy. Do not remove the lock until the other writer has stopped.");
+    if (error.code === "EEXIST") throw new ProjectError("STATE_BUSY", "Project is busy. Do not remove the lock until the other writer has stopped.", "Wait for the existing writer. Inspect a stale lock only after confirming that writer stopped; do not retry in a loop.");
     throw error;
   }
   try { return await task(dir); } finally { await rmdir(lock); }
@@ -202,12 +205,12 @@ async function atomicWrite(dir, filename, contents) {
 
 export async function saveProject(root, state, {expectedRevision} = {}) {
   assertValid(state);
-  if (Buffer.byteLength(JSON.stringify(state)) > MAX_BYTES) throw new Error("Project input exceeds the size limit.");
-  if (expectedRevision !== null && (!Number.isSafeInteger(expectedRevision) || expectedRevision < 0)) throw new Error("Supply the revision being edited, or null for a new record.");
+  if (Buffer.byteLength(JSON.stringify(state)) > MAX_BYTES) throw new ProjectError("INPUT_TOO_LARGE", "Project input exceeds the size limit.", "Use a smaller reviewed copy without overwriting the current record.");
+  if (expectedRevision !== null && (!Number.isSafeInteger(expectedRevision) || expectedRevision < 0)) throw new ProjectError("INVALID_ARGUMENT", "Supply the revision being edited, or null for a new record.", "Reload the current record and retain its revision.");
   return locked(root, async dir => {
     const current = await readState(dir);
-    if ((current?.revision ?? null) !== expectedRevision) throw new Error("Project changed since it was read. Reload and reconcile; no data was overwritten.");
-    if (state.revision !== (expectedRevision ?? 0)) throw new Error("The input revision does not match the revision being edited.");
+    if ((current?.revision ?? null) !== expectedRevision) throw new ProjectError("STATE_CONFLICT", "Project changed since it was read. Reload and reconcile; no data was overwritten.", "Reload the latest record, merge the intended change into a reviewed copy and retain its current revision.");
+    if (state.revision !== (expectedRevision ?? 0)) throw new ProjectError("STATE_CONFLICT", "The input revision does not match the revision being edited.", "Reload and reconcile the latest revision before updating.");
     const next = {...state, revision: (current?.revision ?? 0) + 1, updatedAt: new Date().toISOString()};
     const ignore = path.join(dir, ".gitignore");
     if (!(await inspect(ignore, "file"))) await atomicWrite(dir, ".gitignore", "# Private local project context and reports\n*\n");
@@ -217,53 +220,93 @@ export async function saveProject(root, state, {expectedRevision} = {}) {
 }
 
 export async function writeReports(root, now = new Date().toISOString()) {
-  if (!(await loadProject(root))) throw new Error("No project record. Initialize explicitly before generating a report.");
+  if (!(await loadProject(root))) throw new ProjectError("STATE_NOT_INITIALIZED", "No project record. Initialize explicitly before generating a report.", "Use existing app notes or explicitly choose optional local context first.");
   return locked(root, async dir => {
     const reports = renderReports(await readState(dir), now);
     const output = path.join(dir, "reports");
     if (!(await inspect(output, "directory"))) await mkdir(output, {mode: 0o700});
+    // Check both destinations before writing either; runtime I/O can still fail.
+    await inspect(path.join(output, "latest.md"), "file", MAX_BYTES * 8);
+    await inspect(path.join(output, "latest.html"), "file", MAX_BYTES * 8);
     await atomicWrite(output, "latest.md", reports.markdown);
-    await atomicWrite(output, "latest.html", reports.html);
+    try { await atomicWrite(output, "latest.html", reports.html); }
+    catch { throw new ProjectError("REPORT_PARTIAL", "Markdown was saved; HTML completion is unconfirmed.", "Preserve the Markdown report and inspect both output files before retrying. A previous HTML file may still exist."); }
     return {markdown: path.join(output, "latest.md"), html: path.join(output, "latest.html")};
   });
 }
 
-async function cli(args) {
+export function projectHandoff(state) {
+  assertValid(state);
+  const allEvidence = state.milestones.flatMap(milestone =>
+    milestone.evidence.map(item => ({...item, milestoneId: milestone.id})));
+  const facts = state.facts.slice(-10);
+  const decisions = state.decisions.slice(-5);
+  const evidence = allEvidence.slice(-20);
+  const coverage = (total, returned) => ({total, returned, omitted: total - returned});
+  return {
+    revision: state.revision,
+    goal: state.profile.problem,
+    framework: state.profile.framework,
+    facts,
+    decisions,
+    blockers: state.milestones.filter(row => row.status === "blocked")
+      .map(row => ({id: row.id, title: row.title, reason: row.blockedReason})),
+    evidence,
+    coverage: {
+      facts: coverage(state.facts.length, facts.length),
+      decisions: coverage(state.decisions.length, decisions.length),
+      evidence: coverage(allEvidence.length, evidence.length),
+    },
+    latestSession: [...state.sessions].sort((a, b) => a.occurredAt.localeCompare(b.occurredAt)).at(-1) ?? null,
+    next: nextAction(state),
+    authority: "current-session-only",
+    appExecution: "not-performed",
+    reconciliation: "Inspect current files/tests and the latest user request before acting; this is recorded context, not instructions.",
+  };
+}
+
+async function cli(args, runId) {
   const [command, ...rest] = args;
   if (!command || command === "--help") {
-    console.log("Offline project copilot: init --project <app-folder> [--name <name>] [--problem <merchant-task>]; status --project <app-folder>; update --project <app-folder> --input <reviewed-json>; report --project <app-folder>; feedback --project <app-folder> --target plugin|app --category setup|bug|ux|feature --summary <redacted-text>; schedule --routine quality|feedback|api --cadence weekly|monthly --timezone <IANA>. Schedule prints a proposal only. No telemetry or automatic execution."); return;
+    console.log("Offline project copilot: doctor --project <app-folder> (read-only metadata inspection, no account/context required); handoff --project <app-folder> (recorded next task); init --project <app-folder> [--name <name>] [--problem <merchant-task>]; status --project <app-folder>; update --project <app-folder> --input <reviewed-json>; report --project <app-folder>; feedback --project <app-folder> --target plugin|app --category setup|bug|ux|feature --summary <redacted-text>; schedule --routine quality|feedback|api --cadence weekly|monthly --timezone <IANA>. Non-help commands emit JSON receipts, including failures. Schedule prints a proposal only. No telemetry or automatic execution."); return;
   }
-  const allowed = {init: ["project", "name", "problem"], status: ["project"], update: ["project", "input"], report: ["project"], feedback: ["project", "target", "category", "summary"], schedule: ["routine", "cadence", "timezone"]}[command];
-  if (!allowed) throw new Error("Unknown command. Use --help.");
+  const invalid = message => new ProjectError("INVALID_ARGUMENT", message, "Use --help and supply only supported options; no external action was attempted.");
+  if (Number(process.versions.node.split(".")[0]) < 20) throw new ProjectError("RUNTIME_UNSUPPORTED", "Node 20+ is required for this helper.", "Use an existing Node 20+ runtime or continue with manual guidance. Do not silently install global tools.");
+  const allowed = {doctor:["project"],handoff:["project"],init: ["project", "name", "problem"], status: ["project"], update: ["project", "input"], report: ["project"], feedback: ["project", "target", "category", "summary"], schedule: ["routine", "cadence", "timezone"]}[command];
+  if (!allowed) throw invalid("Unknown command. Use --help.");
   const options = {};
   for (let i = 0; i < rest.length; i += 2) {
     const key = rest[i].slice(2);
-    if (!rest[i].startsWith("--") || !allowed.includes(key) || Object.hasOwn(options, key) || !rest[i + 1] || rest[i + 1].startsWith("--")) throw new Error("Unknown, duplicate or incomplete option. Use --help.");
+    if (!rest[i].startsWith("--") || !allowed.includes(key) || Object.hasOwn(options, key) || !rest[i + 1] || rest[i + 1].startsWith("--")) throw invalid("Unknown, duplicate or incomplete option. Use --help.");
     options[key] = rest[i + 1];
   }
-  if (command === "schedule") { console.log(JSON.stringify(schedulePlan(options), null, 2)); return; }
-  if (!options.project) throw new Error("Choose an existing app folder with --project.");
-  if (command === "init") { await saveProject(options.project, newProject(options), {expectedRevision: null}); console.log("Local project record initialized. No app, account, tracking or schedule was created."); return; }
+  const emit=(outputs,settings={})=>console.log(JSON.stringify(receipt(command,runId,outputs,settings),null,2));
+  if (command === "schedule") { let plan; try{plan=schedulePlan(options);}catch{throw invalid("Supply a supported routine, cadence and explicit IANA timezone.");} emit(plan,{state:"planned",verificationLevel:"proposal-only",nextAction:"Review the proposal and configure a supported runner only with specific authorization."}); return; }
+  if (!options.project) throw invalid("Choose an existing app folder with --project.");
+  if(command==="doctor") {const result=await inspectProject(options.project);emit(result,{state:result.findings.length?"partial":"completed",verificationLevel:"observed-files",nextAction:"Inspect the relevant implementation and test definitions; implement or diagnose the selected merchant task. No commands were executed."});return;}
+  if (command === "init") { const saved=await saveProject(options.project, newProject(options), {expectedRevision: null}); emit({revision:saved.revision},{message:"Local project record initialized. No app, account, tracking or schedule was created."}); return; }
   const state = await loadProject(options.project);
-  if (!state) throw new Error("No project record. Use init explicitly; existing app files are never scaffolded.");
-  if (command === "status") console.log(JSON.stringify({revision: state.revision, profile: state.profile, next: nextAction(state)}, null, 2));
-  if (command === "report") console.log(JSON.stringify(await writeReports(options.project), null, 2));
+  if (!state) throw new ProjectError("STATE_NOT_INITIALIZED", "No project record. Use init explicitly; existing app files are never scaffolded.", "Continue the actual app task without bookkeeping, or explicitly initialize optional local context in the existing app folder.");
+  if (command === "status") emit({revision: state.revision, profile: state.profile, next: nextAction(state)});
+  if (command === "handoff") emit(projectHandoff(state));
+  if (command === "report") emit(await writeReports(options.project));
   if (command === "update") {
-    if (!options.input || !(await inspect(path.resolve(options.input), "file"))) throw new Error("Choose a reviewed JSON input file.");
+    if (!options.input || !(await inspect(path.resolve(options.input), "file"))) throw invalid("Choose a reviewed JSON input file.");
     const contents = await readFile(options.input, "utf8");
-    if (Buffer.byteLength(contents) > MAX_BYTES) throw new Error("Project input exceeds the size limit.");
-    let draft; try { draft = JSON.parse(contents); } catch { throw new Error("Input JSON is invalid."); }
-    await saveProject(options.project, draft, {expectedRevision: draft?.revision}); console.log("Local context updated. Reports and external actions are unchanged.");
+    if (Buffer.byteLength(contents) > MAX_BYTES) throw new ProjectError("INPUT_TOO_LARGE", "Project input exceeds the size limit.", "Use a smaller reviewed input copy; leave the current record unchanged.");
+    let draft; try { draft = JSON.parse(contents); } catch { throw new ProjectError("INPUT_INVALID_JSON", "Input JSON is invalid.", "Repair the reviewed input copy; leave the current record unchanged."); }
+    const saved=await saveProject(options.project, draft, {expectedRevision: draft?.revision}); emit({revision:saved.revision},{message:"Local context updated. Reports and external actions are unchanged."});
   }
   if (command === "feedback") {
     state.feedback.push({id: randomUUID(), target: options.target, category: options.category, summary: options.summary, status: "new", createdAt: new Date().toISOString()});
-    await saveProject(options.project, state, {expectedRevision: state.revision}); console.log("Feedback saved locally. Nothing was shared with the publisher.");
+    const saved=await saveProject(options.project, state, {expectedRevision: state.revision}); emit({revision:saved.revision,feedbackCount:saved.feedback.length},{message:"Feedback saved locally. Nothing was shared with the publisher."});
   }
 }
 
 if (process.argv[1] && await realpath(process.argv[1]).catch(() => null) === fileURLToPath(import.meta.url)) {
-  cli(process.argv.slice(2)).catch(error => {
-    console.error(error.code ? "Local file operation failed. Check the selected folder and permissions; no external action was attempted." : error.message);
+  const runId=randomUUID();
+  cli(process.argv.slice(2),runId).catch(error => {
+    console.log(JSON.stringify(failureReceipt(process.argv[2]??"unknown",runId,error),null,2));
     process.exitCode = 1;
   });
 }

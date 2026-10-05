@@ -23,8 +23,12 @@ test("distribution has no bundled MCP, host API, or stale MCP review material", 
     assert.ok(!manifest.extensions?.["com.openai"]?.review?.demo_recording_url, "old MCP video must not describe the new release");
   }
   const claude = JSON.parse(await readFile(".claude-plugin/plugin.json", "utf8"));
-  assert.equal(claude.agents.length, (await readdir("agents")).length);
-  for (const agent of claude.agents) await access(agent);
+  // Claude 2.1.289 inventory exposes the documented default scan, while the
+  // explicit file array passed validation but reported zero loaded agents.
+  assert.equal(Object.hasOwn(claude,"agents"), false);
+  const agents=await readdir("agents");
+  assert.equal(agents.length,8);
+  for (const agent of agents) await access(`agents/${agent}`);
 });
 
 test("copy-only installation retains every focused skill and its contained references", async () => {

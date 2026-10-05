@@ -38,5 +38,7 @@ Use app-release-readiness to audit. Separate local tests from untested store/dep
 
 ## Verify
 
+After updating a reviewed local marketplace source, use `codex plugin add shopify-app-builder@personal --json` only when `personal` is your actual configured marketplace. Filter `codex plugin list --json` for the exact plugin and verify version/enabled state and contained helper resources. Inventory is not evidence that the already-running session reloaded it; start a fresh session for selection/behavior checks. Disable only an identified stale duplicate, preserving its cache and unrelated plugins. Keep customized imported skill aliases intact until their owner reviews a merge.
+
 Check the supported plugin/skill listing or copied directories. Invoke the router and verify it selects shopify-connections for account setup and app-framework for a first feature.
 If upgrading from v1.x, remove the specific saved MCP connection and retired copied shopify-mcp folder after backing up customizations. A source update does not prove a host disconnected its old entry.

@@ -137,7 +137,8 @@ test("CLI works through an npm-style symlink and refuses destructive repeat init
   const run = promisify(execFile);
   const init = await run(process.execPath, [bin, "init", "--project", root, "--name", "CLI fixture"]);
   assert.match(init.stdout, /initialized/);
-  await assert.rejects(run(process.execPath, [bin, "init", "--project", root]), /changed/);
+  await assert.rejects(run(process.execPath, [bin, "init", "--project", root]), error =>
+    JSON.parse(error.stdout).error.code === "STATE_CONFLICT" && error.stderr === "");
   const status = await run(process.execPath, [bin, "status", "--project", root]);
   assert.equal(JSON.parse(status.stdout).profile.name, "CLI fixture");
   await run(process.execPath, [bin, "feedback", "--project", root, "--target", "plugin", "--category", "ux", "--summary", "Clear next step"]);

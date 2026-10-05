@@ -38,5 +38,9 @@ Use app-market-research with manual sources first; show the input and budget bef
 
 ## Verify
 
+For a reviewed local checkout, use `claude plugin marketplace add /path/to/shopify-app-builder --json`, then `claude plugin install shopify-app-builder@shopify-app-builder --scope user --json`. Verify with `claude plugin list --json` and `claude plugin details shopify-app-builder@shopify-app-builder`. In Claude Code 2.1.289 the 17 legacy commands appear as skills, so expect 53 skill/command entries and 8 agents, with zero bundled MCP servers. This is component discovery, not a completed merchant-feature run. Do not dispatch specialist agents unless the user/host allows delegation.
+
+The manifest uses the documented default `agents/` scan: the explicit file array passed validation but this installed CLI inventory showed zero agents until the default scan was used. Preserve the eight files/IDs. Manifest validation alone can show an empty `contents` list; don't treat that as behavioral proof.
+
 Use the host's plugin/command list and ask for shopify-connections and app-market-research in a fresh session. Test one synthetic beginner task before live account operations.
 If upgrading from v1.x, remove the specific saved MCP connection and retired copied shopify-mcp folder after backing up customizations. A source update does not prove a host disconnected its old entry.

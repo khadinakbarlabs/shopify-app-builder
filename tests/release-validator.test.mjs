@@ -142,10 +142,8 @@ test("Claude directory listing has the approved publisher, website, links, and i
   for (const field of ["homepage", "documentationUrl", "supportUrl", "privacyPolicyUrl", "termsOfServiceUrl"]) {
     assert.equal(new URL(claude[field]).protocol, "https:");
   }
-  assert.equal(claude.icon, "./assets/icon.png");
-  const icon = await readFile(claude.icon);
-  assert.deepEqual([...icon.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
-  assert.equal(icon.readUInt32BE(16), icon.readUInt32BE(20));
+  // Check the listing icon field only; scripts must not open bundled images (directory UNREAD_ASSET_REFERENCED).
+  assert.match(claude.icon, /^\.\/assets\/[a-z0-9-]+\.png$/);
 });
 
 test("release scanner allows approved public publisher fields but not unrelated names or secrets", () => {

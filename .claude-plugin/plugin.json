@@ -1,15 +1,12 @@
 {
-  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "shopify-app-builder",
-  "displayName": "Shopify App Builder",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "Shopify app development with 36 skills, 17 guided commands and 8 specialist agents; local context, resume, feedback and visual reports. No bundled MCP or tracking.",
   "author": {
     "name": "Khadin Akbar",
     "url": "https://khadinakbar.com/"
   },
   "homepage": "https://khadinakbar.com/",
-  "privacyPolicyUrl": "https://github.com/khadinakbarlabs/shopify-app-builder/blob/main/PRIVACY.md",
   "repository": "https://github.com/khadinakbarlabs/shopify-app-builder",
   "license": "MIT",
   "keywords": [
@@ -22,9 +19,5 @@
     "polaris"
   ],
   "skills": "./skills/",
-  "commands": "./commands/",
-  "icon": "./assets/icon.png",
-  "documentationUrl": "https://github.com/khadinakbarlabs/shopify-app-builder#readme",
-  "supportUrl": "https://github.com/khadinakbarlabs/shopify-app-builder/issues",
-  "termsOfServiceUrl": "https://github.com/khadinakbarlabs/shopify-app-builder/blob/main/TERMS.md"
+  "commands": "./commands/"
 }

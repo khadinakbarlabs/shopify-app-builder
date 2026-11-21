@@ -23,11 +23,9 @@ const EXCLUDED_DIRECTORIES = new Set([
   ".shopify-app-builder-backups",
 ]);
 
-export const AGENT_PLUGINS_SCHEMA =
-  "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json";
-
-const AGENT_PLUGIN_FIELDS = new Set([
-  "$schema",
+// Top-level keys Claude Code reads from .claude-plugin/plugin.json. Listing-only
+// and cross-tool keys are rejected so the directory scan stays clean.
+export const CLAUDE_MANIFEST_FIELDS = Object.freeze(new Set([
   "name",
   "version",
   "description",
@@ -36,70 +34,21 @@ const AGENT_PLUGIN_FIELDS = new Set([
   "repository",
   "license",
   "keywords",
-  "extensions",
-]);
+  "commands",
+  "agents",
+  "skills",
+  "hooks",
+  "mcpServers",
+  "outputStyles",
+  "lspServers",
+  "userConfig",
+  "dependencies",
+  "channels",
+  "settings",
+]));
 
-const AGENT_PLUGIN_NAME = /^(?!.*(?:--|\.\.))[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/;
-
-function isObject(value) {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-export function validateAgentPluginManifest(manifest) {
-  if (!isObject(manifest)) return ["must be a JSON object"];
-
-  const errors = [];
-  for (const field of Object.keys(manifest)) {
-    if (!AGENT_PLUGIN_FIELDS.has(field)) errors.push(`unknown top-level field: ${field}`);
-  }
-
-  if (manifest.$schema !== AGENT_PLUGINS_SCHEMA) {
-    errors.push("must declare the canonical Agent Plugins 1.0 schema");
-  }
-  if (
-    typeof manifest.name !== "string" ||
-    manifest.name.length < 1 ||
-    manifest.name.length > 64 ||
-    !AGENT_PLUGIN_NAME.test(manifest.name)
-  ) {
-    errors.push("name must satisfy the Agent Plugins naming rules");
-  }
-
-  for (const field of ["version", "description", "homepage", "repository", "license"]) {
-    if (field in manifest && typeof manifest[field] !== "string") {
-      errors.push(`${field} must be a string`);
-    }
-  }
-
-  if ("keywords" in manifest) {
-    if (!Array.isArray(manifest.keywords) || manifest.keywords.some((item) => typeof item !== "string")) {
-      errors.push("keywords must be an array of strings");
-    }
-  }
-
-  if ("author" in manifest) {
-    if (!isObject(manifest.author)) {
-      errors.push("author must be an object");
-    } else {
-      for (const [field, value] of Object.entries(manifest.author)) {
-        if (!new Set(["name", "email", "url"]).has(field)) {
-          errors.push(`author has unknown field: ${field}`);
-        } else if (typeof value !== "string") {
-          errors.push(`author.${field} must be a string`);
-        }
-      }
-    }
-  }
-
-  if ("extensions" in manifest) {
-    if (!isObject(manifest.extensions)) {
-      errors.push("extensions must be an object");
-    } else if (Object.values(manifest.extensions).some((value) => !isObject(value))) {
-      errors.push("each extension namespace must contain an object");
-    }
-  }
-
-  return errors;
+export function findUnknownClaudeManifestFields(manifest) {
+  return Object.keys(manifest).filter((field) => !CLAUDE_MANIFEST_FIELDS.has(field));
 }
 
 const FORBIDDEN_PATTERNS = Object.freeze([
@@ -127,7 +76,6 @@ export function findForbiddenText(text) {
 export function findForbiddenTextInReleaseFile(relative, text) {
   const approvedPublisherNames = new Set(["Khadin Akbar", "Khadin Akbar Ventures"]);
   const publisherFields = {
-    "plugin.json": ["author.name", "extensions.com.openai.interface.developerName"],
     ".claude-plugin/plugin.json": ["author.name"],
     ".claude-plugin/marketplace.json": ["owner.name"],
     ".codex-plugin/plugin.json": ["author.name", "interface.developerName"],
@@ -137,9 +85,7 @@ export function findForbiddenTextInReleaseFile(relative, text) {
   if (!Object.hasOwn(publisherFields, relative)) return findForbiddenText(text);
   const manifest = JSON.parse(text);
   for (const field of publisherFields[relative]) {
-    const keys = field === "extensions.com.openai.interface.developerName"
-      ? ["extensions", "com.openai", "interface", "developerName"]
-      : field.split(".");
+    const keys = field.split(".");
     const key = keys.pop();
     const parent = keys.reduce((value, part) => value?.[part], manifest);
     if (approvedPublisherNames.has(parent?.[key])) {
@@ -211,7 +157,6 @@ export async function validateRelease(root) {
     "SECURITY.md",
     "TERMS.md",
     "package.json",
-    "plugin.json",
     "skills/using-shopify-app-builder/SKILL.md",
     "skills/shopify-connections/SKILL.md",
     "skills/app-market-research/SKILL.md",
@@ -232,9 +177,6 @@ export async function validateRelease(root) {
   }
 
   const packageJson = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
-  const agentPluginManifest = JSON.parse(
-    await readFile(path.join(root, "plugin.json"), "utf8"),
-  );
   const codexManifest = JSON.parse(
     await readFile(path.join(root, ".codex-plugin", "plugin.json"), "utf8"),
   );
@@ -254,7 +196,6 @@ export async function validateRelease(root) {
     await readFile(path.join(root, ".agents", "plugins", "marketplace.json"), "utf8"),
   );
   const versionedSurfaces = [
-    agentPluginManifest.version,
     codexManifest.version,
     claudeManifest.version,
     cursorManifest.version,
@@ -265,18 +206,18 @@ export async function validateRelease(root) {
   if (versionedSurfaces.some((version) => version !== packageJson.version)) {
     errors.push("package.json and all plugin surface versions must match");
   }
-  for (const error of validateAgentPluginManifest(agentPluginManifest)) {
-    errors.push(`Agent Plugins manifest ${error}`);
+  for (const field of findUnknownClaudeManifestFields(claudeManifest)) {
+    errors.push(`.claude-plugin/plugin.json has a key Claude Code does not read: ${field}`);
   }
-  if (agentPluginManifest.name !== packageJson.name) {
-    errors.push("Agent Plugins manifest name must match package.json name");
+  if (claudeManifest.name !== packageJson.name) {
+    errors.push("Claude manifest name must match package.json name");
   }
-  const subtitle = agentPluginManifest.extensions?.["com.openai"]?.interface?.shortDescription;
+  const subtitle = codexManifest.interface?.shortDescription;
   if (typeof subtitle === "string" && subtitle.length > 30) {
-    errors.push("OpenAI listing shortDescription must be at most 30 characters");
+    errors.push("Codex listing shortDescription must be at most 30 characters");
   }
-  if (!packageJson.files?.includes("plugin.json")) {
-    errors.push("npm package files must include the Agent Plugins root manifest");
+  if (relativeFiles.has("plugin.json") || packageJson.files?.includes("plugin.json")) {
+    errors.push("Release must not ship a root plugin.json manifest");
   }
   for (const forbidden of ["mcp.json", ".mcp.json", "api/mcp.mjs", "mcp-server/package.json", "vercel.json", "chatgpt-app-submission.json"]) {
     if (relativeFiles.has(forbidden)) errors.push(`Skills-only release must not ship ${forbidden}`);
@@ -284,8 +225,8 @@ export async function validateRelease(root) {
   if (packageJson.files?.some(file => /mcp|^api$|^vercel/.test(file))) {
     errors.push("Skills-only npm package must not include an MCP runtime or host configuration");
   }
-  for (const manifest of [agentPluginManifest, codexManifest, claudeManifest, cursorManifest, geminiManifest]) {
-    if (Object.hasOwn(manifest, "mcpServers") || Object.hasOwn(manifest, "apps") || manifest.extensions?.["com.openai"]?.apps != null) {
+  for (const manifest of [codexManifest, claudeManifest, cursorManifest, geminiManifest]) {
+    if (Object.hasOwn(manifest, "mcpServers") || Object.hasOwn(manifest, "apps")) {
       errors.push("Skills-only manifests must not declare servers or app bindings");
     }
   }

@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "shopify-app-builder",
-      "version": "2.1.2",
+      "version": "2.1.3",
       "source": "./",
       "description": "Beginner-friendly Shopify app development from research and setup to tested launch readiness. No bundled MCP server.",
       "category": "Development",

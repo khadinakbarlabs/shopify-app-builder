@@ -1,14 +1,10 @@
 import assert from "node:assert/strict";
-import { readFile, realpath } from "node:fs/promises";
+import { access, readFile, realpath } from "node:fs/promises";
 import test from "node:test";
 
-import {
-  AGENT_PLUGINS_SCHEMA,
-  validateAgentPluginManifest,
-} from "../scripts/validate-release.mjs";
+import { findUnknownClaudeManifestFields } from "../scripts/validate-release.mjs";
 
 const VERSIONED_MANIFESTS = [
-  "plugin.json",
   ".claude-plugin/plugin.json",
   ".codex-plugin/plugin.json",
   ".cursor-plugin/plugin.json",
@@ -35,7 +31,7 @@ test("ships native manifests and a Codex marketplace", async () => {
     packageJson.bin["shopify-app-builder"],
     "scripts/install-agent-skills.mjs",
   );
-  assert.ok(packageJson.files.includes("plugin.json"));
+  assert.ok(!packageJson.files.includes("plugin.json"));
 
   for (const file of VERSIONED_MANIFESTS) {
     const manifest = await readJson(file);
@@ -49,15 +45,10 @@ test("ships native manifests and a Codex marketplace", async () => {
   assert.equal(marketplace.plugins[0].source.path, "../..");
 });
 
-test("ships a valid portable Agent Plugins 1.0 manifest", async () => {
-  const packageJson = await readJson("package.json");
-  const manifest = await readJson("plugin.json");
-
-  assert.deepEqual(validateAgentPluginManifest(manifest), []);
-  assert.equal(manifest.$schema, AGENT_PLUGINS_SCHEMA);
-  assert.equal(manifest.name, packageJson.name);
-  assert.equal(manifest.version, packageJson.version);
-  assert.match(manifest.description, /Shopify app engineering/i);
+test("ships no root plugin.json and only Claude-read keys in the Claude manifest", async () => {
+  await assert.rejects(access("plugin.json"), { code: "ENOENT" });
+  const manifest = await readJson(".claude-plugin/plugin.json");
+  assert.deepEqual(findUnknownClaudeManifestFields(manifest), []);
 });
 
 test("ships an agent-specific guide for every supported harness tier", async () => {

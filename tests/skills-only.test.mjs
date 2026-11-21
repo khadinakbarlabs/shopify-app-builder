@@ -13,7 +13,8 @@ test("distribution has no bundled MCP, host API, or stale MCP review material", 
   const pkg = JSON.parse(await readFile("package.json", "utf8"));
   assert.ok(!pkg.files.some(file => /mcp|^api$|^vercel/.test(file)));
   assert.ok(!Object.keys(pkg.scripts).some(key => key.startsWith("mcp:")));
-  for (const file of ["plugin.json", ".claude-plugin/plugin.json", ".codex-plugin/plugin.json", ".cursor-plugin/plugin.json", "gemini-extension.json"]) {
+  await assert.rejects(access("plugin.json"), { code: "ENOENT" }, "root plugin.json");
+  for (const file of [".claude-plugin/plugin.json", ".codex-plugin/plugin.json", ".cursor-plugin/plugin.json", "gemini-extension.json"]) {
     const manifest = JSON.parse(await readFile(file, "utf8"));
     const listing = manifest.extensions?.["com.openai"]?.interface ?? manifest.interface;
     if (listing?.shortDescription) assert.ok(listing.shortDescription.length <= 30, file);

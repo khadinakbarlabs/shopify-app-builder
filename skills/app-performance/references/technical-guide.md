@@ -93,7 +93,7 @@ Webhook handler does HMAC verify, writes to DB, calls 2 third-party APIs, return
 
 ### 3.7 Unbounded images
 
-`<img src={huge.png}>` with no `width`/`height`, no lazy loading, no Shopify Image CDN transform. CLS jumps the moment images load.
+`<img src={hugeImageUrl}>` with no `width`/`height`, no lazy loading, no Shopify Image CDN transform. CLS jumps the moment images load.
 
 ### 3.8 No HTTP caching
 

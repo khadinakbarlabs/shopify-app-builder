@@ -45,7 +45,7 @@ import { EmptyState, Page } from "@shopify/polaris";
       url: "https://help.shopify.com/manual/inventory/transfers",
       external: true,
     }}
-    image="https://cdn.shopify.com/s/files/.../empty-state.svg"
+    image={EMPTY_STATE_ILLUSTRATION_URL}
   >
     <p>Track and receive your incoming inventory from suppliers.</p>
   </EmptyState>
@@ -457,7 +457,7 @@ export function EmptyProductList() {
           content: "Import from CSV",
           onAction: () => navigate("/products/import"),
         }}
-        image="/empty-products.svg"
+        image={emptyProductsIllustration}
       >
         <p>Products you add will show up here. You can also import a CSV.</p>
       </EmptyState>
@@ -472,7 +472,7 @@ export function EmptyProductList() {
 <EmptyState
   heading="No orders match these filters"
   action={{ content: "Clear filters", onAction: clearFilters }}
-  image="/empty-search.svg"
+  image={emptySearchIllustration}
 >
   <p>Try widening your date range or removing tags.</p>
 </EmptyState>
@@ -593,7 +593,7 @@ useEffect(() => {
   <EmptyState
     heading="We couldn't find that product"
     action={{ content: "Back to products", onAction: () => navigate("/products") }}
-    image="/empty-404.svg"
+    image={notFoundIllustration}
   >
     <p>It may have been deleted or the link may be wrong.</p>
   </EmptyState>

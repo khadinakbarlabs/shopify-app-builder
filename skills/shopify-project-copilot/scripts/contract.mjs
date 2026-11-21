@@ -1,5 +1,5 @@
 // CLI receipts describe local helper work, never Shopify app execution.
-export const HELPER_VERSION = "2.1.2";
+export const HELPER_VERSION = "2.1.3";
 const operations = new Set([
   "doctor",
   "handoff",

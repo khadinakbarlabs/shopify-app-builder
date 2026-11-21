@@ -4,10 +4,9 @@ import path from "node:path";
 import test from "node:test";
 
 import {
-  AGENT_PLUGINS_SCHEMA,
   findForbiddenText,
   findForbiddenTextInReleaseFile,
-  validateAgentPluginManifest,
+  findUnknownClaudeManifestFields,
 } from "../scripts/validate-release.mjs";
 
 test("release scanner rejects personal paths and live-token shapes", () => {
@@ -28,19 +27,17 @@ test("release scanner permits explicit credential placeholders", () => {
   );
 });
 
-test("release scanner permits only the approved OpenAI developer identity field", () => {
+test("release scanner permits only the approved Codex developer identity field", () => {
   const approvedName = ["Khadin", "Akbar"].join(" ");
-  const manifest = {
-    extensions: { "com.openai": { interface: { developerName: approvedName } } },
-  };
-  assert.deepEqual(findForbiddenTextInReleaseFile("plugin.json", JSON.stringify(manifest)), []);
+  const manifest = { interface: { developerName: approvedName } };
+  assert.deepEqual(findForbiddenTextInReleaseFile(".codex-plugin/plugin.json", JSON.stringify(manifest)), []);
   assert.deepEqual(
     findForbiddenTextInReleaseFile("README.md", JSON.stringify(manifest)),
     ["personal publisher identity"],
   );
   manifest.other = approvedName;
   assert.deepEqual(
-    findForbiddenTextInReleaseFile("plugin.json", JSON.stringify(manifest)),
+    findForbiddenTextInReleaseFile(".codex-plugin/plugin.json", JSON.stringify(manifest)),
     ["personal publisher identity"],
   );
 });
@@ -48,7 +45,7 @@ test("release scanner permits only the approved OpenAI developer identity field"
 test("release scanner permits the verified business only in public publisher fields", () => {
   const businessName = ["Khadin", "Akbar", "Ventures"].join(" ");
   for (const [file, manifest] of [
-    ["plugin.json", {author: {name: businessName}, extensions: {"com.openai": {interface: {developerName: businessName}}}}],
+    [".claude-plugin/plugin.json", {author: {name: businessName}}],
     [".codex-plugin/plugin.json", {author: {name: businessName}, interface: {developerName: businessName}}],
   ]) {
     assert.deepEqual(findForbiddenTextInReleaseFile(file, JSON.stringify(manifest)), []);
@@ -107,48 +104,33 @@ test("offline research helper does not read credentials or call a service", asyn
   assert.doesNotMatch(source, /process\.env|fetch\s*\(|child_process|execFile/);
 });
 
-test("Agent Plugins manifest validator rejects nonportable schema fields", () => {
+test("Claude manifest key check rejects listing-only and cross-tool fields", () => {
   assert.deepEqual(
-    validateAgentPluginManifest({
-      $schema: AGENT_PLUGINS_SCHEMA,
+    findUnknownClaudeManifestFields({
       name: "shopify-app-builder",
-      unsupported: true,
+      skills: "./skills/",
+      icon: "x",
+      privacyPolicyUrl: "https://example.com",
     }),
-    ["unknown top-level field: unsupported"],
+    ["icon", "privacyPolicyUrl"],
   );
 });
 
-test("Claude directory manifest declares the public privacy policy", async () => {
-  const claude = JSON.parse(await readFile(".claude-plugin/plugin.json", "utf8"));
-  const portable = JSON.parse(await readFile("plugin.json", "utf8"));
-  assert.equal(claude.privacyPolicyUrl, portable.extensions["com.openai"].interface.privacyPolicyURL);
-  assert.equal(new URL(claude.privacyPolicyUrl).protocol, "https:");
-  assert.match(claude.privacyPolicyUrl, /\/PRIVACY\.md$/);
-});
-
-test("Claude directory listing has the approved publisher, website, links, and icon", async () => {
+test("Claude manifest keeps the approved publisher and website", async () => {
   const claude = JSON.parse(await readFile(".claude-plugin/plugin.json", "utf8"));
   const marketplace = JSON.parse(await readFile(".claude-plugin/marketplace.json", "utf8"));
-  const portable = JSON.parse(await readFile("plugin.json", "utf8"));
-  const listing = portable.extensions["com.openai"].interface;
   const approvedName = ["Khadin", "Akbar"].join(" ");
   assert.equal(claude.author.name, approvedName);
   assert.equal(marketplace.owner.name, approvedName);
   assert.equal(claude.author.url, "https://khadinakbar.com/");
   assert.equal(claude.homepage, "https://khadinakbar.com/");
-  assert.equal(claude.supportUrl, listing.supportURL);
-  assert.equal(claude.termsOfServiceUrl, listing.termsOfServiceURL);
-  assert.equal(claude.documentationUrl, portable.repository + "#readme");
-  for (const field of ["homepage", "documentationUrl", "supportUrl", "privacyPolicyUrl", "termsOfServiceUrl"]) {
-    assert.equal(new URL(claude[field]).protocol, "https:");
-  }
-  // Check the listing icon field only; scripts must not open bundled images (directory UNREAD_ASSET_REFERENCED).
-  assert.match(claude.icon, /^\.\/assets\/[a-z0-9-]+\.png$/);
+  assert.equal(new URL(claude.repository).protocol, "https:");
+  assert.deepEqual(findUnknownClaudeManifestFields(claude), []);
 });
 
 test("release scanner allows approved public publisher fields but not unrelated names or secrets", () => {
   const approvedName = ["Khadin", "Akbar"].join(" ");
-  for (const file of ["plugin.json", ".claude-plugin/plugin.json", ".codex-plugin/plugin.json", ".cursor-plugin/plugin.json"]) {
+  for (const file of [".claude-plugin/plugin.json", ".codex-plugin/plugin.json", ".cursor-plugin/plugin.json"]) {
     const manifest = {author: {name: approvedName}};
     assert.deepEqual(findForbiddenTextInReleaseFile(file, JSON.stringify(manifest)), []);
     manifest.description = approvedName;

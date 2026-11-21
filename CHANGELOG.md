@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.3 — 2026-11-22
+
+- Manifest cleanup for the Claude directory: removed listing-only and cross-tool keys from .claude-plugin/plugin.json and the unused agent-plugins root manifest; no behavior change.
+- Removed unreferenced bundled artwork and reworded docs and skill examples so no text file names an image path. The release validator now rejects unknown Claude manifest keys and a root plugin.json.
+
 ## 2.1.2 — 2026-11-21
 
 - Reformat the offline project helper (`skills/shopify-project-copilot/scripts/`) into readable multi-line source so directory analysis can read every file. Behavior, receipts and the credential/contact redaction pattern are unchanged.

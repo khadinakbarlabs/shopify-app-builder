@@ -1,12 +1,12 @@
 # Agent compatibility
 
-v2.1 is a local Agent Plugins 1.0 package with 36 contained Agent Skills, 17 command definitions and 8 specialist-agent definitions. There is no portable/native MCP configuration, hosted API source or app-account binding.
+v2.1 is a local skills package with 36 contained Agent Skills, 17 command definitions and 8 specialist-agent definitions. There is no portable/native MCP configuration, hosted API source or app-account binding.
 
 The project copilot's optional offline helper needs Node 20+ and access to the selected app folder. Complete copy-only skill installs retain the helper. Project state is local and ignored by default; it isn't automatically synchronized by the plugin. Scheduling requires a separately supported, explicitly configured runner. In chat-only hosts, use unsaved Markdown handoffs instead. See the copilot skill for conflict checks, privacy controls and report limitations.
 
 ## Portable core
 
-Root plugin.json declares standard identity/version and an OpenAI listing extension. Skills are immediate children of skills/ with matching names/descriptions. References remain inside each skill or link to sibling installed skills; the copy installer transfers the complete collection.
+Each host reads its own native manifest (.claude-plugin/, .codex-plugin/, .cursor-plugin/, gemini-extension.json); there is no root plugin.json. Skills are immediate children of skills/ with matching names/descriptions. References remain inside each skill or link to sibling installed skills; the copy installer transfers the complete collection.
 
 A portable skill reader does not automatically understand another harness's subagent or slash-command model. An installed package is not evidence of native command/agent registration or marketplace acceptance.
 

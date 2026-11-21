@@ -1,15 +1,14 @@
 # Shopify App Builder — build your first Shopify app, one clear step at a time
 
 [![license](https://img.shields.io/badge/license-MIT-0b6e4f)](LICENSE)
-[![Agent Plugins](https://img.shields.io/badge/Agent%20Plugins-1.0%20portable-5b21b6)](https://agent-plugins.org/)
 [![skills](https://img.shields.io/badge/skills-36-004c3f)](skills/)
-[![release checks](https://github.com/khadinakbarlabs/shopify-app-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/khadinakbarlabs/shopify-app-builder/actions/workflows/ci.yml)
+[![release checks](https://img.shields.io/github/actions/workflow/status/khadinakbarlabs/shopify-app-builder/ci.yml?branch=main&label=release%20checks)](https://github.com/khadinakbarlabs/shopify-app-builder/actions/workflows/ci.yml)
 
 A beginner-friendly, open-source Shopify app development plugin for Claude Code, Codex, Cursor, OpenCode, Gemini CLI and other Agent Skills-compatible coding harnesses.
 
 You bring the merchant problem and choose your coding agent. The plugin helps that agent explain unfamiliar terms, recommend a sensible path, implement small testable changes and show evidence before calling something done.
 
-**v2.1.2 is skills-first: no bundled MCP server, telemetry, required cloud account or hidden credentials.** It contains 36 focused skills, 17 guided command definitions and 8 specialist-agent definitions, plus an optional offline project helper. Native command/agent support depends on the harness; all clients can use the same portable skill workflows. GitHub source, npm packages and directory serving versions are separate; this source version does not imply directory approval or npm publication.
+**v2.1.3 is skills-first: no bundled MCP server, telemetry, required cloud account or hidden credentials.** It contains 36 focused skills, 17 guided command definitions and 8 specialist-agent definitions, plus an optional offline project helper. Native command/agent support depends on the harness; all clients can use the same portable skill workflows. GitHub source, npm packages and directory serving versions are separate; this source version does not imply directory approval or npm publication.
 
 > Independent community project. Not affiliated with, endorsed by or sponsored by Shopify. No guarantee of security, profitability, trademark clearance, App Store acceptance or Built for Shopify designation.
 
@@ -447,7 +446,7 @@ npm run release:check
 npm pack --dry-run --ignore-scripts
 ```
 
-Checks cover native/portable manifest identity, version parity, publisher metadata, credential-shaped text, no bundled MCP surfaces, complete contained skill references after installation, command/agent routing, OpenCode registration and bounded research input.
+Checks cover native manifest identity, version parity, publisher metadata, credential-shaped text, no bundled MCP surfaces, complete contained skill references after installation, command/agent routing, OpenCode registration and bounded research input.
 
 Static tests do not prove every agent will behave correctly or every merchant workflow works. Test a representative novice task in your actual harness with synthetic data before relying on a new release.
 

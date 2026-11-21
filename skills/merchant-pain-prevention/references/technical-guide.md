@@ -36,27 +36,27 @@ Ranked by how fast they get you a public 1-star review, a chargeback, a Reddit p
 
 The single most-litigated complaint on the App Store. At least eight active Shopify Community threads use this exact phrase as the title. The complaint compounds because Shopify Support since May 3, 2023 no longer mediates refund requests on behalf of merchants — they tell the merchant to email the developer, who often ghosts.
 
-> "Why am I still billed for an uninstalled app on Shopify?" — verbatim title repeated across at least five threads. [community.shopify.com/t/why-am-i-still-billed-for-an-uninstalled-app-on-shopify/191216](https://community.shopify.com/t/why-am-i-still-billed-for-an-uninstalled-app-on-shopify/191216)
+> "Why am I still billed for an uninstalled app on Shopify?" — verbatim title repeated across at least five threads. <https://community.shopify.com/t/why-am-i-still-billed-for-an-uninstalled-app-on-shopify/191216>
 
-> "Why am I still being charged for POS after uninstalling? I don't use it and uninstalled the app months ago." — the Shopify-owned POS app does it too. [community.shopify.com/t/why-am-i-still-being-charged-for-pos-after-uninstalling/286967](https://community.shopify.com/t/why-am-i-still-being-charged-for-pos-after-uninstalling/286967)
+> "Why am I still being charged for POS after uninstalling? I don't use it and uninstalled the app months ago." — the Shopify-owned POS app does it too. <https://community.shopify.com/t/why-am-i-still-being-charged-for-pos-after-uninstalling/286967>
 
-> "Why is a merchant that uninstalled our app seeing charges two months later?" — developer-side version of the same complaint. [community.shopify.dev/t/why-is-a-merchant-that-uninstalled-our-app-seeing-charges-two-months-later/23625](https://community.shopify.dev/t/why-is-a-merchant-that-uninstalled-our-app-seeing-charges-two-months-later/23625)
+> "Why is a merchant that uninstalled our app seeing charges two months later?" — developer-side version of the same complaint. <https://community.shopify.dev/t/why-is-a-merchant-that-uninstalled-our-app-seeing-charges-two-months-later/23625>
 
 **Root cause:** recurring app charges are generated on the **first day of the app's billing cycle**, not Shopify's. Uninstalling stops future cycles but does NOT cancel an already-generated invoice. If the merchant uninstalls one day after install, an invoice is still pending.
 
 ### Pain 2 — Trial → silent auto-charge
 
-> "I canceled my free trial in time, and still got charged." [community.shopify.com/c/shopify-discussions/i-canceled-my-free-trial-in-time-and-still-got-charged/td-p/2282529](https://community.shopify.com/c/shopify-discussions/i-canceled-my-free-trial-in-time-and-still-got-charged/td-p/2282529)
+> "I canceled my free trial in time, and still got charged." <https://community.shopify.com/c/shopify-discussions/i-canceled-my-free-trial-in-time-and-still-got-charged/td-p/2282529>
 
-> "Tried to cancel subscription after free trial was charged." [community.shopify.com/c/shopify-discussions/tried-to-cancel-subscription-after-free-trial-was-charged/td-p/851254](https://community.shopify.com/c/shopify-discussions/tried-to-cancel-subscription-after-free-trial-was-charged/td-p/851254)
+> "Tried to cancel subscription after free trial was charged." <https://community.shopify.com/c/shopify-discussions/tried-to-cancel-subscription-after-free-trial-was-charged/td-p/851254>
 
-> "Privy continued charging for nearly six years on an inaccessible second account, with the user only discovering this in 2025. After providing full documentation, Privy refunded only six months of charges out of 70+ months and refused to refund the remainder." [apps.shopify.com/privy/reviews](https://apps.shopify.com/privy/reviews)
+> "Privy continued charging for nearly six years on an inaccessible second account, with the user only discovering this in 2025. After providing full documentation, Privy refunded only six months of charges out of 70+ months and refused to refund the remainder." <https://apps.shopify.com/privy/reviews>
 
 ### Pain 3 — Leftover code in theme after uninstall
 
-> "Left over code from app." — verbatim title; the Site Speed sub-forum is full of these. [community.shopify.com/c/site-speed/left-over-code-from-app/td-p/1581837](https://community.shopify.com/c/site-speed/left-over-code-from-app/td-p/1581837)
+> "Left over code from app." — verbatim title; the Site Speed sub-forum is full of these. <https://community.shopify.com/c/site-speed/left-over-code-from-app/td-p/1581837>
 
-> "Leftover code from uninstalled app — how do I remove it from my website?" [community.shopify.com/t/leftover-code-from-uninstalled-app-how-do-i-remove-it-from-my-website/294871](https://community.shopify.com/t/leftover-code-from-uninstalled-app-how-do-i-remove-it-from-my-website/294871)
+> "Leftover code from uninstalled app — how do I remove it from my website?" <https://community.shopify.com/t/leftover-code-from-uninstalled-app-how-do-i-remove-it-from-my-website/294871>
 
 > "After uninstalling the Translate & Adapt app, a language selector dropdown remained embedded in the storefront — with no notification that theme elements persist after uninstall." — even Shopify's own app does this.
 
@@ -66,7 +66,7 @@ The #1 functional complaint that maps to lost revenue.
 
 > "This app loads incredibly slow — takes about 30–40 sec. after clicking on items." — PageFly 1-star, cited in Reddit "lightweight builder" recommendations.
 
-> "Why is my store speed slowing down and how can I improve it?" — the answer 9 times out of 10 is "look at your apps." [community.shopify.com/c/shopify-discussions/why-is-my-store-speed-slowing-down-and-how-can-i-improve-it/m-p/2221261](https://community.shopify.com/c/shopify-discussions/why-is-my-store-speed-slowing-down-and-how-can-i-improve-it/m-p/2221261)
+> "Why is my store speed slowing down and how can I improve it?" — the answer 9 times out of 10 is "look at your apps." <https://community.shopify.com/c/shopify-discussions/why-is-my-store-speed-slowing-down-and-how-can-i-improve-it/m-p/2221261>
 
 The math reviewers quote: every 1-second delay → 7% conversion drop. 53% of mobile visitors leave if a page does not load in 3 seconds. Average Shopify store: 6–12 apps installed, adding 2–5 seconds to page load.
 
@@ -80,9 +80,9 @@ The FTC's Click-to-Cancel rule (in force since 2025) requires cancellation to be
 
 ### Pain 6 — Support is a bot loop with no human exit
 
-> "Each question took 6 hours+ to get a response on their own chat function." — Gorgias review widely cited by Reddit merchants comparing helpdesks. [apps.shopify.com/helpdesk/reviews](https://apps.shopify.com/helpdesk/reviews)
+> "Each question took 6 hours+ to get a response on their own chat function." — Gorgias review widely cited by Reddit merchants comparing helpdesks. <https://apps.shopify.com/helpdesk/reviews>
 
-> "How can I reach support when the AI bot keeps timing out?" [community.shopify.com/t/how-can-i-reach-support-when-the-ai-bot-keeps-timing-out/413511](https://community.shopify.com/t/how-can-i-reach-support-when-the-ai-bot-keeps-timing-out/413511)
+> "How can I reach support when the AI bot keeps timing out?" <https://community.shopify.com/t/how-can-i-reach-support-when-the-ai-bot-keeps-timing-out/413511>
 
 > "Bug reports submitted a month ago. No fix. They told me publicly on the App Store that I haven't been ignored. I have." — Willdesk reviewer.
 
@@ -90,9 +90,9 @@ The FTC's Click-to-Cancel rule (in force since 2025) requires cancellation to be
 
 ### Pain 7 — Breaks on the next Shopify platform update
 
-> "The app has taken money from our account without authorization, approximately $1600 in unauthorized charges. The app became useless after Shopify's November checkout app update." — ReConvert 1-star. [apps.shopify.com/reconvert-upsell-cross-sell/reviews](https://apps.shopify.com/reconvert-upsell-cross-sell/reviews)
+> "The app has taken money from our account without authorization, approximately $1600 in unauthorized charges. The app became useless after Shopify's November checkout app update." — ReConvert 1-star. <https://apps.shopify.com/reconvert-upsell-cross-sell/reviews>
 
-> "Some merchants unable to access and apply Checkout Blocks App functions — checkout blocks has been broken for about 12 hours, with all functions on stores being wiped and the blocks while still in the app being removed from the checkout." [community.shopify.dev/t/some-merchants-unable-to-access-and-apply-checkout-blocks-app-functions/27602](https://community.shopify.dev/t/some-merchants-unable-to-access-and-apply-checkout-blocks-app-functions/27602)
+> "Some merchants unable to access and apply Checkout Blocks App functions — checkout blocks has been broken for about 12 hours, with all functions on stores being wiped and the blocks while still in the app being removed from the checkout." <https://community.shopify.dev/t/some-merchants-unable-to-access-and-apply-checkout-blocks-app-functions/27602>
 
 > "Sync stopped working when Shopify moved off REST. App kept saying everything was synced. We oversold for two weeks." — Inventory Planner reviewer.
 
@@ -578,63 +578,63 @@ Run this checklist 48 hours before submission to the App Store or any major rele
 
 These are the words real merchants used. Reading them is the cheapest pain-prevention exercise you will ever do.
 
-1. **"Why am I being overcharged on Shopify for subscriptions?"** — [community.shopify.com/t/why-am-i-being-overcharged-on-shopify-for-subscriptions/314115](https://community.shopify.com/t/why-am-i-being-overcharged-on-shopify-for-subscriptions/314115)
+1. **"Why am I being overcharged on Shopify for subscriptions?"** — <https://community.shopify.com/t/why-am-i-being-overcharged-on-shopify-for-subscriptions/314115>
 
-2. **"Apps on Shopify used to be reasonable. You could justify $5 to $10 a month for features. If you do even a little business you are going to be at the top tier of an app."** — [community.shopify.com/t/the-price-of-apps-is-completely-out-of-control/419098](https://community.shopify.com/t/the-price-of-apps-is-completely-out-of-control/419098)
+2. **"Apps on Shopify used to be reasonable. You could justify $5 to $10 a month for features. If you do even a little business you are going to be at the top tier of an app."** — <https://community.shopify.com/t/the-price-of-apps-is-completely-out-of-control/419098>
 
-3. **"They held my store and subscriptions hostage for weeks before I was able to migrate away from them, uninstall the app, report them to Shopify, and file chargebacks."** — Bold Subscriptions 1-star. [apps.shopify.com/bold-subscriptions/reviews](https://apps.shopify.com/bold-subscriptions/reviews)
+3. **"They held my store and subscriptions hostage for weeks before I was able to migrate away from them, uninstall the app, report them to Shopify, and file chargebacks."** — Bold Subscriptions 1-star. <https://apps.shopify.com/bold-subscriptions/reviews>
 
-4. **"Why am I still billed for an uninstalled app on Shopify?"** — [community.shopify.com/t/why-am-i-still-billed-for-an-uninstalled-app-on-shopify/191216](https://community.shopify.com/t/why-am-i-still-billed-for-an-uninstalled-app-on-shopify/191216)
+4. **"Why am I still billed for an uninstalled app on Shopify?"** — <https://community.shopify.com/t/why-am-i-still-billed-for-an-uninstalled-app-on-shopify/191216>
 
-5. **"Why is a merchant that uninstalled our app seeing charges two months later?"** — developer-side. [community.shopify.dev/t/why-is-a-merchant-that-uninstalled-our-app-seeing-charges-two-months-later/23625](https://community.shopify.dev/t/why-is-a-merchant-that-uninstalled-our-app-seeing-charges-two-months-later/23625)
+5. **"Why is a merchant that uninstalled our app seeing charges two months later?"** — developer-side. <https://community.shopify.dev/t/why-is-a-merchant-that-uninstalled-our-app-seeing-charges-two-months-later/23625>
 
-6. **"I canceled my free trial in time, and still got charged."** — [community.shopify.com/c/shopify-discussions/i-canceled-my-free-trial-in-time-and-still-got-charged/td-p/2282529](https://community.shopify.com/c/shopify-discussions/i-canceled-my-free-trial-in-time-and-still-got-charged/td-p/2282529)
+6. **"I canceled my free trial in time, and still got charged."** — <https://community.shopify.com/c/shopify-discussions/i-canceled-my-free-trial-in-time-and-still-got-charged/td-p/2282529>
 
-7. **"Tried to cancel subscription after free trial was charged."** — [community.shopify.com/c/shopify-discussions/tried-to-cancel-subscription-after-free-trial-was-charged/td-p/851254](https://community.shopify.com/c/shopify-discussions/tried-to-cancel-subscription-after-free-trial-was-charged/td-p/851254)
+7. **"Tried to cancel subscription after free trial was charged."** — <https://community.shopify.com/c/shopify-discussions/tried-to-cancel-subscription-after-free-trial-was-charged/td-p/851254>
 
-8. **"Why am I still being charged for POS after uninstalling? I don't use it and uninstalled the app months ago."** — [community.shopify.com/t/why-am-i-still-being-charged-for-pos-after-uninstalling/286967](https://community.shopify.com/t/why-am-i-still-being-charged-for-pos-after-uninstalling/286967)
+8. **"Why am I still being charged for POS after uninstalling? I don't use it and uninstalled the app months ago."** — <https://community.shopify.com/t/why-am-i-still-being-charged-for-pos-after-uninstalling/286967>
 
-9. **"Anyone else getting screwed by Klaviyo's pricing?"** — [community.shopify.com/t/anyone-else-getting-screwed-by-klaviyos-pricing/561275](https://community.shopify.com/t/anyone-else-getting-screwed-by-klaviyos-pricing/561275)
+9. **"Anyone else getting screwed by Klaviyo's pricing?"** — <https://community.shopify.com/t/anyone-else-getting-screwed-by-klaviyos-pricing/561275>
 
-10. **"Left over code from app."** — [community.shopify.com/c/site-speed/left-over-code-from-app/td-p/1581837](https://community.shopify.com/c/site-speed/left-over-code-from-app/td-p/1581837)
+10. **"Left over code from app."** — <https://community.shopify.com/c/site-speed/left-over-code-from-app/td-p/1581837>
 
-11. **"Leftover code from uninstalled app — how do I remove it from my website?"** — [community.shopify.com/t/leftover-code-from-uninstalled-app-how-do-i-remove-it-from-my-website/294871](https://community.shopify.com/t/leftover-code-from-uninstalled-app-how-do-i-remove-it-from-my-website/294871)
+11. **"Leftover code from uninstalled app — how do I remove it from my website?"** — <https://community.shopify.com/t/leftover-code-from-uninstalled-app-how-do-i-remove-it-from-my-website/294871>
 
-12. **"I paused the Loox Application and all my Reviews are gone."** — [community.shopify.com/c/shopify-apps/i-paused-the-loox-application-and-all-my-reviews-are-gone/m-p/2029071](https://community.shopify.com/c/shopify-apps/i-paused-the-loox-application-and-all-my-reviews-are-gone/m-p/2029071)
+12. **"I paused the Loox Application and all my Reviews are gone."** — <https://community.shopify.com/c/shopify-apps/i-paused-the-loox-application-and-all-my-reviews-are-gone/m-p/2029071>
 
-13. **"Despite settings to display the popup only once per session and to stop showing it once the popup window closed or email address submitted, the popup would still appear after every newly loaded page which is very annoying for customers."** — [community.shopify.com/t/recurring-discount-popup-by-popup-smart-app/412559](https://community.shopify.com/t/recurring-discount-popup-by-popup-smart-app/412559)
+13. **"Despite settings to display the popup only once per session and to stop showing it once the popup window closed or email address submitted, the popup would still appear after every newly loaded page which is very annoying for customers."** — <https://community.shopify.com/t/recurring-discount-popup-by-popup-smart-app/412559>
 
-14. **"Is Shopify ever going to take fake app store reviews seriously?"** — [community.shopify.com/t/is-shopify-ever-going-to-take-fake-app-store-reviews-seriously/569409](https://community.shopify.com/t/is-shopify-ever-going-to-take-fake-app-store-reviews-seriously/569409)
+14. **"Is Shopify ever going to take fake app store reviews seriously?"** — <https://community.shopify.com/t/is-shopify-ever-going-to-take-fake-app-store-reviews-seriously/569409>
 
-15. **"Common issues seem to repeat across apps, but they're buried under noise and generic feedback."** — [news.ycombinator.com/item?id=46897012](https://news.ycombinator.com/item?id=46897012)
+15. **"Common issues seem to repeat across apps, but they're buried under noise and generic feedback."** — <https://news.ycombinator.com/item?id=46897012>
 
-16. **"How can I reach support when the AI bot keeps timing out?"** — [community.shopify.com/t/how-can-i-reach-support-when-the-ai-bot-keeps-timing-out/413511](https://community.shopify.com/t/how-can-i-reach-support-when-the-ai-bot-keeps-timing-out/413511)
+16. **"How can I reach support when the AI bot keeps timing out?"** — <https://community.shopify.com/t/how-can-i-reach-support-when-the-ai-bot-keeps-timing-out/413511>
 
-17. **"Each question took 6 hours+ to get a response on their own chat function."** — Gorgias. [apps.shopify.com/helpdesk/reviews](https://apps.shopify.com/helpdesk/reviews)
+17. **"Each question took 6 hours+ to get a response on their own chat function."** — Gorgias. <https://apps.shopify.com/helpdesk/reviews>
 
-18. **"After a recent app update requiring reconfiguration, support was unresponsive, the team was pleasant but unwilling to take responsibility, and the user was given confusing instructions while being stuck in a continuous support loop."** — ReConvert 1-star. [apps.shopify.com/reconvert-upsell-cross-sell/reviews?page=2&ratings%5B%5D=1](https://apps.shopify.com/reconvert-upsell-cross-sell/reviews?page=2&ratings%5B%5D=1)
+18. **"After a recent app update requiring reconfiguration, support was unresponsive, the team was pleasant but unwilling to take responsibility, and the user was given confusing instructions while being stuck in a continuous support loop."** — ReConvert 1-star. <https://apps.shopify.com/reconvert-upsell-cross-sell/reviews?page=2&ratings%5B%5D=1>
 
-19. **"The app has taken money from our account without authorization, approximately $1600 in unauthorized charges. The app became useless after Shopify's November checkout app update."** — ReConvert 1-star. [apps.shopify.com/reconvert-upsell-cross-sell/reviews](https://apps.shopify.com/reconvert-upsell-cross-sell/reviews)
+19. **"The app has taken money from our account without authorization, approximately $1600 in unauthorized charges. The app became useless after Shopify's November checkout app update."** — ReConvert 1-star. <https://apps.shopify.com/reconvert-upsell-cross-sell/reviews>
 
-20. **"Some merchants unable to access and apply Checkout Blocks App functions — checkout blocks has been broken for about 12 hours, with all functions on stores being wiped and the blocks while still in the app being removed from the checkout."** — [community.shopify.dev/t/some-merchants-unable-to-access-and-apply-checkout-blocks-app-functions/27602](https://community.shopify.dev/t/some-merchants-unable-to-access-and-apply-checkout-blocks-app-functions/27602)
+20. **"Some merchants unable to access and apply Checkout Blocks App functions — checkout blocks has been broken for about 12 hours, with all functions on stores being wiped and the blocks while still in the app being removed from the checkout."** — <https://community.shopify.dev/t/some-merchants-unable-to-access-and-apply-checkout-blocks-app-functions/27602>
 
-21. **"Custom Checkout Apps Not Working with Shop Pay — some custom checkout apps that allow customers to enter VAT numbers and add product cross-sells are no longer available when a customer with a Shop Pay account enters the checkout."** — [community.shopify.dev/t/custom-checkout-apps-not-working-with-shop-pay/11181](https://community.shopify.dev/t/custom-checkout-apps-not-working-with-shop-pay/11181)
+21. **"Custom Checkout Apps Not Working with Shop Pay — some custom checkout apps that allow customers to enter VAT numbers and add product cross-sells are no longer available when a customer with a Shop Pay account enters the checkout."** — <https://community.shopify.dev/t/custom-checkout-apps-not-working-with-shop-pay/11181>
 
-22. **"This app isn't compatible with your store."** — [community.shopify.com/t/this-app-isnt-compatible-with-your-store/298151](https://community.shopify.com/t/this-app-isnt-compatible-with-your-store/298151)
+22. **"This app isn't compatible with your store."** — <https://community.shopify.com/t/this-app-isnt-compatible-with-your-store/298151>
 
-23. **"Why is my store speed slowing down and how can I improve it?"** — [community.shopify.com/c/shopify-discussions/why-is-my-store-speed-slowing-down-and-how-can-i-improve-it/m-p/2221261](https://community.shopify.com/c/shopify-discussions/why-is-my-store-speed-slowing-down-and-how-can-i-improve-it/m-p/2221261)
+23. **"Why is my store speed slowing down and how can I improve it?"** — <https://community.shopify.com/c/shopify-discussions/why-is-my-store-speed-slowing-down-and-how-can-i-improve-it/m-p/2221261>
 
-24. **"Too Many Shortcomings Requiring Too Many Apps."** — [community.shopify.com/t/too-many-shortcomings-requiring-too-many-apps/181229/6](https://community.shopify.com/t/too-many-shortcomings-requiring-too-many-apps/181229/6)
+24. **"Too Many Shortcomings Requiring Too Many Apps."** — <https://community.shopify.com/t/too-many-shortcomings-requiring-too-many-apps/181229/6>
 
 25. **"Shopify Personal Access Tokens that could give attackers full administrative control over a store, Facebook/Meta Ads tokens that allowed fraudulent ad campaigns, and real-time site analytics events offering reconnaissance data for targeted attacks."** — Consentik plugin breach (Built-for-Shopify badged, 4.9 stars, ~4,180 stores). [cybernews.com/security/shopify-plugin-consentik-data-leak](https://cybernews.com/security/shopify-plugin-consentik-data-leak/)
 
-26. **"Booster SEO showed everything as 100% optimized when in reality none of the changes were actually being applied to their store — product images had no alt text and meta tags were never pushed to the frontend."** — [apps.shopify.com/booster-apps-seo-optimizer/reviews](https://apps.shopify.com/booster-apps-seo-optimizer/reviews)
+26. **"Booster SEO showed everything as 100% optimized when in reality none of the changes were actually being applied to their store — product images had no alt text and meta tags were never pushed to the frontend."** — <https://apps.shopify.com/booster-apps-seo-optimizer/reviews>
 
-27. **"Privy continued charging for nearly six years on an inaccessible second account, with the user only discovering this in 2025. After providing full documentation, Privy refunded only six months of charges out of 70+ months and refused to refund the remainder."** — Privy 1-star. [apps.shopify.com/privy/reviews](https://apps.shopify.com/privy/reviews)
+27. **"Privy continued charging for nearly six years on an inaccessible second account, with the user only discovering this in 2025. After providing full documentation, Privy refunded only six months of charges out of 70+ months and refused to refund the remainder."** — Privy 1-star. <https://apps.shopify.com/privy/reviews>
 
 28. **"After uninstalling the Translate & Adapt app, a language selector dropdown remained embedded in the storefront — with no notification that theme elements persist after uninstall."** — Translate & Adapt (Shopify-built).
 
-29. **"You install an app to solve one problem, then another for a different feature, and before you know it, you're paying $200+ per month in app subscriptions, your site loads slowly, and some apps don't work well together."** — [painonsocial.com/blog/shopify-problems-reddit](https://painonsocial.com/blog/shopify-problems-reddit)
+29. **"You install an app to solve one problem, then another for a different feature, and before you know it, you're paying $200+ per month in app subscriptions, your site loads slowly, and some apps don't work well together."** — <https://painonsocial.com/blog/shopify-problems-reddit>
 
 30. **"Bug reports submitted a month ago. No fix. They told me publicly on the App Store that I haven't been ignored. I have."** — Willdesk reviewer. The gaslighting reply made the rating worse.
 

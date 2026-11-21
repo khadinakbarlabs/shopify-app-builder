@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.1.2 — 2026-11-21
+
+- Reformat the offline project helper (`skills/shopify-project-copilot/scripts/`) into readable multi-line source so directory analysis can read every file. Behavior, receipts and the credential/contact redaction pattern are unchanged.
+- Shorten long duplicated reference links in the merchant pain-prevention guide to plain autolinks.
+- Remove the portable manifest's `composerIcon`/`logo` artwork paths; the native Claude manifest keeps its listing `icon`.
+- No new MCP, credentials, network access, paid processing or schedule activation.
+
 ## 2.1.1 — 2026-10-06
 
 - Preserve focused Shopify development routes and complete a tested merchant increment rather than only bookkeeping.

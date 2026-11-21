@@ -2,7 +2,7 @@
 
 - No bundled MCP server or MCP configuration. Optional Shopify/Apify connection guidance uses official CLIs and user-selected dashboards.
 - No publisher credentials, token headers or runtime credential discovery. Paid Apify calls require input/cost review and authorization.
-- assets/icon.png and assets/logo.png are static artwork, not executable files. No helper runs them.
+- assets/icon.png is static listing artwork referenced only by the native Claude manifest `icon` field; assets/logo.png is unreferenced artwork. No helper opens or runs them.
 - Root plugin.json is a portable Agent Plugins manifest; native Claude metadata remains in .claude-plugin/plugin.json.
 - Native agents, commands and skills are bounded instructions; consequential actions require the user's authorization and the host's actual tools.
 - Publisher attribution and homepage/policy/support links are retained from the approved metadata correction.

@@ -9,7 +9,7 @@ A beginner-friendly, open-source Shopify app development plugin for Claude Code,
 
 You bring the merchant problem and choose your coding agent. The plugin helps that agent explain unfamiliar terms, recommend a sensible path, implement small testable changes and show evidence before calling something done.
 
-**v2.1.1 is skills-first: no bundled MCP server, telemetry, required cloud account or hidden credentials.** It contains 36 focused skills, 17 guided command definitions and 8 specialist-agent definitions, plus an optional offline project helper. Native command/agent support depends on the harness; all clients can use the same portable skill workflows. GitHub source, npm packages and directory serving versions are separate; this source version does not imply directory approval or npm publication.
+**v2.1.2 is skills-first: no bundled MCP server, telemetry, required cloud account or hidden credentials.** It contains 36 focused skills, 17 guided command definitions and 8 specialist-agent definitions, plus an optional offline project helper. Native command/agent support depends on the harness; all clients can use the same portable skill workflows. GitHub source, npm packages and directory serving versions are separate; this source version does not imply directory approval or npm publication.
 
 > Independent community project. Not affiliated with, endorsed by or sponsored by Shopify. No guarantee of security, profitability, trademark clearance, App Store acceptance or Built for Shopify designation.
 

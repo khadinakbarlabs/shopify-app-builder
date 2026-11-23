@@ -10,6 +10,8 @@ You bring the merchant problem and choose your coding agent. The plugin helps th
 
 **v2.1.3 is skills-first: no bundled MCP server, telemetry, required cloud account or hidden credentials.** It contains 36 focused skills, 17 guided command definitions and 8 specialist-agent definitions, plus an optional offline project helper. Native command/agent support depends on the harness; all clients can use the same portable skill workflows. GitHub source, npm packages and directory serving versions are separate; this source version does not imply directory approval or npm publication.
 
+**Two editions.** The repository root is the full edition (skills plus the offline project helper and repository scripts) for GitHub, npm and other harnesses. [directory-edition/](directory-edition/) is a text-only build of the same skills, commands and agents for the Claude directory: no scripts, with the helper's behavior written out as manual procedures. Its README lists exactly what is less exact there.
+
 > Independent community project. Not affiliated with, endorsed by or sponsored by Shopify. No guarantee of security, profitability, trademark clearance, App Store acceptance or Built for Shopify designation.
 
 ## Start here
